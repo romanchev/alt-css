@@ -1,0 +1,19 @@
+#!/bin/sh -efu
+
+# ls on client-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+action_summary() {
+	echo "  ls        Lists all patch sets saved to the 'exchange'."
+}
+
+do_ls() {
+	server_side ls $quiet
+}
+

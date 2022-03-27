@@ -1,0 +1,23 @@
+#!/bin/sh -efu
+
+# platform template
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021, Leonid Krivoshein <klark@altlinux.org>
+#
+
+# Alias
+short="arch"
+
+# Required top-level directory
+entity="Platforms"
+
+# Required ID's in the path
+ids="ARCH"
+
+# Editable templates
+templates="platform.yml=@ARCH@.yml"
+

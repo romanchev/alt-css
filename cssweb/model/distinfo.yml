@@ -1,0 +1,76 @@
+Model:    distinfo
+Handler:  DistInfoEdit
+Caption:  КАРТОРЧКА ОБРАЗА НАШЕГО ДИСТРИБУТИВА
+
+Fields:
+  Name:
+    OldName:   Название
+    Caption:   Дистрибутив
+    Type:      OneLine
+    Required:  Yes
+    Bold:      Yes
+    Paint:     Yes
+  Brief:
+    Caption:   Описание
+    Type:      OneLine
+    Bold:      Yes
+  URI:
+    Caption:   Адрес
+    Type:      Uri
+    Required:  Yes
+  Download:
+    Caption:   Скачать
+    Type:      Uri
+  Image:
+    Caption:   Образ
+    Type:      OneLine
+    Required:  Yes
+    Paint:     Yes
+  MD5sum:
+    Caption:   md5sum
+    Type:      OneLine
+    Required:  Yes
+    Paint:     Yes
+  FIXsum:
+    Caption:   FIXsum
+    Type:      OneLine
+    Paint:     Yes
+  PubDate:
+    OldName:   Выпуск
+    Caption:   Выпущен
+    Type:      Date
+    Required:  Yes
+    Bold:      Yes
+  Build:
+    OldName:   Версия
+    Caption:   Сборка
+    Type:      VerId
+    Required:  Yes
+    Paint:     Yes
+  CMLabel:
+    Caption:   Колонка таблицы
+    Type:      OneLine
+    Paint:     Yes
+  Hidden:
+    Caption:   Не показывать
+    Type:      Select
+    Variants:  [Yes]
+  Tags:
+    Caption:   Тэги
+    Type:      Tags
+    Paint:     Yes
+  Notes:
+    Caption:   Примечание
+    Type:      AutoStr
+
+View:
+  Title:    "Дистрибутив: {DISTRO}"
+
+  Additional:
+    dID:
+      Caption:   Путь
+      Type:      OneLine
+      Required:  Yes
+      Paint:     Yes
+      Before:    Brief
+

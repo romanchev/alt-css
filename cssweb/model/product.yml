@@ -1,0 +1,116 @@
+Model:    product
+Handler:  ProductEdit
+Caption:  КАРТОЧКА ПРОДУКТА
+
+Fields:
+  Name:
+    Caption:   Название
+    Type:      OneLine
+    Bold:      Yes
+    Paint:     Yes
+  Category:
+    Caption:   Категория
+    Type:      Category
+    Bold:      Yes
+    Required:  Yes
+  URI:
+    Caption:   Сайт
+    Type:      Uri
+  ActualVers:
+    Caption:   Версии
+    Type:      VersList
+  Platforms:
+    Caption:   Платформы
+    Type:      ArchList
+  Suitable:
+    Caption:   Применимость
+    Type:      Select
+    Variants:  [Universal, Desktop, Server, NoExpand]
+  Hidden:
+    Caption:   Не показывать
+    Type:      Select
+    Variants:  [Yes]
+    Bold:      Yes
+  List:
+    Caption:   Список
+    Type:      Select
+    Variants:  [0, 1, 2]
+    Save:      Integer
+    Default:   2
+  FSTEC_lic:
+    OldName:   СертФСТЭК
+    Caption:   Лицензии ФСТЭК
+    Type:      DatesList
+  MOD_lic:
+    OldName:   СертМО
+    Caption:   Лицензии МО
+    Type:      DatesList
+  FSC_lic:
+    OldName:   СертФСБ
+    Caption:   Лицензии ФСБ
+    Type:      DatesList
+  MinComReg:
+    OldName:   РеестрМС
+    Caption:   Реестр Минсвязи
+    Type:      Integer
+    View:      Uri
+  Install:
+    OldName:   Установка
+    Caption:   Инструкция
+    Type:      Uri
+  Tags:
+    Caption:   Тэги
+    Type:      Tags
+    Paint:     Yes
+  Brief:
+    Caption:   Описание
+    Type:      Text
+  Footnote:
+    Caption:   Сноска
+    Type:      AutoStr
+
+View:
+  Title:    "Продукт: {PRODUCT}"
+
+  Additional:
+    Path:
+      Caption:   Путь
+      Type:      OneLine
+      Required:  Yes
+      Paint:     Yes
+      Before:    Category
+    Vendor:
+      Caption:   Партнёр
+      Type:      OneLine
+      Required:  Yes
+      Before:    Category
+
+Change:
+  Title:    Изменение карточки продукта
+  Success:  Информация о продукте сохранена
+  Button:   Сохранить
+
+  Additional:
+    vID:
+      Type:      Hidden
+      Required:  Yes
+    pID:
+      Type:      Hidden
+      Required:  Yes
+
+Create:
+  Title:    Создание карточки продукта
+  Success:  Карточка продукта создана
+  Button:   Создать
+
+  Additional:
+    vID:
+      Type:      Hidden
+      Required:  Yes
+    pID:
+      Caption:   ID
+      Type:      NameId
+      Required:  Yes
+      Paint:     Yes
+      Before:    Category
+

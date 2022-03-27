@@ -1,0 +1,29 @@
+#!/bin/sh -efu
+
+# category template
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021, Leonid Krivoshein <klark@altlinux.org>
+#
+
+# Alias
+short="cat"
+
+# Required top-level directory
+entity="Categories"
+
+# Required ID's in the path
+ids="CATEGORY"
+
+# Editable templates
+templates="category.yml"
+
+# Where to create new files?
+copyto="@CATEGORY@"
+
+# Need to create placeholders?
+placeholders=1
+

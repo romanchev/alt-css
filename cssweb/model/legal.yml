@@ -1,0 +1,18 @@
+Model:    legal
+Handler:  LegalEdit
+Caption:  ЮРИДИЧЕСКИ ЗНАЧИМЫЕ ДОКУМЕНТЫ
+
+Fields:
+  Summary:
+    Caption:   Описание
+    Type:      AutoStr
+  Vendors:
+    Caption:   Партнёры
+    Type:      LongList
+    Required:  Yes
+  Files:
+    Caption:   Файлы
+    Type:      Table
+    Extern:    attach
+    Required:  Yes
+

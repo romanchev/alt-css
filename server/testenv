@@ -1,0 +1,39 @@
+#!/bin/sh -efu
+
+# testenv -- environment test script for CSS.
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2020-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+. "$CSS_LIBDIR"/csi-server-common
+
+[ -z "$quiet" ] ||
+	exec >/dev/null
+rpm -q css-server
+[ ! -s /etc/os-release ] ||
+	sed -n -E 's/^PRETTY_NAME=(.+)$/\1/p' /etc/os-release |
+		sed -E 's/^['"'"'"]//;s/['"'"'"]$//'
+uname -r
+printf "\n"
+apt-repo
+printf "\n"
+
+argc=0
+while [ $# -gt 0 ]; do
+	argc=$((1 + $argc))
+	printf "argc[%d] = '%s'\n" $argc "$1"
+	shift
+done
+
+[ "$argc" = 0 ] ||
+	printf "\n"
+env
+printf "\n"
+printf "%s: OK\n" "$progname"
+
+debug "script finished"
+

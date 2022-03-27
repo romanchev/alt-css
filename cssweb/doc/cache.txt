@@ -1,0 +1,320 @@
+Format of the PHP cache
+=======================
+Leonid Krivoshein <klark@altlinux.org>
+v1.7.2, 2022-02-27: draft
+
+== L2-cache ==
+
+Usually, key fields from the YAML-files.
+
+- *abc.php* -- Used first letters of the Vendor ID's
+- *v??.php* -- Vendors info
+- *p??.php* -- Products info
+- *m??.php* -- Major versions info
+- *s??.php* -- Actual search index
+- *S??.php* -- Old/hidden search index
+- *c??.php* -- Actual compatibility info
+- *C??.php* -- Old/hidden compatibility info
+
+== L1-cache ==
+
+Ready to quick use tables and dictionaries.
+
+- *archdesc.php* -- Hardware platforms descriptions
+- *distids.php*  -- dID/ARCH to Distro Dictionary
+- *distros.php*  -- Unsorted Distributives info
+- *catids.php*   -- Sorted Category to gID Dictionary
+- *catfull.php*  -- Sorted by gID full Categories info
+- *vendids.php*  -- vID to Vendor Index Dictionary
+- *vendors.php*  -- Sorted Vendors Names and URL's
+- *prodids.php*  -- vID:pID to Product Index Dictionary
+- *products.php* -- Sorted Products Names and other info
+- *manuals.php*  -- PDF's CSI-path to MD5 Dictionary
+- *csigit.php*   -- Top-10 CSI git log records
+- *statinfo.php* -- Common statistic counters
+
+== L0-cache ==
+
+- *comptab.php* -- Compatibility Table Cells
+
+== Categories ==
+
+- *statinfo.php:categories* -- Total number of the categories
+- *statinfo.php:softgroups* -- Software categories number and
+                               first hardware category index
+
+Run *bin/catlist.php* script and see output table. The columns:
+
+- *Idx* -- Index of array from catids.php
+- *Sel* -- Index of array from catids.php + 3
+- *Min* -- Group start index
+- *Max* -- Group end index
+- *Id*  -- Short ID from catids.php
+
+.Fragment example:
+[valign="top",options="header,compact,pgwide,unbreakable",cols="1,1,1,1,8"]
+|==========================================================================
+|Idx |Sel |Min |Max |Id
+|6   |9   |6   |8   |ПО/Интернет/
+|7   |10  |7   |7   |ПО/Интернет/Браузеры
+|8   |11  |8   |8   |ПО/Интернет/Конференции
+|==========================================================================
+
+[NOTE]
+Attn: *catfull.php* used same #Idx, ABBR sorted by Short ID!
+
+See also:
+
+- lib/load.php: category2suitable()
+- lib/config.php: FCAT_xxxxIDX constants
+- lib/admin/index/categories.php: reindex_categories()
+
+== abc.php ==
+
+Sorted list of the used only VendorID first letters, for example:
+
+- *0  = '01'* -- equal to "1" first letter
+- *1  = '10'* -- equal to "a" first letter
+- ...
+- *34 = '66'* -- equal to "Э" first letter
+- ...
+
+See also:
+
+- lib/common.php: letter2idx()
+- lib/common.php: idx2letter()
+- lib/common.php: first_letter()
+- lib/admin/index/invalidate.php
+
+== v??.php ==
+
+Vendors info: set of the parsed /Vendors/$vID/vendor.yml.
+
+- *Name* -- Calculated Vendor NAME
+- *URI*  -- Required Vendor WEB-site URI
+- *List* -- Integer List number (0, 1 or 2)
+- *Tags* -- Tags list (optional array or NULL)
+- *Note* -- Footnote for the Pivot Compatibility Table (optional)
+
+See also:
+
+- lib/admin/index/vendor.php: update_vendor_cache()
+
+== p??.php ==
+
+Products info: set of the parsed /Vendors/$vID/$pID/product.yml.
+
+- *Name*     -- Calculated Product NAME
+- *URI*      -- Product description WEB-page or ""
+- *List*     -- Integer List number (0, 1 or 2)
+- *Tags*     -- Tags list (array or NULL)
+- *Category* -- Product category name
+- *Suitable* -- Suitable: "NoExpand", "Desktop", "Server" or "Universal"
+- *Install*  -- Installation manual URL (wg type 2 only) or ""
+- *Versions* -- Rebuilded versions & releases arrays
+- *Footnote* -- Footnote for the Pivot Compatibility Table (optional)
+- *Hidden*   -- Do not show in the pivot table (optional, true only)
+- *InstPDF*  -- Installation guides (PDF's, optional array, wg type 3 & 4)
+
+.Versions example:
+------------------------------------------------------
+'Versions' => array (
+    0 => array (
+        'v4.3' => 'v4',
+    ),
+    1 => array (
+        'v4' => 'v4',
+        'v4.2' => 'v4',
+    ),
+),
+------------------------------------------------------
+
+.InstPDF example:
+------------------------------------------------------
+'InstPDF' => array (
+    0 => '3:8fc4c7ad1f3281a5653ba56e45410c2f',
+    1 => '4:x86_64=60fb303e5b604733409c697c2e343158',
+),
+------------------------------------------------------
+
+See also:
+
+- lib/load.php: rebuildVersions()
+- lib/admin/index/product.php: update_product_cache()
+
+== m??.php ==
+
+Major versions info: set of the parsed YAML-files
+/Vendors/$vID/$pID/VERS/$MAJOR/version.yml. All
+fields is optional.
+
+- *URI*      -- Major version description WEB-page
+- *Hidden*   -- Do not show in the pivot table (true only)
+- *List*     -- Integer List number (0, 1 or 2)
+- *Install*  -- Installation manual URL (wg type 5 only)
+- *Tags*     -- Tags list (array)
+- *Footnote* -- Footnote for the Pivot Compatibility Table (optional)
+- *InstPDF*  -- Installation guide (wg type 6 only)
+
+See also:
+
+- lib/admin/index/version.php: update_version_cache()
+- lib/admin/index/majorver.php: check_majorver_cache()
+
+== c??.php, C??.php ==
+
+Compatibility info records: set of the parsed YAML-files
+/Vendors/$vID/$pID/CI/$cID.yml.
+
+- *vID*    -- Vendor ID
+- *pID*    -- Product ID
+- *cID*    -- Compatibility info record ID, in the form <YYMMDDNN>
+- *start*  -- PHP timestamp of the action start, it similar to cID
+- *finish* -- PHP timestamp of the action finish or NULL
+- *certID* -- Certificate ID, in the form <YYYYMMDD-NN>
+- *type*   -- Record type ("INFO", "NO", "YES" or "CERT")
+- *vers*   -- Rebuilded versions & releases arrays
+- *state*  -- CI record status or NULL (optional)
+- *brief*  -- CI record brief description (optional)
+- *hide*   -- Hide this certificate or compatibily in the table
+- *notes*  -- Footnote for the Pivot Compatibility Table (optional)
+- *pgrp*   -- Product category name
+- *list*   -- Integer List number (0, 1 or 2)
+- *check*  -- Who is check: "We", "They" or "All"
+- *suite*  -- Suitable: "NoExpand", "Desktop", "Server" or "Universal"
+- *dist*   -- DistroID/arch list (array)
+- *prods*  -- Product IDs by Vendor IDs (array or NULL)
+- *tags*   -- Tags list (array or NULL)
+- *arch*   -- Hardware platforms list (array)
+
+See also:
+
+- lib/admin/index/compinfo.php: update_cmpinfo_cache()
+
+== s??.php, S??.php ==
+
+Lower-cased string lists for full-text search (FTS).
+
+== archdesc.php ==
+
+Hardware platforms descriptions.
+
+- *Brief*     -- Brief description of the platform
+- *Complexes* -- Samples URL's (optional array)
+- *Links*     -- Article URL's (optional array)
+- *Caption*   -- Compatibility Matrix Caption
+
+See also:
+
+- lib/admin/index/platforms.php: reindex_platforms()
+
+== distros.php ==
+
+Registered distributive images.
+
+- *0* -- Distro full name for work table
+- *1* -- Brief description or NULL
+- *2* -- Publish date (string)
+- *3* -- Hardware platform name
+- *4* -- Deprecated flag (true or false)
+- *5* -- Compatibility Matrix Column Label or NULL
+
+See also:
+
+- lib/config.php: DIST_xxxxIDX constants
+- lib/admin/index/distros.php: reindex_distros()
+
+== catfull.php ==
+
+- *0* -- Short ID for entry.php form
+- *1* -- Long name for the Pivot Compatibilty Table
+- *2* -- Suitable: "NoExpand", "Desktop", "Server" or "Universal"
+- *3* -- Is this category disabled for the reference? (bool)
+- *4* -- Platform-specific defaults (optional array)
+
+See also:
+
+- lib/load.php: category2suitable()
+- lib/config.php: FCAT_xxxxIDX constants
+- lib/admin/index/categories.php: reindex_categories()
+
+== vendors.php ==
+
+All Vendors, sorted by InQuotes-name.
+
+- *0* -- Displayed name
+- *1* -- Vendor WEB-site URI
+- *2* -- Footnote for the Pivot Compatibility Table (optional)
+
+See also:
+
+- lib/config.php: VEND_xxxxIDX constants
+- lib/admin/index/vendtab.php: reindex_vendors_table()
+
+== products.php ==
+
+All Products, sorted by InQuotes-name.
+
+- *0* -- Index of VendorIds[]
+- *1* -- Index of Categories[]
+- *2* -- Displayed name
+- *3* -- Product WEB-page URL or ""
+- *4* -- Suitable property [1...4]
+- *5* -- Manual in form wg:URL or ""
+- *6* -- Footnote for the Pivot Compatibility Table (optional)
+
+See also:
+
+- lib/config.php: PROD_xxxxIDX constants
+- lib/admin/index/prodtab.php: reindex_products_table()
+
+== comptab.php ==
+
+Cells list for the Pivot Compatibility Table (array of the indexes).
+
+- *0* -- Index of hardcoded $distro_cols[]
+- *1* -- Index of hardcoded $hw_platforms[]
+- *2* -- Index of VendorIds[]
+- *3* -- Index of ProductIds[]
+- *4* -- Major version (string) or ""
+- *5* -- CI-record ID (in YYMMDDNN form)
+- *6* -- CertLink (in YYYYMMDD-NN form) or -1 for compatibility
+- *7* -- Suitable property value [1...4]
+- *8* -- Manual in wg:URL or wg:MD5 form (optional)
+- *9* -- Footnote for the Pivot Compatibility Table (optional)
+
+See also:
+
+- lib/config.php: CTAB_xxxxIDX constants and global arrays
+- lib/admin/index/comptab.php: reindex_compatibility()
+
+== Manual types ==
+
+This is a wg code's (priorities), bigger value is preferred. inst.ref
+can be used instead inst.pdf and points to the common manuals directories.
+
+- *0* -- No manual
+- *1* -- Category default URL (/Categories/.../category.yml:Install)
+- *2* -- Product default URL (/Vendors/$vID/$pID/product.yml:Install)
+- *3* -- Product default PDF (/Vendors/$vID/$pID/ARCH/ALL/inst.pdf)
+- *4* -- Platform-specific PDF (/Vendors/$vID/$pID/ARCH/$ARCH/inst.pdf)
+- *5* -- Product version URL (/Vendors/$vID/$pID/VERS/$MAJOR/version.yml:Install)
+- *6* -- Product version PDF (/Vendors/$vID/$pID/VERS/$MAJOR/inst.pdf)
+
+See also:
+
+- bin/mkcsv.php: $docref in the main loop and output_product()
+
+== Suites ==
+
+- *1* -- Universal
+- *2* -- Desktop
+- *3* -- Server
+- *4* -- NoExpand
+
+See also:
+
+- lib/config.php: SUITES_xxxx constants and $SUITES global array
+- lib/admin/index/prodtab.php: reindex_products_table()
+- lib/admin/index/comptab.php: reindex_compatibility()
+

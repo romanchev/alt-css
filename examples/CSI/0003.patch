@@ -1,0 +1,185 @@
+From 9b09bbb3dac534b1fad278ad481aaa1c7d10d1c1 Mon Sep 17 00:00:00 2001
+From: Leonid Krivoshein <klark@altlinux.org>
+Date: Sun, 21 Nov 2021 03:06:57 +0300
+Subject: [PATCH 03/12] =?UTF-8?q?=D0=94=D0=BE=D0=B1=D0=B0=D0=B2=D0=BB?=
+ =?UTF-8?q?=D0=B5=D0=BD=D1=8B=20=D0=BD=D0=BE=D0=B2=D1=8B=D0=B5=20=D0=B4?=
+ =?UTF-8?q?=D0=B8=D1=81=D1=82=D1=80=D0=B8=D0=B1=D1=83=D1=82=D0=B8=D0=B2?=
+ =?UTF-8?q?=D1=8B?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ Distros/ws9-rpi3.aarch64.yml   | 13 +++++++++++++
+ Distros/ws9-tavolga.mipsel.yml | 13 +++++++++++++
+ Distros/ws9-tegra.aarch64.yml  | 13 +++++++++++++
+ Distros/ws9.aarch64.yml        | 13 +++++++++++++
+ Distros/ws9.e2k.yml            | 13 +++++++++++++
+ Distros/ws9.e2kv4.yml          | 13 +++++++++++++
+ Distros/ws9.i586.yml           | 13 +++++++++++++
+ Distros/ws9.x86_64.yml         | 13 +++++++++++++
+ 8 files changed, 104 insertions(+)
+ create mode 100644 Distros/ws9-rpi3.aarch64.yml
+ create mode 100644 Distros/ws9-tavolga.mipsel.yml
+ create mode 100644 Distros/ws9-tegra.aarch64.yml
+ create mode 100644 Distros/ws9.aarch64.yml
+ create mode 100644 Distros/ws9.e2k.yml
+ create mode 100644 Distros/ws9.e2kv4.yml
+ create mode 100644 Distros/ws9.i586.yml
+ create mode 100644 Distros/ws9.x86_64.yml
+
+diff --git a/Distros/ws9-rpi3.aarch64.yml b/Distros/ws9-rpi3.aarch64.yml
+new file mode 100644
+index 0000000..9a41ec2
+--- /dev/null
++++ b/Distros/ws9-rpi3.aarch64.yml
+@@ -0,0 +1,13 @@
++Name:      Альт Рабочая станция 9
++Brief:     Raspberry Pi 3 rootfs (.tar.xz)
++URI:       https://www.basealt.ru/products/alt-workstation/
++Download:  https://mirror.yandex.ru/altlinux/p9/images/workstation/aarch64/alt-workstation-9.0-aarch64.tar.xz
++Image:     alt-workstation-9.0-aarch64.tar.xz
++MD5sum:    64e46ffb99875b78da76c8e18ba784cf
++#FIXsum:   ?
++PubDate:   23.10.2019
++Build:     v9.0
++CMLabel:   Workstation
++#Hidden:   Yes
++#Tags:     ?#[]
++#Notes:    ?
+diff --git a/Distros/ws9-tavolga.mipsel.yml b/Distros/ws9-tavolga.mipsel.yml
+new file mode 100644
+index 0000000..3e7e857
+--- /dev/null
++++ b/Distros/ws9-tavolga.mipsel.yml
+@@ -0,0 +1,13 @@
++Name:      Альт Рабочая станция 9
++Brief:     Tavolga Terminal rescue rootfs (.recovery.tar)
++URI:       https://www.basealt.ru/products/alt-workstation/
++Download:  https://mirror.yandex.ru/altlinux/p9/images/workstation/mipsel/tavolga-alt-workstation-9.0-mipsel.recovery.tar
++Image:     tavolga-alt-workstation-9.0-mipsel.recovery.tar
++MD5sum:    67a6f13cd8822b8062c4c2f54c46018c
++#FIXsum:   ?
++PubDate:   21.10.2019
++Build:     v9.0
++CMLabel:   Workstation
++#Hidden:   Yes
++#Tags:     ?#[]
++#Notes:    ?
+diff --git a/Distros/ws9-tegra.aarch64.yml b/Distros/ws9-tegra.aarch64.yml
+new file mode 100644
+index 0000000..48271e5
+--- /dev/null
++++ b/Distros/ws9-tegra.aarch64.yml
+@@ -0,0 +1,13 @@
++Name:      Альт Рабочая станция 9
++Brief:     Nvidia Jetson Nano rootfs (.tar.xz)
++URI:       https://www.basealt.ru/products/alt-workstation/
++Download:  https://mirror.yandex.ru/altlinux/p9/images/workstation/aarch64/alt-workstation-tegra-9.0-aarch64.tar.xz
++Image:     alt-workstation-tegra-9.0-aarch64.tar.xz
++MD5sum:    313c81faf1a13226a56aa0f081c3318e
++#FIXsum:   ?
++PubDate:   23.10.2019
++Build:     v9.0
++CMLabel:   Workstation
++#Hidden:   Yes
++#Tags:     ?#[]
++#Notes:    ?
+diff --git a/Distros/ws9.aarch64.yml b/Distros/ws9.aarch64.yml
+new file mode 100644
+index 0000000..f58e14f
+--- /dev/null
++++ b/Distros/ws9.aarch64.yml
+@@ -0,0 +1,13 @@
++Name:      Альт Рабочая станция 9
++Brief:     ARM64 UEFI ISO-9660 (Huawei Kunpeng, ThunderX и другие)
++URI:       https://www.basealt.ru/products/alt-workstation/
++Download:  https://mirror.yandex.ru/altlinux/p9/images/workstation/aarch64/alt-workstation-9.0-aarch64.iso
++Image:     alt-workstation-9.0-aarch64.iso
++MD5sum:    32d4b1f2e56bb33bb38ed63a142397c4
++#FIXsum:   ?
++PubDate:   31.10.2019
++Build:     v9.0
++CMLabel:   Workstation
++#Hidden:   Yes
++#Tags:     ?#[]
++#Notes:    ?
+diff --git a/Distros/ws9.e2k.yml b/Distros/ws9.e2k.yml
+new file mode 100644
+index 0000000..9c0d1ad
+--- /dev/null
++++ b/Distros/ws9.e2k.yml
+@@ -0,0 +1,13 @@
++Name:      Альт Рабочая станция 9
++Brief:     Установочный диск предоставляется под NDA по запросу
++URI:       https://www.basealt.ru/products/alt-workstation/
++#Download: ?
++Image:     alt-workstation-20191022-e2k
++MD5sum:    d2680343f54316dfc6958c4ed2f74122
++#FIXsum:   ?
++PubDate:   22.10.2019
++Build:     v9.0
++CMLabel:   Workstation
++#Hidden:   Yes
++#Tags:     ?#[]
++#Notes:    ?
+diff --git a/Distros/ws9.e2kv4.yml b/Distros/ws9.e2kv4.yml
+new file mode 100644
+index 0000000..35c1817
+--- /dev/null
++++ b/Distros/ws9.e2kv4.yml
+@@ -0,0 +1,13 @@
++Name:      Альт Рабочая станция 9
++Brief:     Установочный диск предоставляется под NDA по запросу
++URI:       https://www.basealt.ru/products/alt-workstation/
++#Download: ?
++Image:     alt-workstation-20191022-e2kv4
++MD5sum:    c02f9da255e927679febcc1f445beb98
++#FIXsum:   ?
++PubDate:   22.10.2019
++Build:     v9.0
++CMLabel:   Workstation
++#Hidden:   Yes
++#Tags:     ?#[]
++#Notes:    ?
+diff --git a/Distros/ws9.i586.yml b/Distros/ws9.i586.yml
+new file mode 100644
+index 0000000..caee9b1
+--- /dev/null
++++ b/Distros/ws9.i586.yml
+@@ -0,0 +1,13 @@
++Name:      Альт Рабочая станция 9
++#Brief:    ?
++URI:       https://www.basealt.ru/products/alt-workstation/
++Download:  https://mirror.yandex.ru/altlinux/p9/images/workstation/i586/alt-workstation-9.0-i586.iso
++Image:     alt-workstation-9.0-i586
++MD5sum:    e75b764b5294466bf5f4973e72262398
++#FIXsum:   ?
++PubDate:   23.10.2019
++Build:     v9.0
++CMLabel:   Workstation
++#Hidden:   Yes
++#Tags:     ?#[]
++#Notes:    ?
+diff --git a/Distros/ws9.x86_64.yml b/Distros/ws9.x86_64.yml
+new file mode 100644
+index 0000000..a1b2b61
+--- /dev/null
++++ b/Distros/ws9.x86_64.yml
+@@ -0,0 +1,13 @@
++Name:      Альт Рабочая станция 9
++#Brief:    ?
++URI:       https://www.basealt.ru/products/alt-workstation/
++Download:  https://mirror.yandex.ru/altlinux/p9/images/workstation/x86_64/alt-workstation-9.0-x86_64.iso
++Image:     alt-workstation-9.0-x86_64
++MD5sum:    970155500035b2f8e43f6dd7d2c424fa
++#FIXsum:   ?
++PubDate:   23.10.2019
++Build:     v9.0
++CMLabel:   Workstation
++#Hidden:   Yes
++#Tags:     ?#[]
++#Notes:    ?
+-- 
+2.24.1
+

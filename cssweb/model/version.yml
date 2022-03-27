@@ -1,0 +1,109 @@
+Model:    version
+Handler:  VersionEdit
+Caption:  КАРТОЧКА ВЕРСИИ ПРОДУКТА
+
+Fields:
+  URI:
+    Caption:   Сайт
+    Type:      Uri
+  Platforms:
+    Caption:   Платформы
+    Type:      ArchList
+  Hidden:
+    Caption:   Не показывать
+    Type:      Select
+    Variants:  [Yes]
+  List:
+    Caption:   Список
+    Type:      Select
+    Variants:  [0, 1, 2]
+    Save:      Integer
+  FSTEC_lic:
+    OldName:   СертФСТЭК
+    Caption:   Лицензии ФСТЭК
+    Type:      DatesList
+  MOD_lic:
+    OldName:   СертМО
+    Caption:   Лицензии МО
+    Type:      DatesList
+  FSC_lic:
+    OldName:   СертФСБ
+    Caption:   Лицензии ФСБ
+    Type:      DatesList
+  MinComReg:
+    OldName:   РеестрМС
+    Caption:   Реестр Минсвязи
+    Type:      Integer
+    View:      Uri
+  Install:
+    OldName:   Установка
+    Caption:   Инструкция
+    Type:      Uri
+  Tags:
+    Caption:   Тэги
+    Type:      Tags
+    Paint:     Yes
+  Brief:
+    OldName:   Примечание
+    Caption:   Описание
+    Type:      Text
+  Footnote:
+    Caption:   Сноска
+    Type:      AutoStr
+  Builds:
+    Caption:   Сборки
+    Type:      Table
+    Extern:    release
+
+View:
+  Title:    "Версия {VERSION} продукта: {PRODUCT}"
+
+  Additional:
+    vID:
+      Type:      Hidden
+      Required:  Yes
+    pID:
+      Type:      Hidden
+      Required:  Yes
+    Version:
+      Caption:   Путь
+      Type:      OneLine
+      Required:  Yes
+      Paint:     Yes
+      Before:    URI
+
+Change:
+  Title:    Изменение карточки версии продукта
+  Success:  Информация о версии продукта сохранена
+  Button:   Сохранить
+
+  Additional:
+    vID:
+      Type:      Hidden
+      Required:  Yes
+    pID:
+      Type:      Hidden
+      Required:  Yes
+    Version:
+      Type:      Hidden
+      Required:  Yes
+
+Create:
+  Title:    Создание карточки версии продукта
+  Success:  Карточка версии продукта создана
+  Button:   Создать
+
+  Additional:
+    vID:
+      Type:      Hidden
+      Required:  Yes
+    pID:
+      Type:      Hidden
+      Required:  Yes
+    Version:
+      Caption:   ID
+      Type:      VerId
+      Required:  Yes
+      Paint:     Yes
+      Before:    URI
+

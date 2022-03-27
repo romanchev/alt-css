@@ -1,0 +1,20 @@
+Model:    category
+Handler:  CategoryEdit
+Caption:  КАТЕГОРИЯ ПРОДУКТОВ
+
+Fields:
+  ABBR:
+    Caption:   Аббревиатура
+    Type:      OneLine
+  Disabled:
+    Caption:   Промежуточный
+    Type:      Select
+    Variants:  [Yes]
+  Suitable:
+    Caption:   Применимость
+    Type:      Select
+    Variants:  [Universal, Desktop, Server, NoExpand]
+  ArchDefs:
+    Caption:   Архитектурные определения
+    Type:      ObjList
+

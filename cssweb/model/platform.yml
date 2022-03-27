@@ -1,0 +1,17 @@
+Model:    platform
+Handler:  PlatformEdit
+Caption:  КАРТОЧКА ПЛАТФОРМЫ
+
+Fields:
+  Brief:
+    Caption:   Описание
+    Type:      AutoStr
+    Bold:      Yes
+  Complexes:
+    OldName:   ВК
+    Caption:   Комплексы
+    Type:      UriList
+  Links:
+    Caption:   Ссылки
+    Type:      UriList
+

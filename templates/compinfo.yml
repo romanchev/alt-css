@@ -1,0 +1,19 @@
+#Tested:    ?#DD.MM.YYYY
+#CertLink:  ?#DD.MM.YYYY/NN
+#Versions:  ?#[]
+Checked:    .#{We|They|All}
+#Issues:    ?#[]
+Distros:
+  - name1/arch1
+#Suitable:  NoExpand
+#IsCompat:  ?#{Yes|No}
+#Hidden:    Yes
+#Brief:     ?
+#Status:    ?
+#Tags:      ?#[]
+#Footnote:  ?
+#Products:
+#Depends:
+#Features:
+#Restricts:
+#NewsLinks:

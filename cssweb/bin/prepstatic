@@ -1,0 +1,64 @@
+#!/bin/sh -efu
+
+# prepstatic on the server-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2020-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+. /etc/css/csi-server.conf
+
+destdir="$1"
+overlay="$overlay/$CSS_USER"
+webdir="$(realpath -- "$0")"
+webdir="${webdir%/bin/prepstatic}"
+
+mkdir -p -- "$destdir"
+cd "$destdir"/
+mkdir certs instr
+ln -snf ../icons ./
+cd "$overlay"/CSI-data/
+
+echo "Copying certificates..."
+find Certs -type f -name '*.jpg' |
+while read -r filename; do
+	cp -Lpf -- "$filename" "$destdir"/certs/
+done
+
+echo "Copying installation manuals..."
+find Install -type f -not -name .placeholder |
+while read -r filename; do
+	pdf="$(head -n1 -- "$filename")"
+	cp -Lpf -- "$pdf" "$destdir/instr/${filename##*/}.pdf"
+done
+
+echo "Creating static HTML content..."
+rm -rf --one-file-system -- "$overlay"/CSI-cache.next
+ln -snf -- "$overlay"/CSI-cache "$overlay"/CSI-cache.next
+cd "$overlay"/CSI-cache/
+for t in P9 P10 8SP; do
+	[ -s "$t.csv" ] ||
+		continue
+	for v in 0 1 2; do
+		cat >query.yml <<-EOF
+		t: $t
+		v: $v
+		e: on
+		EOF
+		php -f "$webdir"/CompTableView.php >"$destdir/$t-view$v.html"
+	done
+	[ ! -s "$t-diff.csv" ] ||
+		php -f "$webdir"/TabDiffView.php >"$destdir/$t-diff.html"
+	sed -i 's,content="noindex,content="index,' "$destdir/$t-view2.html"
+	cp -Lpf -- "$t.csv" "$destdir/"
+	rm -f query.yml
+done
+rm -f -- "$overlay"/CSI-cache.next
+
+chmod -R -- 0775 "$destdir"
+find "$destdir" -type f -exec chmod 664 {} \;
+:> "$HOME"/SUCCESS
+

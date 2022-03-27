@@ -1,0 +1,118 @@
+Model:    compinfo
+Handler:  CompInfoEdit
+Caption:  ИНФОРМАЦИЯ О СОВМЕСТИМОСТИ
+
+Fields:
+  Tested:
+    OldName:   Завершение
+    Caption:   Завершено
+    Type:      Date
+  CertLink:
+    Caption:   Сертификат
+    Type:      CertLink
+  Versions:
+    Caption:   Версии
+    Type:      VersList
+  Checked:
+    Caption:   Проверяли
+    Type:      Select
+    Required:  Yes
+    Variants:  [All, We, They]
+    Default:   All
+  Issues:
+    Caption:   Задачи
+    Type:      Issues
+  Distros:
+    OldName:   Решения
+    Caption:   Дистрибутивы
+    Type:      DistList
+    Required:  Yes
+  IsCompat:
+    Caption:   Совместимы
+    Type:      Select
+    Variants:  [Yes, No]
+  Hidden:
+    Caption:   Не показывать
+    Type:      Select
+    Variants:  [Yes]
+  Brief:
+    OldName:   Примечание
+    Caption:   Описание
+    Type:      AutoStr
+  Status:
+    Caption:   Состояние
+    Type:      AutoStr
+  Suitable:
+    Caption:   Применимость
+    Type:      Select
+    Variants:  [NoExpand]
+  Footnote:
+    Caption:   Сноска
+    Type:      AutoStr
+  Tags:
+    Caption:   Тэги
+    Type:      Tags
+  Products:
+    OldName:   Продукты
+    Caption:   Продукты других партнёров
+    Type:      ObjList
+  Depends:
+    OldName:   Зависимости
+    Caption:   Пакетные зависимости
+    Type:      ObjList
+  Features:
+    OldName:   Особенности
+    Caption:   Ключевые особенности
+    Type:      ObjList
+  Restricts:
+    OldName:   Ограничения
+    Caption:   Существенные ограничения
+    Type:      ObjList
+  NewsLinks:
+    OldName:   Новости
+    Caption:   Об этой совместимости в новостях
+    Type:      NewsLinks
+
+View:
+  Title:    Информация о совместимости
+
+  Additional:
+    Record:
+      Caption:   Запись
+      Type:      OneLine
+      Required:  Yes
+      Bold:      Yes
+      Before:    Tested
+    Path:
+      Caption:   Путь
+      Type:      OneLine
+      Required:  Yes
+      Paint:     Yes
+      Before:    Tested
+    Started:
+      Caption:   Начато
+      Type:      Date
+      Required:  Yes
+      Before:    Tested
+    Product:
+      Caption:   Продукт
+      Type:      OneLine
+      Required:  Yes
+      Before:    Versions
+    Vendor:
+      Caption:   Партнёр
+      Type:      OneLine
+      Required:  Yes
+      Before:    Versions
+    List:
+      Caption:   Список
+      Type:      Select
+      Required:  Yes
+      Variants:  [0, 1, 2]
+      Before:    Versions
+    Platforms:
+      Caption:   Платформы
+      Type:      ArchList
+      Before:    Versions
+      Required:  Yes
+

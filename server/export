@@ -1,0 +1,32 @@
+#!/bin/sh -efu
+
+# export on the server-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+. "$CSS_LIBDIR"/csi-server-common
+
+chk_repo_msg 'draft'
+run cd "$HOME"/CSI-data/
+oldtag="$(last_upload_tag)"
+[ -n "$(run git log --oneline "$oldtag".. |head -n1)" ] ||
+	fatal "commits for export not found."
+message "Creating patch set..."
+workdir="$exchange/CSI-$oldtag"
+run mkdir -p -m777 -- "$workdir"
+setname="$(date '+%Y%m%d-%H%M%S')-$CSS_USER"
+run git format-patch $quiet -n -o "$TMPDIR/$setname" "$oldtag"
+run cd "$TMPDIR"/
+run tar -cpzf "$exchange/.$setname.tgz" -- "$setname"
+run chmod -- 0666 "$exchange/.$setname.tgz"
+run mv -f -- "$exchange/.$setname.tgz" "$workdir/$setname.tgz"
+run rm -rf -- "$TMPDIR/$setname"
+message "Patch set saved as: '$setname'."
+
+debug "script finished, patch set name is '$setname'"
+

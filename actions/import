@@ -1,0 +1,38 @@
+#!/bin/sh -efu
+
+# import on client-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+action_summary() {
+	echo "  import    Imports all or specified patch sets from 'exchange'."
+}
+
+import_list=
+
+action_parse_args() {
+	if [ "${1-}" = help ]; then
+		echo "Usage: $progname $action [<YYYYMMDD-hhmmss-USER>...]"
+		echo "   or: $progname $action --last [<USER>]"
+		echo "   or: $progname $action [--all]"
+		exit 0
+	fi
+	import_list="$*"
+}
+
+do_import() {
+	auto_update --push
+	server_side import $quiet $import_list
+
+	message "Updating 'local' CSI repository from the 'draft'..."
+
+	run cd "$client_repo"/
+	run git pull $quiet $verbose --tags origin master
+	run sync
+}
+

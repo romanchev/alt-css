@@ -1,0 +1,212 @@
+#!/bin/sh -efu
+
+# csi -- client-side interface for update CSI tree.
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+# Defaults
+progname="${0##*/}"
+workdir="$HOME/tmp"
+client_repo="$HOME/CSI"
+cfgdir="$HOME/.config/css"
+config="$cfgdir/$progname.conf"
+sysconf="/etc/css/$progname-client.conf"
+acceldir="@libexecdir@/$progname/accel"
+actionsdir="@libexecdir@/$progname/actions"
+messagedir="@libexecdir@/$progname/messages"
+tplsrcdir="@libexecdir@/$progname/templates"
+templatesdir="Templates/v@VERSION_MAJOR@.@VERSION_MINOR@"
+remote_server=
+remote_user=
+ac_disable=
+verbose=
+quiet=
+
+
+show_help() {
+	local action
+
+	cat <<-EOF
+	Usage: $progname [<options>...] [<action> [<arguments>...]]
+
+	Options:
+	  -q, --quiet     Turn OFF normal messages output.
+	  -v, --verbose   Turn ON debug messages output.
+	  -V, --version   Show this program version.
+	  -h, --help      Show this help message.
+
+	Actions:
+	EOF
+
+	# shellcheck disable=SC2045
+	for action in $(ls "$actionsdir"/); do
+		action_summary() {
+			: # Action has no description by default
+		}
+		. "$actionsdir/$action"
+		action_summary
+	done
+
+	cat <<-EOF
+	  version   Show this program version.
+	  help      Show this help message.
+	EOF
+
+	exit 0
+}
+
+show_version() {
+	printf "%s %s\n" "$progname" "@PACKAGE_VERSION@"
+	exit 0
+}
+
+fatal() {
+	printf "%s fatal: %s\n" "$progname" "$*" >&2
+	logger -t "$progname" -i -p local7.err -- "$*" ||:
+	exit 1
+}
+
+show_usage() {
+	[ -z "$*" ] ||
+		printf "%s fatal: %s\n" "$progname" "$*" >&2
+	printf "Try with '--help' option for more information.\n" >&2
+	exit 1
+}
+
+action_parse_args() {
+	: # Action has no own arguments parser by default
+}
+
+parse_args() {
+	while [ $# -gt 0 ]; do
+		case "$1" in
+		-q|--quiet)
+			quiet=-q
+			;;
+		-v|--verbose)
+			verbose=-v
+			;;
+		-V|--version)
+			show_version
+			;;
+		-h|--help)
+			show_help
+			;;
+		--)	shift
+			break
+			;;
+		-*)	fatal "unrecognized option: '$1'."
+			;;
+		*)	break
+			;;
+		esac
+		shift
+	done
+
+	[ $# -ne 0 ] ||
+		show_usage "not enough arguments."
+	case "$1" in
+	help)	show_help
+		;;
+	version)
+		show_version
+		;;
+	esac
+	[ -s "$actionsdir/$1" ] ||
+		show_usage "unknown action: '$1'."
+	action="$1"; shift
+	. "$actionsdir/$action"
+	action_parse_args "$@"
+}
+
+debug() {
+	[ -z "$verbose" ] ||
+		logger -t "$progname" -i -p local7.info -- "$*" ||:
+}
+
+run() {
+	debug "RUN: $*"
+	"$@" || return $?
+}
+
+message() {
+	[ -n "$quiet" ] ||
+		printf "%s\n" "$*"
+}
+
+chk_repo_msg() {
+	message "Checking '$1' CSI repository..."
+}
+
+check_local_repo() {
+	chk_repo_msg 'local'
+	[ -d "$client_repo" ] && [ -s "$cfgdir"/TAG ] ||
+		fatal "local CSI repository not found, try 'clone' first."
+	run cd "$client_repo"/
+}
+
+server_side() {
+	local remote="$remote_server"
+
+	[ -z "$remote_user" ] ||
+		remote="${remote_user}@${remote}"
+	run ssh "$remote" "$*" || return $?
+}
+
+cirec2human() {
+	# YYMMDDNN => dd.mm.yyyy
+	printf "%s.%s.20%s" "${1:4:2}" "${1:2:2}" "${1:0:2}"
+}
+
+_() {
+	sed -n -E "s,^$1=(.+)$,\1,p" "$messagedir"/S0.msg
+}
+
+auto_update() {
+	local oldtag=
+	check_local_repo
+
+	# Try to make auto commit
+	if [ -n "$(run git status --porcelain=v1 |head -n1)" ]; then
+		[ -z "$ac_disable" ] ||
+			fatal "CSI tree changed and not commited."
+		( . "$actionsdir"/commit
+		  do_commit
+		) || exit $?
+	fi
+
+	# Push changes to remote
+	if [ -z "$ac_disable" ] && [ "${1-}" = '--push' ]; then
+		message "Updating 'draft' CSI repository from the 'local'..."
+		if ! run git push $quiet $verbose origin master; then
+			read -r oldtag <"$cfgdir"/TAG 2>/dev/null && [ -n "$oldtag" ] ||
+				fatal "can't reset 'draft' CSI repository"
+			server_side reset $quiet "$oldtag"
+			run git push $quiet $verbose origin master
+		fi
+	fi
+}
+
+
+# Entry point
+if [ ! -d "$cfgdir" ] && [ ! -s "$sysconf" ]; then
+	mkdir -m700 -- "$cfgdir"
+	cat >"$config" <<-EOF
+	remote_server=$progname
+	remote_user=@USERNAME_PREFIX@${USER:-$LOGNAME}
+	EOF
+fi
+[ ! -s "$sysconf" ] ||
+	. "$sysconf"
+[ ! -s "$config" ] ||
+	. "$config"
+parse_args "$@"
+[ -n "$remote_server" ] ||
+	fatal "configuration not defined."
+do_${action//-/_}
+

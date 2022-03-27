@@ -1,0 +1,33 @@
+Model:    attach
+Handler:  AttachEdit
+Caption:  ВЛОЖЕННЫЙ ДОКУМЕНТ
+
+Fields:
+  Type:
+    Caption:   Тип документа
+    Type:      Select
+    Required:  Yes
+    Variants:  [NDA, Договор, Сертификат, Приложение, Протокол]
+    Default:   Сертификат
+  Number:
+    Caption:   Номер документа
+    Type:      OneLine
+    Save:      Integer
+  Expires:
+    Caption:   Дата окончания
+    Type:      OneLine
+  File:
+    Caption:   Имя файла
+    Type:      OneLine
+    Required:  Yes
+  MD5sum:
+    Caption:   md5sum
+    Type:      OneLine
+    Required:  Yes
+  Depend:
+    Caption:   Основной документ
+    Type:      OneLine
+  Brief:
+    Caption:   Описание
+    Type:      AutoStr
+

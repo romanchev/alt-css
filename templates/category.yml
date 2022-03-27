@@ -1,0 +1,7 @@
+#ABBR:      ?
+#Disabled:  Yes
+#Suitable:  ?#{Universal|Desktop|Server|NoExpand}
+#ArchDefs:
+#  x86_64:
+#    - Install:  ?
+#    - URI:      ?

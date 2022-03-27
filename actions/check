@@ -1,0 +1,32 @@
+#!/bin/sh -efu
+
+# check on client-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+action_summary() {
+	echo "  check     Checks the 'draft' CSI tree and reports errors."
+}
+
+optlist=
+
+action_parse_args() {
+	if [ -n "${1-}" ]; then
+		if [ "$1" = help ] || [ "$1" != "--ignore-mtime" ]; then
+			echo "Usage: $progname $action [--ignore-mtime]"
+			exit 0
+		fi
+		optlist="$1"
+	fi
+}
+
+do_check() {
+	auto_update --push
+	server_side check $quiet $optlist
+}
+

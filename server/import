@@ -1,0 +1,94 @@
+#!/bin/sh -efu
+
+# import on the server-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+. "$CSS_LIBDIR"/csi-server-common
+
+draft_rollback() {
+	message "Restoring 'draft' CSI repository to the last working state..."
+
+	if [ -n "$1" ]; then
+		run cd "$HOME"/CSI-data/ &&
+		run git am $quiet --abort ||:
+		run rm -rf -- "$TMPDIR/$1"
+		set -f
+	fi
+
+	run cd "$HOME"/CSI-data/ &&
+	run git reset --hard $quiet "$lastc" ||:
+
+	fatal "$2"
+}
+
+apply_patchset() {
+	local setname="$1"
+
+	message "Unpacking archive '$setname.tgz'..."
+
+	run cd "$TMPDIR"/ &&
+	run tar -xpf "$workdir/$setname.tgz" --overwrite ||
+		draft_rollback "$setname" "can't unpack the patch set archive."
+
+	message "Applying the patch set '$setname'..."
+
+	set +f
+	run cd "$HOME"/CSI-data/ &&
+	run git am $quiet "$TMPDIR/$setname"/*.patch ||
+		draft_rollback "$setname" "can't apply the patch set '$setname'."
+	run rm -rf -- "$TMPDIR/$setname"
+	set -f
+
+	n=$((1 + $n))
+}
+
+
+# Entry point
+chk_repo_msg 'draft'
+run cd "$HOME"/CSI-data/
+oldtag="$(last_upload_tag)"
+workdir="$exchange/CSI-$oldtag"
+[ -d "$workdir" ] ||
+	fatal "commits for import not found."
+lastc="$(run git log -1 --pretty=format:%H)"
+debug "last commit: $lastc"
+n=0
+
+if [ "${1-}" = '--last' ]; then
+	if [ -n "${2-}" ]; then
+		# shellcheck disable=SC2010
+		patchfile="$(ls "$workdir"/ |grep "$2" |tail -n1)"
+	else
+		patchfile="$(ls "$workdir"/ |tail -n1)"
+	fi
+	apply_patchset "${patchfile%*.tgz}"
+elif [ "$#" != 0 ] && [ "${1-}" != '--all' ]; then
+	while [ "$#" != 0 ]; do
+		[ -s "$workdir/$1.tgz" ] ||
+			draft_rollback '' "patch set '$1' not found."
+		apply_patchset "$1"
+		shift
+	done
+else
+	# shellcheck disable=SC2045
+	for patchfile in $(ls "$workdir"/) _; do
+		[ "$patchfile" != "${patchfile%*.tgz}" ] ||
+			continue
+		[ -s "$workdir/$patchfile" ] ||
+			continue
+		apply_patchset "${patchfile%*.tgz}"
+	done
+fi
+
+message "Finishing on the server-side..."
+
+run sync
+
+debug "script finished, $n patch set(s) was applied"
+

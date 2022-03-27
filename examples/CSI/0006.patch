@@ -1,0 +1,39 @@
+From fc6261ef4a078f0c6a55bd008b91ad981698296a Mon Sep 17 00:00:00 2001
+From: Leonid Krivoshein <klark@altlinux.org>
+Date: Sun, 21 Nov 2021 03:12:53 +0300
+Subject: [PATCH 06/12] =?UTF-8?q?=D0=9D=D0=BE=D0=B2=D0=B0=D1=8F=20=D0=B2?=
+ =?UTF-8?q?=D0=B5=D1=80=D1=81=D0=B8=D1=8F=20=D0=BF=D1=80=D0=BE=D0=B4=D1=83?=
+ =?UTF-8?q?=D0=BA=D1=82=D0=B0=201C:=201=D0=A1=20=D0=91=D1=83=D1=85=D0=B3?=
+ =?UTF-8?q?=D0=B0=D0=BB=D1=82=D0=B5=D1=80=D0=B8=D1=8F=20v3.0?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .../VERS/v3.0/version.yml                          | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+ create mode 100644 Vendors/1C/1С_Бухгалтерия/VERS/v3.0/version.yml
+
+diff --git a/Vendors/1C/1С_Бухгалтерия/VERS/v3.0/version.yml b/Vendors/1C/1С_Бухгалтерия/VERS/v3.0/version.yml
+new file mode 100644
+index 0000000..7475129
+--- /dev/null
++++ b/Vendors/1C/1С_Бухгалтерия/VERS/v3.0/version.yml
+@@ -0,0 +1,14 @@
++#URI:       ?
++#Platforms: ?#[]
++#Hidden:    Yes
++#List:      ?#{2|1|0}
++#FSTEC_lic: ?#[]
++#MOD_lic:   ?#[]
++#FSC_lic:   ?#[]
++#MinComReg: ?
++#Install:   ?
++#Tags:      ?#[]
++#Brief:     ?
++#Footnote:  ?
++Builds:
++  - Name:  3.0.73.50
+-- 
+2.24.1
+

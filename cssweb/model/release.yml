@@ -1,0 +1,69 @@
+Model:    release
+Handler:  ReleaseEdit
+Caption:  КАРТОЧКА ВЫПУСКА ПРОДУКТА
+
+Fields:
+  Name:
+    Caption:   Выпуск
+    Type:      OneLine
+    Required:  Yes
+  Arch:
+    Caption:   Платформы
+    Type:      ArchList
+    Save:      ShortList
+  Brief:
+    Caption:   Описание
+    Type:      Text
+
+View:
+  Title:    "Выпуск {RELEASE} продукта: {PRODUCT}"
+
+  Additional:
+    vID:
+      Type:      Hidden
+      Required:  Yes
+    pID:
+      Type:      Hidden
+      Required:  Yes
+    Release:
+      Caption:   Путь
+      Type:      OneLine
+      Required:  Yes
+      Paint:     Yes
+      Before:    URI
+
+Change:
+  Title:    Изменение карточки выпуска продукта
+  Success:  Информация о выпуске продукта сохранена
+  Button:   Сохранить
+
+  Additional:
+    vID:
+      Type:      Hidden
+      Required:  Yes
+    pID:
+      Type:      Hidden
+      Required:  Yes
+    Release:
+      Type:      Hidden
+      Required:  Yes
+
+Create:
+  Title:    Создание карточки выпуска продукта
+  Success:  Карточка выпуска продукта создана
+  Button:   Создать
+
+  Additional:
+    vID:
+      Type:      Hidden
+      Required:  Yes
+    pID:
+      Type:      Hidden
+      Required:  Yes
+    Release:
+      Caption:   ID
+      Type:      VerId
+      Required:  Yes
+      Paint:     Yes
+      Before:    URI
+

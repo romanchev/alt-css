@@ -1,0 +1,145 @@
+From f5ce1cc1809eba32de3a4e4ef8be0d3751abf186 Mon Sep 17 00:00:00 2001
+From: Leonid Krivoshein <klark@altlinux.org>
+Date: Sun, 21 Nov 2021 03:16:27 +0300
+Subject: [PATCH 12/12] =?UTF-8?q?=D0=9D=D0=BE=D0=B2=D1=8B=D0=B9=20=D1=81?=
+ =?UTF-8?q?=D0=B5=D1=80=D1=82=D0=B8=D1=84=D0=B8=D0=BA=D0=B0=D1=82=20c=201?=
+ =?UTF-8?q?=D0=A1=20=D0=9F=D1=80=D0=B5=D0=B4=D0=BF=D1=80=D0=B8=D1=8F=D1=82?=
+ =?UTF-8?q?=D0=B8=D0=B5=20=D0=BE=D1=82=2012.02.2021?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ Legal/2021/02/12-01/cert.jpg                  | Bin 0 -> 9252 bytes
+ Legal/2021/02/12-01/files.yml                 |   8 ++++++++
+ Legal/2021/certs.d/02-12-01.lst               |   1 +
+ .../CI/20122902.yml                           |  19 ++++++++++++++++++
+ 4 files changed, 28 insertions(+)
+ create mode 100644 Legal/2021/02/12-01/cert.jpg
+ create mode 100644 Legal/2021/02/12-01/files.yml
+ create mode 100644 Legal/2021/certs.d/02-12-01.lst
+ create mode 100644 Vendors/1C/1С_Предприятие/CI/20122902.yml
+
+diff --git a/Legal/2021/02/12-01/cert.jpg b/Legal/2021/02/12-01/cert.jpg
+new file mode 100644
+index 0000000000000000000000000000000000000000..16b68e58815d23b1dbb077045d37ceaa3d6fb5c8
+GIT binary patch
+literal 9252
+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
+
+literal 0
+HcmV?d00001
+
+diff --git a/Legal/2021/02/12-01/files.yml b/Legal/2021/02/12-01/files.yml
+new file mode 100644
+index 0000000..fff0f57
+--- /dev/null
++++ b/Legal/2021/02/12-01/files.yml
+@@ -0,0 +1,8 @@
++#Notes:      ?
++Vendors:
++  - 1C
++Files:
++  - Type:    Сертификат
++    File:    cert.jpg
++    MD5sum:  d81c8daf5d5e2ac482071d220a112019
++    Number:  5
+diff --git a/Legal/2021/certs.d/02-12-01.lst b/Legal/2021/certs.d/02-12-01.lst
+new file mode 100644
+index 0000000..c9d74b6
+--- /dev/null
++++ b/Legal/2021/certs.d/02-12-01.lst
+@@ -0,0 +1 @@
++5	02/12-01	1C
+diff --git a/Vendors/1C/1С_Предприятие/CI/20122902.yml b/Vendors/1C/1С_Предприятие/CI/20122902.yml
+new file mode 100644
+index 0000000..4fd625f
+--- /dev/null
++++ b/Vendors/1C/1С_Предприятие/CI/20122902.yml
+@@ -0,0 +1,19 @@
++#Tested:    ?#DD.MM.YYYY
++CertLink:   12.02.2021/01
++Versions:   [8.3.18.1208]
++Checked:    We
++Issues:     [26835]
++Distros:
++  - ws91/x86_64
++#Suitable:  NoExpand
++IsCompat:   Yes
++#Hidden:    Yes
++Brief:      cкорректирована методика установки
++Status:     >
++  Сертификаты партнёры не оформляют. Информация о поддержке указана на
++  сайте. Оформлен односторонний сертификат.
++#Tags:      ?#[]
++#Footnote:  ?
++#Products:
++#Depends:
++#Features:
++#Restricts:
++#NewsLinks:
+-- 
+2.24.1
+

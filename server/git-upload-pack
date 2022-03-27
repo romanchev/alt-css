@@ -1,0 +1,17 @@
+#!/bin/sh -efu
+
+# git-upload-pack on the server-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+. "$CSS_LIBDIR"/csi-server-common
+
+run git-upload-pack "$HOME/CSI-data"
+
+debug "script finished"
+

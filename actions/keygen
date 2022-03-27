@@ -1,0 +1,31 @@
+#!/bin/sh -efu
+
+# keygen on client-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021, Leonid Krivoshein <klark@altlinux.org>
+#
+
+action_summary() {
+	echo "  keygen    Generates SSH-key for interaction with the server."
+}
+
+do_keygen() {
+	keyfile="$cfgdir/css.key"
+
+	[ ! -s "$keyfile" ] ||
+		fatal "SSH-key already exists: $keyfile"
+	run ssh-keygen -b 4096 -t ed25519 -N '' -f "$keyfile"
+
+	cat <<-EOF
+	Don't forget add to ~/.ssh/config:
+
+	IdentityFile $keyfile
+
+	And send "$keyfile.pub" to CSS administrator.
+	EOF
+}
+

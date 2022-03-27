@@ -1,0 +1,55 @@
+From 1e5d81d05a67ed9b8830007ca8e73d09c470f849 Mon Sep 17 00:00:00 2001
+From: Leonid Krivoshein <klark@altlinux.org>
+Date: Sun, 21 Nov 2021 03:05:22 +0300
+Subject: [PATCH 02/12] =?UTF-8?q?=D0=94=D0=BE=D0=B1=D0=B0=D0=B2=D0=BB?=
+ =?UTF-8?q?=D0=B5=D0=BD=D1=8B=20=D0=BD=D0=BE=D0=B2=D1=8B=D0=B5=20=D0=B0?=
+ =?UTF-8?q?=D0=BF=D0=BF=D0=B0=D1=80=D0=B0=D1=82=D0=BD=D1=8B=D0=B5=20=D0=BF?=
+ =?UTF-8?q?=D0=BB=D0=B0=D1=82=D1=84=D0=BE=D1=80=D0=BC=D1=8B?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ Platforms/aarch64.yml | 6 ++++++
+ Platforms/i586.yml    | 4 ++++
+ Platforms/x86_64.yml  | 4 ++++
+ 3 files changed, 14 insertions(+)
+ create mode 100644 Platforms/aarch64.yml
+ create mode 100644 Platforms/i586.yml
+ create mode 100644 Platforms/x86_64.yml
+
+diff --git a/Platforms/aarch64.yml b/Platforms/aarch64.yml
+new file mode 100644
+index 0000000..cf8a7d4
+--- /dev/null
++++ b/Platforms/aarch64.yml
+@@ -0,0 +1,6 @@
++Brief:      Основная архитектура
++Complexes:
++  - https://www.altlinux.org/Ports/aarch64/Raspberry_Pi4
++  - https://www.altlinux.org/Jetson-Nano
++Links:
++  - https://www.altlinux.org/Ports/aarch64
+diff --git a/Platforms/i586.yml b/Platforms/i586.yml
+new file mode 100644
+index 0000000..db2fdc9
+--- /dev/null
++++ b/Platforms/i586.yml
+@@ -0,0 +1,4 @@
++Brief:      Основная (устаревающая) архитектура
++#Complexes:
++Links:
++  - https://ru.wikipedia.org/wiki/X86
+diff --git a/Platforms/x86_64.yml b/Platforms/x86_64.yml
+new file mode 100644
+index 0000000..b99673e
+--- /dev/null
++++ b/Platforms/x86_64.yml
+@@ -0,0 +1,4 @@
++Brief:      Основная архитектура
++#Complexes:
++Links:
++  - https://ru.wikipedia.org/wiki/X86
+-- 
+2.24.1
+

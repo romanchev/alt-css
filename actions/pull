@@ -1,0 +1,46 @@
+#!/bin/sh -efu
+
+# pull on client-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+action_summary() {
+	echo "  pull      Updates the CSI tree from the 'upstream' repository."
+}
+
+do_pull() {
+	local newtag oldtag=
+	local msg="can't update 'local' CSI repository."
+
+	check_local_repo
+	newtag="$(server_side describe)"
+	read -r oldtag <"$cfgdir"/TAG 2>/dev/null ||:
+	[ -n "$oldtag" ] && [ -n "$newtag" ] ||
+		fatal "$msg"
+	[ "$oldtag" != "$newtag" ] ||
+		fatal "local CSI repository already up to date."
+
+	# Continue on the server-side
+	server_side pull $quiet
+
+	message "Updating 'local' CSI repository from the 'draft'..."
+
+	run cd "$client_repo"/
+	run git reset --hard $quiet "$oldtag"
+	run git pull $quiet $verbose --tags origin master
+	oldtag="$(run git describe)"
+	[ "$oldtag" = "$newtag" ] ||
+		fatal "$msg"
+
+	message "Fininshing on client-side..."
+
+	run sync
+	printf "%s\n" "$newtag" >"$cfgdir"/TAG
+	message "Last upload tag name is '$newtag'."
+}
+

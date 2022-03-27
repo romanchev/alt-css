@@ -1,0 +1,129 @@
+From b6177814e9334014b9e6b3849272bf4bd33b3439 Mon Sep 17 00:00:00 2001
+From: Leonid Krivoshein <klark@altlinux.org>
+Date: Sun, 21 Nov 2021 03:04:28 +0300
+Subject: [PATCH 01/12] =?UTF-8?q?=D0=94=D0=BE=D0=B1=D0=B0=D0=B2=D0=BB?=
+ =?UTF-8?q?=D0=B5=D0=BD=D1=8B=20=D0=BD=D0=BE=D0=B2=D1=8B=D0=B5=20=D0=BA?=
+ =?UTF-8?q?=D0=B0=D1=82=D0=B5=D0=B3=D0=BE=D1=80=D0=B8=D0=B8=20=D0=BF=D1=80?=
+ =?UTF-8?q?=D0=BE=D0=B4=D1=83=D0=BA=D1=82=D0=BE=D0=B2?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ Categories/Компьютеры/.placeholder                  | 0
+ Categories/Компьютеры/category.yml                  | 4 ++++
+ .../Компьютеры/Настольные/.placeholder    | 0
+ Categories/Компьютеры/Ноутбуки/.placeholder | 0
+ Categories/ПО/.placeholder                                  | 0
+ Categories/ПО/category.yml                                  | 4 ++++
+ Categories/ПО/АИСС/.placeholder                         | 0
+ Categories/ПО/АИСС/category.yml                         | 4 ++++
+ Categories/ПО/АСУ/.placeholder                           | 0
+ Categories/ПО/АСУ/category.yml                           | 4 ++++
+ Categories/ПО/ГИС/.placeholder                           | 0
+ Categories/ПО/ГИС/category.yml                           | 4 ++++
+ Categories/ПО/СУБД/.placeholder                         | 0
+ Categories/ПО/СУБД/category.yml                         | 4 ++++
+ 14 files changed, 24 insertions(+)
+ create mode 100644 Categories/Компьютеры/.placeholder
+ create mode 100644 Categories/Компьютеры/category.yml
+ create mode 100644 Categories/Компьютеры/Настольные/.placeholder
+ create mode 100644 Categories/Компьютеры/Ноутбуки/.placeholder
+ create mode 100644 Categories/ПО/.placeholder
+ create mode 100644 Categories/ПО/category.yml
+ create mode 100644 Categories/ПО/АИСС/.placeholder
+ create mode 100644 Categories/ПО/АИСС/category.yml
+ create mode 100644 Categories/ПО/АСУ/.placeholder
+ create mode 100644 Categories/ПО/АСУ/category.yml
+ create mode 100644 Categories/ПО/ГИС/.placeholder
+ create mode 100644 Categories/ПО/ГИС/category.yml
+ create mode 100644 Categories/ПО/СУБД/.placeholder
+ create mode 100644 Categories/ПО/СУБД/category.yml
+
+diff --git a/Categories/Компьютеры/.placeholder b/Categories/Компьютеры/.placeholder
+new file mode 100644
+index 0000000..e69de29
+diff --git a/Categories/Компьютеры/category.yml b/Categories/Компьютеры/category.yml
+new file mode 100644
+index 0000000..5f55f5a
+--- /dev/null
++++ b/Categories/Компьютеры/category.yml
+@@ -0,0 +1,4 @@
++#ABBR:     ?
++Disabled:  Yes
++#Suitable: ?#{Universal|Desktop|Server|NoExpand}
++#ArchDefs:
+diff --git a/Categories/Компьютеры/Настольные/.placeholder b/Categories/Компьютеры/Настольные/.placeholder
+new file mode 100644
+index 0000000..e69de29
+diff --git a/Categories/Компьютеры/Ноутбуки/.placeholder b/Categories/Компьютеры/Ноутбуки/.placeholder
+new file mode 100644
+index 0000000..e69de29
+diff --git a/Categories/ПО/.placeholder b/Categories/ПО/.placeholder
+new file mode 100644
+index 0000000..e69de29
+diff --git a/Categories/ПО/category.yml b/Categories/ПО/category.yml
+new file mode 100644
+index 0000000..e7d7561
+--- /dev/null
++++ b/Categories/ПО/category.yml
+@@ -0,0 +1,4 @@
++ABBR:      Программное обеспечение
++Disabled:  Yes
++Suitable:  Universal
++#ArchDefs:
+diff --git a/Categories/ПО/АИСС/.placeholder b/Categories/ПО/АИСС/.placeholder
+new file mode 100644
+index 0000000..e69de29
+diff --git a/Categories/ПО/АИСС/category.yml b/Categories/ПО/АИСС/category.yml
+new file mode 100644
+index 0000000..fc033cc
+--- /dev/null
++++ b/Categories/ПО/АИСС/category.yml
+@@ -0,0 +1,4 @@
++ABBR:      Автоматизированные информационно-справочные системы
++#Disabled: Yes
++#Suitable: ?#{Universal|Desktop|Server|NoExpand}
++#ArchDefs:
+diff --git a/Categories/ПО/АСУ/.placeholder b/Categories/ПО/АСУ/.placeholder
+new file mode 100644
+index 0000000..e69de29
+diff --git a/Categories/ПО/АСУ/category.yml b/Categories/ПО/АСУ/category.yml
+new file mode 100644
+index 0000000..bc4cf12
+--- /dev/null
++++ b/Categories/ПО/АСУ/category.yml
+@@ -0,0 +1,4 @@
++ABBR:      Автоматизированные системы управления
++#Disabled: Yes
++#Suitable: ?#{Universal|Desktop|Server|NoExpand}
++#ArchDefs:
+diff --git a/Categories/ПО/ГИС/.placeholder b/Categories/ПО/ГИС/.placeholder
+new file mode 100644
+index 0000000..e69de29
+diff --git a/Categories/ПО/ГИС/category.yml b/Categories/ПО/ГИС/category.yml
+new file mode 100644
+index 0000000..905a862
+--- /dev/null
++++ b/Categories/ПО/ГИС/category.yml
+@@ -0,0 +1,4 @@
++ABBR:      Государственные информационные системы
++#Disabled: Yes
++#Suitable: ?#{Universal|Desktop|Server|NoExpand}
++#ArchDefs:
+diff --git a/Categories/ПО/СУБД/.placeholder b/Categories/ПО/СУБД/.placeholder
+new file mode 100644
+index 0000000..e69de29
+diff --git a/Categories/ПО/СУБД/category.yml b/Categories/ПО/СУБД/category.yml
+new file mode 100644
+index 0000000..e8b2b45
+--- /dev/null
++++ b/Categories/ПО/СУБД/category.yml
+@@ -0,0 +1,4 @@
++ABBR:      Системы управления базами данных
++#Disabled: Yes
++#Suitable: ?#{Universal|Desktop|Server|NoExpand}
++#ArchDefs:
+-- 
+2.24.1
+

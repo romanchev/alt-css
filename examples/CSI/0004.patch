@@ -1,0 +1,60 @@
+From 2d7b7d85e9b78ad6961400acaa5f544768d1411d Mon Sep 17 00:00:00 2001
+From: Leonid Krivoshein <klark@altlinux.org>
+Date: Sun, 21 Nov 2021 03:11:01 +0300
+Subject: [PATCH 04/12] =?UTF-8?q?=D0=9D=D0=BE=D0=B2=D1=8B=D0=B9=20=D0=BF?=
+ =?UTF-8?q?=D0=B0=D1=80=D1=82=D0=BD=D1=91=D1=80:=201C?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ Vendors/1C/contacts.yml | 14 ++++++++++++++
+ Vendors/1C/vendor.yml   | 15 +++++++++++++++
+ 2 files changed, 29 insertions(+)
+ create mode 100644 Vendors/1C/contacts.yml
+ create mode 100644 Vendors/1C/vendor.yml
+
+diff --git a/Vendors/1C/contacts.yml b/Vendors/1C/contacts.yml
+new file mode 100644
+index 0000000..ead643b
+--- /dev/null
++++ b/Vendors/1C/contacts.yml
+@@ -0,0 +1,14 @@
++- Name:     Именон Отцовович Контактовский
++  Pos:      Техподдержка
++  Email:    ozhs@1c.ru
++  #Intern:  ?
++  #Work:    ?
++  Mobile:   +7 (322) 223-32-23
++  #Notes:   ?
++- Name:     1 линия консультаций
++  Pos:      Техподдержка
++  Email:    hline@1c.ru
++  #Intern:  ?
++  Work:     +7 (495) 956-11-81
++  #Mobile:  ?
++  #Notes:   ?
+diff --git a/Vendors/1C/vendor.yml b/Vendors/1C/vendor.yml
+new file mode 100644
+index 0000000..ab5251a
+--- /dev/null
++++ b/Vendors/1C/vendor.yml
+@@ -0,0 +1,15 @@
++Name:       Фирма «1C»
++Post:       123056, Россия, Москва, а/я 64
++#Legal:     ?
++Phones:     +7 (495) 688-10-01
++URI:        https://1c.ru/
++#Extern:    Yes
++List:       0
++#Tags:      ?#[]
++Brief:      >
++  Фирма «1C» основана в 1991 г. и специализируется на разработке,
++  дистрибьюции, издании и поддержке компьютерных программ делового и
++  домашнего назначения. Из собственных разработок фирмы «1C» наиболее
++  известны программы системы «1С:Предприятие», а также продукты для домашних
++  компьютеров и образовательной сферы.
++#Footnote:  ?
+-- 
+2.24.1
+

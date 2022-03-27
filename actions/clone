@@ -1,0 +1,46 @@
+#!/bin/sh -efu
+
+# clone on client-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+action_summary() {
+	echo "  clone     Clones CSI tree from the 'upstream' repository."
+}
+
+do_clone() {
+	chk_repo_msg 'local'
+	[ ! -d "$client_repo" ] ||
+		fatal "local CSI repository already exists, try 'pull' instead."
+	run rm -f -- "$cfgdir"/TAG
+
+	# Continue on the server-side
+	server_side clone $quiet
+
+	local newtag rc=0
+	local remote="$remote_server:CSI-data"
+
+	[ -z "$remote_user" ] ||
+		remote="${remote_user}@${remote}"
+	message "Cloning CSI repository from the 'draft' to 'local'..."
+	run git clone $quiet $verbose -- "$remote" "$client_repo" || rc=$?
+
+	if [ "$rc" != 0 ]; then
+		run rm -rf --one-file-system -- "$client_repo"
+		exit $rc
+	fi
+
+	message "Fininshing on client-side..."
+
+	run sync
+	run cd "$client_repo"/
+	newtag="$(run git describe)"
+	printf "%s\n" "$newtag" >"$cfgdir"/TAG
+	message "Last upload tag name is '$newtag'."
+}
+

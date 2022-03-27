@@ -1,0 +1,304 @@
+#!/bin/sh -efu
+
+# add object on client-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021, Leonid Krivoshein <klark@altlinux.org>
+#
+
+action_summary() {
+	echo "  add       Adds the specified object to the 'local' CSI tree."
+}
+
+require_accel() {
+	short=
+	entity=
+	ids=
+	optional=
+	templates=
+	checkfiles=
+	before_edit=
+	after_edit=
+	placeholders=
+	copyto=
+
+	. "$acceldir/$1"
+
+	subject="$(_ "$1")"
+}
+
+action_help() {
+	local f x args
+
+	echo "Usage: $progname $action <object> <arguments>"
+	echo
+	echo "Objects and their corresponding arguments:"
+
+	for f in $(ls "$acceldir"/) _; do
+		[ -s "$acceldir/$f" ] ||
+			continue
+		require_accel "$f"
+
+		args=
+
+		if [ -n "$ids" ]; then
+			for x in $ids; do
+				args="$args <$x>"
+			done
+		fi
+		if [ -n "$optional" ]; then
+			for x in $optional; do
+				args="$args [<$x>]"
+			done
+		fi
+
+		printf "  - %s: %s%s\n" "$f" "$short" "$args"
+	done
+
+	exit 0
+}
+
+wdir=
+edir=
+accel=
+
+cleanup_after_add() {
+	local rc=$?
+
+	trap - EXIT
+	[ -z "$edir" ] ||
+		run rm -rf --one-file-system -- "$edir"
+	[ -z "$wdir" ] ||
+		run rm -rf --one-file-system -- "$wdir"
+	exit $rc
+}
+
+action_parse_args() {
+	local x sdir cdir len=
+
+	[ -n "${1-}" ] && [ "${1-}" != help ] ||
+		action_help
+	accel="$1"
+	shift
+
+	if [ ! -s "$acceldir/$accel" ]; then
+		for cdir in $(ls "$acceldir"/) _; do
+			[ -s "$acceldir/$cdir" ] ||
+				continue
+			require_accel "$cdir"
+
+			if [ "$short" = "$accel" ]; then
+				accel="$cdir"
+				len=1
+				break
+			fi
+		done
+
+		if [ -z "$len" ]; then
+			fatal "unknown object: '$accel', use 'help' instead."
+		fi
+	fi
+
+	require_accel "$accel"
+
+	[ -n "$entity" ] && [ -n "$ids" ] && [ -n "$templates" ] ||
+		fatal "internal bug: invalid object"
+	cdir="$(realpath -- "$client_repo")"
+	len=$(( ${#cdir} + 1 ))
+	sdir="$(realpath .)"
+
+	if [ "${sdir:0:$len}" != "$cdir/" ]; then
+		sdir=
+	else
+		sdir="${sdir:$len}"
+		len=$(( ${#entity} + 1 ))
+
+		if [ "${sdir:0:$len}" != "$entity/" ]; then
+			sdir=
+		else
+			sdir="${sdir:$len}"
+			debug "start directory: '$sdir'"
+		fi
+	fi
+
+	run mkdir -p -- "$workdir"
+	trap cleanup_after_add EXIT
+	wdir="$(run mktemp -d -- "$workdir/$progname-XXXXXXX.tmp")"
+
+	for x in $ids; do
+		if [ -z "$sdir" ]; then
+			:
+		elif [ "$x" = CATEGORY ]; then
+			[ -n "${1-}" ] ||
+				fatal "missing argument: '$x'"
+			printf "%s/%s\n" "$sdir" "$1" >"$wdir/$x"
+			sdir=
+			shift
+			continue
+
+		elif [ "$x" = vID ]; then
+			cdir="${sdir%%/*}"
+			len=$(( ${#cdir} + 1 ))
+			sdir="${sdir:$len}"
+			printf "%s\n" "$cdir" >"$wdir/$x"
+			continue
+
+		elif [ "$x" = pID ]; then
+			[ -s "$wdir/vID" ] ||
+				fatal "internal bug: invalid ids[] sequence."
+			printf "%s\n" "${sdir%%/*}" >"$wdir/$x"
+			sdir=
+			continue
+		fi
+
+		[ -n "${1-}" ] ||
+			fatal "missing argument: '$x'"
+		printf "%s\n" "$1" >"$wdir/$x"
+		sdir=
+		shift
+	done
+
+	if [ -n "$optional" ]; then
+		for x in $optional; do
+			[ "$#" != 0 ] ||
+				break
+			printf "%s\n" "$1" >"$wdir/$x"
+			shift
+		done
+	fi
+}
+
+subst() {
+	local key value s="$2"
+
+	for key in $(ls -- "$wdir"/) _; do
+		[ -s "$wdir/$key" ] ||
+			continue
+		read -r value <"$wdir/$key"
+		s="$(echo "$s" |sed -E "s,@${key}@,${value},g")"
+	done
+
+	eval "$1=\"$s\""
+}
+
+fsubst() {
+	local key value
+
+	for key in $(ls -- "$wdir"/) _; do
+		[ -s "$wdir/$key" ] ||
+			continue
+		read -r value <"$wdir/$key"
+		sed -iE "s,@${key}@,${value},g" "$1"
+	done
+}
+
+do_add() {
+	local x f str
+	local tpl tgt=
+	local counter=0
+
+	auto_update
+	require_accel "$accel"
+	run cd "$client_repo"/
+
+	# Debug parsed arguments
+	if [ -n "$verbose" ]; then
+		for x in $(ls -- "$wdir"/) _; do
+			[ -s "$wdir/$x" ] ||
+				continue
+			read -r str <"$wdir/$x"
+			debug "IN: $x='$str'"
+		done
+	fi
+
+	# Check files
+	if [ -n "$checkfiles" ]; then
+		for x in $checkfiles; do
+			subst str "$x"
+			[ -f "$entity/$str" ] ||
+				fatal "file not found: '$str'."
+		done
+	fi
+
+	# Target directory
+	[ -z "$copyto" ] ||
+		subst tgt "$copyto"
+	tgt="${entity}${tgt:+/$tgt}"
+
+	# Temporary directory for edited files
+	edir="$(run mktemp -d -- "$workdir/$progname-XXXXXXX.tmp")"
+
+	# Check and copy templates
+	for tpl in $templates; do
+		subst str "${tpl##*=}"
+		f="$client_repo/$templatesdir/${tpl%=*}"
+		run cp -Lf -- "$f" "$edir"/
+		f="$edir/${tpl%=*}"
+		fsubst "$f"
+
+		if [ -n "$before_edit" ]; then
+			for x in $before_edit; do
+				helper_$x "$f" "$tgt/$str" >"$wdir/$x"
+			done
+		fi
+
+		[ ! -e "$tgt/$str" ] ||
+			fatal "file already exists: '$tgt/$str'."
+	done
+
+	# Create target directory
+	if [ -n "$copyto" ]; then
+		run mkdir -p -- "$tgt"
+		run git add -- "$tgt"
+
+		# Create placeholders
+		if [ -n "$placeholders" ]; then
+			f="$tgt"
+
+			while :; do
+				if [ ! -e "$f"/.placeholder ]; then
+					run touch -- "$f"/.placeholder
+					run chmod -- 0644 "$f"/.placeholder
+					run git add -- "$f"/.placeholder
+					counter=$((1 + $counter))
+				fi
+				x="${f%/*}"
+				[ "$x" != "$f" ] ||
+					break
+				f="$x"
+			done
+		fi
+	fi
+
+	# Edit and save templates
+	for tpl in $templates; do
+		f="$edir/${tpl%=*}"
+		"${EDITOR:-vim}" "$f"
+		subst str "${tpl##*=}"
+
+		if [ -n "$after_edit" ]; then
+			for x in $after_edit; do
+				helper_$x "$f" "$tgt/$str" >"$wdir/$x"
+			done
+		fi
+
+		if [ -s "$f" ]; then
+			fsubst "$f"
+			run cp -Lf -- "$f" "$tgt/$str"
+			run git add -- "$tgt/$str"
+			counter=$((1 + $counter))
+		fi
+	done
+
+	# Commit changes
+	if [ -z "$subject" ] || [ "$counter" = 0 ]; then
+		run git status
+	else
+		subst str "$subject"
+		run git commit -a -m "${str//_/ }"
+	fi
+}
+

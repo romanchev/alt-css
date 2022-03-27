@@ -1,0 +1,434 @@
+#!/bin/sh -efu
+
+# commit on client-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+action_summary() {
+	echo "  commit    Commits last changes to 'local' CSI repository."
+}
+
+status=
+subject=
+EOL="
+"
+
+action_parse_args() {
+	if [ "${1-}" = help ] || [ "$#" -gt 1 ]; then
+		echo "Usage: $progname $action [<subject>]"
+		exit 0
+	fi
+	subject="${1-}"
+}
+
+cleanup_after_commit() {
+	local rc=$?
+
+	trap - EXIT
+	[ -z "$status" ] ||
+		run rm -f -- "$status"
+	exit $rc
+}
+
+category_handler() {
+	local d fmt="$1"
+
+	d="${2##*/}"
+	[ "$d" = .placeholder ] || [ "$d" = category.yml ] ||
+		return 0
+	d="${2%/*}"
+	# shellcheck disable=SC2059
+	subject="$(printf "$fmt" "${d//_/ }")"
+}
+
+incompat_handler() {
+	local cID fmt="$1"
+	local product="$2"
+	local cirecid="$3"
+
+	[ -s "${p_1-}" ] ||
+		return 0
+	grep -qsE -- '^IsCompat\:\s+No$' "$p_1" ||
+		return 0
+	[ "${#cirecid}" = 8 ] ||
+		fatal "invalid cID '$cirecid' in the path '$p_1'."
+	cID="$(sed -n -E 's/^Tested\:\s+([^\s]+)$/\1/p' "$p_1")"
+	[ "${#cID}" = 10 ] ||
+		cID="$(cirec2human "$cirecid")"
+	# shellcheck disable=SC2059
+	subject="$(printf "$fmt" "${product//_/ }" "$cID")"
+}
+
+compatible_handler() {
+	local cID fmt="$1"
+	local product="$2"
+	local cirecid="$3"
+
+	[ -s "${p_1-}" ] ||
+		return 0
+	grep -qsE -- '^IsCompat\:\s+Yes$' "$p_1" ||
+		return 0
+	[ "${#cirecid}" = 8 ] ||
+		fatal "invalid cID '$cirecid' in the path '$p_1'."
+	cID="$(sed -n -E 's/^Tested\:\s+([^\s]+)$/\1/p' "$p_1")"
+	[ "${#cID}" = 10 ] ||
+		cID="$(cirec2human "$cirecid")"
+	# shellcheck disable=SC2059
+	subject="$(printf "$fmt" "${product//_/ }" "$cID")"
+}
+
+testing_handler() {
+	local cID fmt="$1"
+	local product="$2"
+	local cirecid="$3"
+
+	[ -s "${p_1-}" ] ||
+		return 0
+	grep -qsE -- '^IsCompat\:' "$p_1" &&
+		return 0 ||:
+	[ "${#cirecid}" = 8 ] ||
+		fatal "invalid cID '$cirecid' in the path '$p_1'."
+	cID="$(sed -n -E 's/^Tested\:\s+([^\s]+)$/\1/p' "$p_1")"
+	[ "${#cID}" = 10 ] ||
+		cID="$(cirec2human "$cirecid")"
+	# shellcheck disable=SC2059
+	subject="$(printf "$fmt" "${product//_/ }" "$cID")"
+}
+
+newcertref_handler() {
+	local fmt="$1"
+	local product="$3"
+	local cirecid="$4"
+
+	[ -s "${p_1-}" ] ||
+		return 0
+	grep -qsE -- '^CertLink\:' "$p_1" ||
+		return 0
+	[ "${#cirecid}" = 8 ] ||
+		fatal "invalid cID '$cirecid' in the path '$p_1'."
+	cirecid="$(sed -n -E 's/^CertLink\:\s+([^\s]+)$/\1/p' "$p_1")"
+	[ "${#cirecid}" = 13 ] ||
+		fatal "invalid CertLink '$cirecid' in '$p_1'."
+
+	local YYYY MM DD NN
+
+	# dd.mm.yyyy/nn
+	DD="${cirecid:0:2}"
+	MM="${cirecid:3:2}"
+	YYYY="${cirecid:6:4}"
+	NN="${cirecid:11:2}"
+	[ -s "Legal/$YYYY/$MM/$DD-$NN"/cert.pdf ] ||
+	[ -s "Legal/$YYYY/$MM/$DD-$NN"/cert.jpg ] ||
+		fatal "broken CertLink '$cirecid' in '$p_1'."
+	# shellcheck disable=SC2059
+	subject="$(printf "$fmt" "${product//_/ }" "$DD.$MM.$YYYY")"
+}
+
+newcert_handler() {
+	local fmt="$1"
+	local vendor="$2"
+	local product="$3"
+	local cirecid="$4"
+
+	[ -s "${p_1-}" ] && [ -s "${p_2-}" ] ||
+		return 0
+	grep -qsE -- '^CertLink\:' "$p_1" ||
+		return 0
+	[ "${#cirecid}" = 8 ] ||
+		fatal "invalid cID '$cirecid' in the path '$p_1'."
+	cirecid="$(sed -n -E 's/^CertLink\:\s+([^\s]+)$/\1/p' "$p_1")"
+	[ "${#cirecid}" = 13 ] ||
+		fatal "invalid CertLink '$cirecid' in '$p_1'."
+
+	local md type number='-'
+	local YYYY MM DD NN
+
+	# dd.mm.yyyy/nn
+	DD="${cirecid:0:2}"
+	MM="${cirecid:3:2}"
+	YYYY="${cirecid:6:4}"
+	NN="${cirecid:11:2}"
+	if [ -s "${p_1%/*}"/number ]; then
+		read -r number <"${p_1%/*}"/number
+		run git rm -f -- "${p_1%/*}"/number
+	fi
+
+	run mkdir -p -- "Legal/$YYYY/certs.d"
+	run mkdir -p -- "Legal/$YYYY/$MM/$DD-$NN"
+	run git mv -f -- "$p_2" "Legal/$YYYY/$MM/$DD-$NN"/
+	printf "%s\t%s\t%s\n" "$number" "$MM/$DD-$NN" "$vendor" \
+		>"Legal/$YYYY/certs.d/$MM-$DD-$NN.lst"
+	debug "Legal/$YYYY/certs.d/$MM-$DD-$NN.lst updated"
+	run git add -- "Legal/$YYYY/certs.d/$MM-$DD-$NN.lst" ||:
+	md="$(md5sum "Legal/$YYYY/$MM/$DD-$NN/${p_2##*/}" |
+		awk '{print $1;}')"
+	type="$(_ certword)"
+
+	if [ -s "Legal/$YYYY/$MM/$DD-$NN"/files.yml ]; then
+		cat >>"Legal/$YYYY/$MM/$DD-$NN"/files.yml <<-EOF
+		  - Type:    $type
+		    File:    ${p_2##*/}
+		    MD5sum:  $md
+		EOF
+		[ "$number" = '-' ] || echo "    Number:  $number" \
+			>>"Legal/$YYYY/$MM/$DD-$NN"/files.yml
+	else
+		cat >"Legal/$YYYY/$MM/$DD-$NN"/files.yml <<-EOF
+		#Notes:      ?
+		Vendors:
+		  - $vendor
+		Files:
+		  - Type:    $type
+		    File:    ${p_2##*/}
+		    MD5sum:  $md
+		EOF
+		[ "$number" = '-' ] || echo "    Number:  $number" \
+			>>"Legal/$YYYY/$MM/$DD-$NN"/files.yml
+		run git add -- "Legal/$YYYY/$MM/$DD-$NN"/files.yml ||:
+	fi
+
+	# shellcheck disable=SC2059
+	subject="$(printf "$fmt" "${product//_/ }" "$DD.$MM.$YYYY")"
+}
+
+delcirec_handler() {
+	local fmt="$1"
+	local product="$2"
+	local cirecid="$3"
+
+	[ "${#cirecid}" = 8 ] ||
+		fatal "invalid cID '$cirecid' in the path '$p_1'."
+	cirecid="$(cirec2human "$cirecid")"
+	# shellcheck disable=SC2059
+	subject="$(printf "$fmt" "${product//_/ }" "$cirecid")"
+}
+
+default_handler() {
+	# shellcheck disable=SC2059
+	case "$#" in
+	2) subject="$(printf "$1" "${2//_/ }")";;
+	3) subject="$(printf "$1" "${2//_/ }" "${3//_/ }")";;
+	4) subject="$(printf "$1" "${2//_/ }" "${3//_/ }" "${4//_/ }")";;
+	esac
+}
+
+handle_commit() {
+	local title="$1"
+	local name=default
+	local fmt="${title%%|*}"
+
+	shift
+	[ "$fmt" = "$title" ] ||
+		name="${title#*|}"
+	${name}_handler "$fmt" "$@"
+}
+
+check_n_changes() {
+	local n="$1" msgfile="$2"
+	local msgline title args
+	local m j i=0 lineno=0
+	local IFS first skip=""
+
+	syntax_error() {
+		fatal "syntax error in ${msgfile##*/}:$lineno"
+	}
+
+	while IFS="$EOL" read -r msgline; do
+		lineno=$((1 + $lineno))
+
+		# Block start with "[" <format> [ "|" <handler> ] "]"
+		if [ "$i" = 0 ] && [ "${msgline:0:1}" = '[' ]; then
+			title=$(( ${#msgline} - 2 ))
+			title="${msgline:1:$title}"
+
+		# Block end with the empty line: handle commit here
+		elif [ "$i" -gt "$n" ] && [ -z "$msgline" ]; then
+			[ -n "$skip" ] && skip="" ||
+				handle_commit "$title" "${first[@]}"
+			[ -z "$subject" ] ||
+				break
+			i=0
+			continue
+
+		# Check for not allowed combinations
+		elif [ "$i" = 0 ] || [ "$i" -gt "$n" ] || [ -z "$msgline" ]; then
+			syntax_error
+
+		# Handle block line: <m_args> ":" <regex>
+		elif [ -z "$skip" ]; then
+			m="${msgline%%:*}"
+			msgline="${msgline#*:}"
+			[ -n "$m" ] && [ -n "$msgline" ] && [ "$m" != "$msgline" ] ||
+				syntax_error
+
+			# Check commit change #i to regex #i
+			if eval "printf %s \"\$p_$i\"" |grep -qsE -- "$msgline"; then
+				case "$m" in
+				1) args="\\1";;
+				2) args="\\1 \\2";;
+				3) args="\\1 \\2 \\3";;
+				*) syntax_error;;
+				esac
+
+				# shellcheck disable=SC2207
+				# Save position arguments to $args[]
+				args=( $(eval "printf %s \"\$p_$i\"" |
+					sed -E "s,$msgline,$args,") )
+				[ "${#args[@]}" = "$m" ] ||
+					fatal "invalid data: space(s) in the path not allowed."
+
+				# Position arguments of the first line save to $first[]
+				if [ "$i" = 1 ]; then
+					first=( "${args[@]}" )
+				else
+					# Arguments from other lines compare with $first[]
+					[ "$m" -le "${#first[@]}" ] ||
+						syntax_error
+					j=0
+					while [ "$j" -lt "$m" ]; do
+						if [ "${first[$j]}" != "${args[$j]}" ]; then
+							skip=1
+							break
+						fi
+						j=$((1 + $j))
+					done
+				fi
+			else
+				# Don't check all other lines in the current block
+				skip=1
+			fi
+		fi
+
+		i=$((1 + $i))
+	done <"$msgfile"
+}
+
+check_unlimited() {
+	local n="$1" msgfile="$2"
+	local IFS j msgline title
+	local i=0 lineno=0 skip=""
+
+	while IFS="$EOL" read -r msgline; do
+		lineno=$((1 + $lineno))
+
+		# Block start with "[" <format> "]"
+		if [ "$i" = 0 ] && [ "${msgline:0:1}" = '[' ]; then
+			title=$(( ${#msgline} - 2 ))
+			title="${msgline:1:$title}"
+
+		# Block end with the empty line: handle commit here
+		elif [ "$i" = 2 ] && [ -z "$msgline" ]; then
+			[ -n "$skip" ] && skip="" ||
+				subject="$title"
+			[ -z "$subject" ] ||
+				break
+			i=0
+			continue
+
+		# Check for not allowed combinations
+		elif [ "$i" = 0 ] || [ "$i" -ge 2 ] || [ -z "$msgline" ]; then
+			fatal "syntax error in ${msgfile##*/}:$lineno"
+
+		# Handle block line: <regex>
+		else
+			j=0
+			while [ "$j" -lt "$n" ]; do
+				j=$((1 + $j))
+
+				# Check commit change #j to regex
+				eval "printf %s \"\$p_$j\"" |grep -qsE -- "$msgline" || {
+					skip=1
+					break
+				}
+			done
+		fi
+
+		i=$((1 + $i))
+	done <"$msgfile"
+}
+
+do_commit() {
+	# Work only in the 'local' CSI repository
+	run cd "$client_repo"/
+
+	# shellcheck disable=SC2046
+	# Add all untracked objects to the index
+	run git add -- $(run git status --porcelain=v1 |
+		grep -sE -- '^\?\? ' |cut -c4-) 2>/dev/null ||:
+
+	# Determinate the changes
+	run mkdir -p -- "$workdir"
+	trap cleanup_after_commit EXIT
+	status="$(run mktemp -- "$workdir/$progname-XXXXXXX.tmp")"
+	run git status --porcelain=v1 |sort >"$status"
+	if [ ! -s "$status" ]; then
+		message "Changes not found, nothing to commit."
+		exit 0
+	fi
+
+	# Check to disallowed characters in the path
+	cut -c4- -- "$status" |grep -qsE -- "[[:space:]\'\"]" &&
+		fatal "invalid data: some characters not allowed in the path." ||:
+
+	# Prefer specified subject
+	if [ -n "$subject" ]; then
+		run git commit -a -m "$subject"
+		exit 0
+	fi
+
+	# Count types of the changes: only one type per commit allowed
+	if [ "$(cut -c1-3 -- "$status" |sort -u |wc -l)" != 1 ]; then
+		run git commit -a
+		exit 0
+	fi
+
+	local IFS cht p n=0
+
+	# Determinate change type details
+	cht="$(head -n1 -- "$status" |cut -c1-3)"
+
+	case "$cht" in
+	'A  ')	# Added new files
+		cht=A
+		;;
+	' M ')	# Modified files
+		cht=M
+		;;
+	' D ')	# Deleted files
+		cht=D
+		;;
+	*)	# Unknown changes
+		run git commit -a
+		exit 0
+		;;
+	esac
+
+	# Create p_[N] pseudo-array
+	while IFS="$EOL" read -r p; do
+		n=$((1 + $n))
+		eval "p_$n=\"${p:3}\""
+	done <"$status"
+
+	# Check p_[N] strings to regular expression
+	[ ! -s "$messagedir/${cht}${n}.msg" ] ||
+		check_n_changes $n "$messagedir/${cht}${n}.msg"
+	[ -n "$subject" ] ||
+		check_unlimited $n "$messagedir/${cht}0.msg"
+	if [ -n "$subject" ]; then
+		run git commit -a -m "$subject"
+	else
+		run git commit -a
+	fi
+
+	# Unset p_[N] array
+	while [ "$n" != 0 ]; do
+		eval "unset p_$n"
+		n=$(( $n - 1 ))
+	done
+}
+

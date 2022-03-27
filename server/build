@@ -1,0 +1,96 @@
+#!/bin/sh -efu
+
+# build on the server-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+. "$CSS_LIBDIR"/csi-server-common
+
+optlist="${1-}"
+
+
+draft_rollback() {
+	message "Restoring 'draft' CSI repository to the last working state..."
+
+	run rm -f -- "$HOME"/SUCCESS
+	run rm -rf -- "$overlay"/CSI-cache.next
+	run cd "$HOME"/CSI-data/
+	run git reset --hard $quiet "$lastc" ||:
+
+	message "Finishing on the server-side..."
+
+	run sync
+	exit 1
+}
+
+
+# Entry point
+run rm -f -- "$HOME"/SUCCESS
+
+# Check overlay
+chk_repo_msg 'overlay'
+run cd "$overlay"/CSI-data/
+run cd "$overlay"/CSI-cache/
+oldtag="$(last_upload_tag)"
+
+# Check draft
+chk_repo_msg 'draft'
+run cd "$HOME"/CSI-data/
+lastc="$(run git log -1 --pretty=format:%H)"
+debug "last commit: $lastc"
+
+# Prepare next upload
+message "Creating files for the next upload..."
+run "$chktree_cmd" --force $optlist && [ -s "$HOME"/SUCCESS ] &&
+	upload="$(head -n1 -- "$HOME"/SUCCESS 2>/dev/null)" ||
+		draft_rollback
+run rm -f -- "$HOME"/SUCCESS
+run find . -type d -exec chmod u+rwx,go+rx {} \;
+run find . -type f -exec chmod u+rw,go+r {} \;
+run sync
+run find Certs Install -type f -exec chmod 644 {} \;
+
+# Temporary commit to the 'draft'
+run git commit $quiet -a -m "Upload '$upload' prepared"
+
+# Clone 'draft' to 'overlay'
+upd_repo_msg 'overlay' 'draft'
+run rm -f -- "$overlay"/TAG
+run cd "$overlay"/CSI-data/
+run git reset --hard $quiet "$oldtag" ||:
+run cd "$HOME"/CSI-data/
+run git push $quiet origin master
+run mv -f -- "$overlay"/CSI-cache "$overlay"/CSI-cache.prev
+run mv -f -- "$overlay"/CSI-cache.next "$overlay"/CSI-cache
+run rm -rf -- "$overlay"/CSI-cache.prev
+printf "%s\n" "$oldtag" >"$overlay"/TAG
+
+# Save last commit to 'exchange'
+message "Creating upload patch..."
+workdir="$exchange/CSI-$oldtag"
+run mkdir -p -m777 -- "$workdir"
+run cd "$HOME"/CSI-data/
+setname="$(date '+%Y%m%d-%H%M%S')-$CSS_USER"
+run git format-patch $quiet -1 -n -o "$TMPDIR/$setname"
+run cd "$TMPDIR"/
+run tar -cpzf "$exchange/.$setname.tgz" -- "$setname"
+run chmod -- 0666 "$exchange/.$setname.tgz"
+run mv -f -- "$exchange/.$setname.tgz" "$workdir/$setname.tgz"
+run rm -rf -- "$TMPDIR/$setname"
+message "Upload patch saved: $setname"
+
+# Rollback last commit
+run cd "$HOME"/CSI-data/
+run git reset --hard $quiet "$lastc"
+
+message "Finishing on the server-side..."
+
+run sync
+
+debug "script finished, upload patch name is '$setname'"
+

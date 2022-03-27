@@ -1,0 +1,29 @@
+#!/bin/sh -efu
+
+# version template
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021, Leonid Krivoshein <klark@altlinux.org>
+#
+
+# Alias
+short="ver"
+
+# Required top-level directory
+entity="Vendors"
+
+# Required ID's in the path
+ids="vID pID MAJOR"
+
+# Editable templates
+templates="version.yml"
+
+# What to check before?
+checkfiles="@vID@/vendor.yml @vID@/@pID@/product.yml"
+
+# Where to create new files?
+copyto="@vID@/@pID@/VERS/@MAJOR@"
+

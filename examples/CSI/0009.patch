@@ -1,0 +1,48 @@
+From 4707632b99f693cb943414a637378b98c13b78a5 Mon Sep 17 00:00:00 2001
+From: Leonid Krivoshein <klark@altlinux.org>
+Date: Sun, 21 Nov 2021 03:13:47 +0300
+Subject: [PATCH 09/12] =?UTF-8?q?=D0=9D=D0=BE=D0=B2=D1=8B=D0=B9=20=D0=BF?=
+ =?UTF-8?q?=D1=80=D0=BE=D0=B4=D1=83=D0=BA=D1=82=201C:=201=D0=A1=20=D0=9F?=
+ =?UTF-8?q?=D1=80=D0=B5=D0=B4=D0=BF=D1=80=D0=B8=D1=8F=D1=82=D0=B8=D0=B5?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .../1C/1С_Предприятие/product.yml | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+ create mode 100644 Vendors/1C/1С_Предприятие/product.yml
+
+diff --git a/Vendors/1C/1С_Предприятие/product.yml b/Vendors/1C/1С_Предприятие/product.yml
+new file mode 100644
+index 0000000..683e686
+--- /dev/null
++++ b/Vendors/1C/1С_Предприятие/product.yml
+@@ -0,0 +1,24 @@
++Name:        Платформа «1С:Предприятие»
++Category:    ПО/Управление_процессами
++URI:         https://v8.1c.ru/
++ActualVers:  [8.3.16.1224]
++Platforms:   [i586, x86_64]
++Suitable:    Desktop
++#Hidden:     Yes
++List:        0
++#FSTEC_lic:  ?#[]
++#MOD_lic:    ?#[]
++#FSC_lic:    ?#[]
++#MinComReg:  ?
++Install:     "https://its.1c.ru/db/metod8dev#content:5953:hdoc"
++#Tags:       ?#[]
++Brief:       >
++  Основная задача платформы заключается в повышении уровня абстракции при
++  разработке и использовании прикладных решений. Это позволяет перейти от
++  технических и низкоуровневых понятий к более содержательным и
++  высокоуровневым. Позволяет приблизить эти понятия к языку пользователей и
++  специалистов в предметной области. В конечном итоге это значительно
++  ускоряет и унифицирует разработку прикладного решения и его сопровождение.
++  Одновременно с этим платформа решает и традиционные задачи, связанные с
++  производительностью, эргономикой, функциональностью и т.д.
++#Footnote:   ?
+-- 
+2.24.1
+

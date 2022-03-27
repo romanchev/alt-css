@@ -1,0 +1,34 @@
+#!/bin/sh -efu
+
+# share on client-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+action_summary() {
+	echo "  share     Share content and transfer specified patches."
+}
+
+transfer_list=
+
+action_parse_args() {
+	if [ "${1-}" = help ]; then
+		echo "Usage: $progname $action [<YYYYMMDD-hhmmss-USER>...]"
+		exit 0
+	fi
+	transfer_list="$*"
+}
+
+do_share() {
+	server_side share $quiet $transfer_list
+
+	run cd "$client_repo"/
+	newtag="$(run git describe)"
+	printf "%s\n" "$newtag" >"$cfgdir"/TAG
+	message "Last upload tag name is '$newtag'."
+}
+

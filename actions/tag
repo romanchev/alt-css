@@ -1,0 +1,60 @@
+#!/bin/sh -efu
+
+# tag on client-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+action_summary() {
+	echo "  tag       Adds a tag with the GPG-digest to prepared upload."
+}
+
+newtag=
+
+action_parse_args() {
+	if [ -z "${1-}" ] || [ "${1-}" = help ]; then
+		echo "Usage: $progname $action <tagname>"
+		exit 0
+	fi
+	[ "$#" = 1 ] ||
+		show_usage "missing <tagname> is required."
+	newtag="$1"
+}
+
+do_tag() {
+	local upload tagmsg
+
+	check_local_repo
+	[ -z "$(run git status --porcelain=v1 |head -n1)" ] ||
+		fatal "CSI tree changed and not commited."
+	# shellcheck disable=SC2010
+	upload="$(ls -1 History/uploads/ 2>/dev/null |tail -n1)"
+	[ -n "$upload" ] &&
+	[ -f "History/uploads/$upload" ] &&
+	[ ! -s "History/uploads/$upload" ] ||
+		fatal "Commit with the new upload not found."
+	tagmsg="$(_ upload) $newtag"
+
+	# Save tag name to the main upload file
+	echo "$newtag" >"History/uploads/$upload"
+	run git commit -a --amend --no-edit
+
+	# Create the new tag
+	run git tag -s -f -m "$tagmsg" "$newtag"
+
+	# Push changes to remote
+	message "Updating 'draft' CSI repository from the 'local'..."
+	run git push -f $quiet $verbose origin master "$newtag"
+
+	# Continue on the server-side
+	server_side tag $quiet "$newtag"
+
+	printf "%s\n" "$newtag" >"$cfgdir"/TAG
+	message "Upload message is '$tagmsg'."
+	message "Upload tag name is '$newtag'."
+}
+

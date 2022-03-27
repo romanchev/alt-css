@@ -1,0 +1,64 @@
+#!/bin/sh -efu
+
+# certinfo template
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021, Leonid Krivoshein <klark@altlinux.org>
+#
+
+# Alias
+short="cert"
+
+# Required top-level directory
+entity="Vendors"
+
+# Required ID's in the path
+ids="vID pID cID"
+
+# Optional fields
+optional="number"
+
+# Editable templates
+templates="certlink.yml=@cID@.yml"
+
+# What to check before?
+checkfiles="@vID@/vendor.yml @vID@/@pID@/product.yml"
+
+# Calculated fields
+before_edit="REMOVE_CID"
+after_edit="SAVE_NUMBER"
+
+# Where to create new files?
+copyto="@vID@/@pID@/CI"
+
+
+# Move previous cID.yml to $edir if exists
+helper_REMOVE_CID() {
+	local subject=
+	local input="$1"
+	local output="$2"
+
+	[ -s "$output" ] ||
+		return 0
+
+	# Replace template in $edir by existings cID.yml
+	run cp -Lf -- "$output" "$edir/${input##*/}"
+	subst subject "$(_ delcirec)"
+	{ run git rm -f -- "$output" ||:
+	  output="${output##*/}"
+	  run git commit -a -m "${subject//_/ } #${output%.yml}"
+	} >/dev/null
+
+	printf "\n"
+}
+
+# Number is optional
+helper_SAVE_NUMBER() {
+	[ ! -s "$wdir"/number ] ||
+		cp -Lf -- "$wdir"/number "${2%/*}"/
+	printf "\n"
+}
+

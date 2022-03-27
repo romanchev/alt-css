@@ -1,0 +1,68 @@
+#!/bin/sh -efu
+
+# compinfo template
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021, Leonid Krivoshein <klark@altlinux.org>
+#
+
+# Alias
+short="ci"
+
+# Required top-level directory
+entity="Vendors"
+
+# Required ID's in the path
+ids="vID pID cID"
+
+# Editable templates
+templates="compinfo.yml=@cID@.yml"
+
+# What to check before?
+checkfiles="@vID@/vendor.yml @vID@/@pID@/product.yml"
+
+# Calculated fields
+after_edit="SUBJECT DATE"
+
+# Where to create new files?
+copyto="@vID@/@pID@/CI"
+
+
+# @SUBJECT@
+helper_SUBJECT() {
+	local x input="$1"
+
+	[ -s "$input" ] ||
+		fatal "compatibility information not found."
+
+	if grep -qsE -- '^IsCompat\:\s+No$' "$input"; then
+		x="$(_ compinfo:incompat)"
+	elif grep -qsE -- '^IsCompat\:\s+Yes$' "$input"; then
+		x="$(_ compinfo:compat)"
+	else
+		x="$(_ compinfo:testing)"
+	fi
+
+	printf "%s\n" "$x"
+}
+
+# @DATE@
+helper_DATE() {
+	local cirecid
+	local input="$1"
+	local output="$2"
+
+	cirecid="$(sed -n -E 's/^Tested\:\s+([^\s]+)$/\1/p' "$input")"
+
+	if [ "${#cirecid}" != 10 ]; then
+		cirecid="${output##*/}"
+		cirecid="${cirecid%.yml}"
+		cirecid="$(cirec2human "$cirecid")"
+	fi
+
+	printf "%s\n" "$cirecid"
+}
+

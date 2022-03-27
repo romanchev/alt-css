@@ -1,0 +1,20 @@
+#!/bin/sh -efu
+
+# export on client-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021, Leonid Krivoshein <klark@altlinux.org>
+#
+
+action_summary() {
+	echo "  export    Exports all changes after last upload to 'exchange'."
+}
+
+do_export() {
+	auto_update --push
+	server_side export $quiet
+}
+

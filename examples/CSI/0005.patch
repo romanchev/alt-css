@@ -1,0 +1,45 @@
+From 9a728fc2058c5b88d3d2860a4dbb34f67632252c Mon Sep 17 00:00:00 2001
+From: Leonid Krivoshein <klark@altlinux.org>
+Date: Sun, 21 Nov 2021 03:12:36 +0300
+Subject: [PATCH 05/12] =?UTF-8?q?=D0=9D=D0=BE=D0=B2=D1=8B=D0=B9=20=D0=BF?=
+ =?UTF-8?q?=D1=80=D0=BE=D0=B4=D1=83=D0=BA=D1=82=201C:=201=D0=A1=20=D0=91?=
+ =?UTF-8?q?=D1=83=D1=85=D0=B3=D0=B0=D0=BB=D1=82=D0=B5=D1=80=D0=B8=D1=8F?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .../1C/1С_Бухгалтерия/product.yml | 21 +++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+ create mode 100644 Vendors/1C/1С_Бухгалтерия/product.yml
+
+diff --git a/Vendors/1C/1С_Бухгалтерия/product.yml b/Vendors/1C/1С_Бухгалтерия/product.yml
+new file mode 100644
+index 0000000..33964b0
+--- /dev/null
++++ b/Vendors/1C/1С_Бухгалтерия/product.yml
+@@ -0,0 +1,21 @@
++Name:        Конфигурация «1C:Бухгалтерия»
++Category:    ПО/Управление_процессами
++URI:         https://v8.1c.ru/buhv8/
++#ActualVers: ?#[]
++Platforms:   [i586, x86_64]
++Suitable:    Desktop
++#Hidden:     Yes
++List:        0
++#FSTEC_lic:  ?#[]
++#MOD_lic:    ?#[]
++#FSC_lic:    ?#[]
++#MinComReg:  ?
++#Install:    ?
++#Tags:       ?#[]
++Brief:       >
++  «1C:Бухгалтерия 8» — это профессиональный инструмент бухгалтера, с помощью
++  которого можно вести бухгалтерский и налоговый учёт, готовить и сдавать
++  обязательную отчётность. Программа объединила в себе все достижения
++  предыдущих версий и новые решения, основанные на опыте практической работы
++  бухгалтеров сотен тысяч предприятий и организаций.
++#Footnote:   ?
+-- 
+2.24.1
+

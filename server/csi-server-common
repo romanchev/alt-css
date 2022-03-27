@@ -1,0 +1,97 @@
+#!/bin/sh -efu
+
+# common code on the server-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+# Defaults
+progname="${0##*/}"
+chktree_cmd=/bin/false
+publish_cmd=/bin/false
+exchange=
+upstream=
+overlay=
+verbose=
+quiet=
+
+
+fatal() {
+	printf "%s fatal: %s\n" "$progname" "$*" >&2
+	logger -t "$progname" -i -p local7.err -- "$CSS_USER: $*" ||:
+	exit 1
+}
+
+debug() {
+	[ -z "$verbose" ] ||
+		logger -t "$progname" -i -p local7.info -- "$CSS_USER: $*" ||:
+}
+
+run() {
+	[ -z "$verbose" ] ||
+		logger -t "$progname" -i -p local7.info -- "$CSS_USER: RUN: $*" ||:
+	"$@" || return $?
+}
+
+message() {
+	[ -n "$quiet" ] ||
+		printf "%s\n" "$*"
+}
+
+chk_repo_msg() {
+	message "Checking '$1' CSI repository..."
+}
+
+upd_repo_msg() {
+	message "Updating '$1' CSI repository from the '$2'..."
+}
+
+copy_repo_msg() {
+	message "Copying '$1' CSI repository to the '$2'..."
+}
+
+check_upstream() {
+	chk_repo_msg 'upstream'
+	run cd "$upstream"/CSI-cache/
+	run cd "$upstream"/CSI-data/
+	newtag="$(run git describe)"
+}
+
+last_upload_tag() {
+	[ ! -s "$overlay"/TAG ] ||
+		cat "$overlay"/TAG
+}
+
+
+# Entry point
+. /etc/css/csi-server.conf
+overlay="$overlay/${HOME##*/}"
+export TMPDIR="${TMPDIR:-$HOME/tmp}"
+
+[ -d "$exchange" ] && [ -d "$overlay" ] &&
+[ -d "$upstream"/CSI-data ] && [ -d "$TMPDIR" ] &&
+[ -x "$chktree_cmd" ] && [ -x "$publish_cmd" ] ||
+	fatal "invalid server configuaration."
+
+while [ $# -gt 0 ]; do
+	case "$1" in
+	-q)	quiet=-q
+		;;
+	--)	shift
+		break
+		;;
+	*)	break
+		;;
+	esac
+	shift
+done
+
+debug "script started, waiting a semaphore..."
+enable -f /usr/lib/bash/lockf lockf
+cd "$HOME"/ && builtin lockf -v .
+debug "unlocked, we can go!"
+

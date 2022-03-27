@@ -1,0 +1,57 @@
+#!/bin/sh -efu
+
+# certlink template
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021, Leonid Krivoshein <klark@altlinux.org>
+#
+
+# Alias
+short="cl"
+
+# Required top-level directory
+entity="Vendors"
+
+# Required ID's in the path
+ids="vID pID cID"
+
+# Editable templates
+templates="certlink.yml=@cID@.yml"
+
+# What to check before?
+checkfiles="@vID@/vendor.yml @vID@/@pID@/product.yml"
+
+# Calculated fields
+after_edit="DATE"
+
+# Where to create new files?
+copyto="@vID@/@pID@/CI"
+
+
+# @DATE@
+helper_DATE() {
+	local input="$1"
+	local cirecid=
+
+	[ -s "$input" ] && grep -qsE -- '^CertLink\:' "$input" ||
+		fatal "CertLink object or reference not found."
+	cirecid="$(sed -n -E 's/^CertLink\:\s+([^\s]+)$/\1/p' "$input")"
+	[ "${#cirecid}" = 13 ] ||
+		fatal "invalid CertLink '$cirecid' in '${input##*/}'."
+
+	local YYYY MM DD NN
+
+	# dd.mm.yyyy/nn
+	DD="${cirecid:0:2}"
+	MM="${cirecid:3:2}"
+	YYYY="${cirecid:6:4}"
+	NN="${cirecid:11:2}"
+	[ -s "Legal/$YYYY/$MM/$DD-$NN"/cert.pdf ] ||
+	[ -s "Legal/$YYYY/$MM/$DD-$NN"/cert.jpg ] ||
+		fatal "broken CertLink '$cirecid' in '${input##*/}'."
+	printf "%s.%s.%s\n" "$DD" "$MM" "$YYYY"
+}
+

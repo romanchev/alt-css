@@ -1,0 +1,30 @@
+#!/bin/sh -efu
+
+# ls on the server-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+. "$CSS_LIBDIR"/csi-server-common
+
+chk_repo_msg 'draft'
+run cd "$HOME"/CSI-data/
+oldtag="$(last_upload_tag)"
+workdir="$exchange/CSI-$oldtag"
+
+if [ -d "$workdir" ]; then
+	for patchfile in $(ls "$workdir"/) _; do
+		[ "$patchfile" != "${patchfile%*.tgz}" ] ||
+			continue
+		[ -s "$workdir/$patchfile" ] ||
+			continue
+		printf "%s\n" "${patchfile%*.tgz}"
+	done
+fi
+
+debug "script finished"
+

@@ -1,0 +1,24 @@
+/**
+* config.h -- common configuration file.
+*
+* This file is covered by the GNU General Public License
+* version 3, or (at your option) any later version, which
+* should be included with sources as the file COPYING.
+*
+* Copyright (C) 2020-2021, Leonid Krivoshein <klark@altlinux.org>
+*/
+#ifndef _CSS_CONFIG_H
+#define _CSS_CONFIG_H	1
+
+#define VERSION_MAJOR	@VERSION_MAJOR@
+#define VERSION_MINOR	@VERSION_MINOR@
+#define VERSION_PATCH	@VERSION_PATCH@
+#define PACKAGE_NAME	"@PACKAGE_NAME@"
+#define PACKAGE_VERSION	"@PACKAGE_VERSION@"
+#define USERNAME_PREFIX	"@USERNAME_PREFIX@"
+#define SYSTEM_LOCALE	"@SYSTEM_LOCALE@"
+#define HOMEDIRS	"@HOMEDIRS@"
+#define EXEC_DIR	"@EXEC_DIR@"
+
+#endif /* _CSS_CONFIG_H */
+

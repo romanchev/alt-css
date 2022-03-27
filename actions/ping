@@ -1,0 +1,25 @@
+#!/bin/sh -efu
+
+# ping on client-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021, Leonid Krivoshein <klark@altlinux.org>
+#
+
+action_summary() {
+	echo "  ping      Pings the CSS server."
+}
+
+ping_args=
+
+action_parse_args() {
+	ping_args="$*"
+}
+
+do_ping() {
+	server_side testenv $quiet $ping_args
+}
+

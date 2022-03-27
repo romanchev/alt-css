@@ -1,0 +1,114 @@
+Model:    vendor
+Handler:  VendorEdit
+Caption:  КАРТОЧКА ПАРТНЁРА
+
+Fields:
+  Name:
+    Caption:   Название
+    Type:      OneLine
+    Bold:      Yes
+    Paint:     Yes
+  Post:
+    OldName:   ПочтАдрес
+    Caption:   Почт.адрес
+    Type:      AutoStr
+    Required:  Yes
+  Legal:
+    OldName:   ЮрАдрес
+    Caption:   Юр.адрес
+    Type:      AutoStr
+  Phones:
+    Caption:   Телефоны
+    Type:      Phones
+    Required:  Yes
+    Bold:      Yes
+  URI:
+    Caption:   Сайт
+    Type:      Uri
+    Required:  Yes
+  Extern:
+    Caption:   Инициатива
+    Type:      Select
+    Variants:  [Yes]
+    Bold:      Yes
+  List:
+    Caption:   Список
+    Type:      Select
+    Required:  Yes
+    Variants:  [0, 1, 2]
+    Save:      Integer
+    Default:   2
+  Tags:
+    Caption:   Тэги
+    Type:      Tags
+    Paint:     Yes
+  Brief:
+    Caption:   Описание
+    Type:      Text
+    Required:  Yes
+  Footnote:
+    Caption:   Сноска
+    Type:      AutoStr
+
+View:
+  Title:    "Партнёр: {VENDOR}"
+
+  Additional:
+    Path:
+      Caption:   Путь
+      Type:      OneLine
+      Required:  Yes
+      Paint:     Yes
+      Before:    Post
+
+Change:
+  Title:    Изменение карточки партнёра
+  Success:  Информация о партнёре сохранена
+  Button:   Сохранить
+
+  Additional:
+    vID:
+      Type:      Hidden
+      Required:  Yes
+
+Create:
+  Title:    Создание карточки партнёра
+  Success:  Карточка партнёра создана
+  Button:   Создать
+
+  Additional:
+    vID:
+      Caption:   ID
+      Type:      NameId
+      Required:  Yes
+      Paint:     Yes
+      Before:    Post
+    Separator1:
+      Caption:   КОНТАКТНОЕ ЛИЦО
+      Type:      Separator
+    Contact:
+      Caption:   ФИО
+      Type:      OneLine
+      Required:  Yes
+      Bold:      Yes
+    Pos:
+      Caption:   Должность
+      Type:      OneLine
+      Required:  Yes
+    Email:
+      Caption:   Почта
+      Type:      Email
+    Intern:
+      Caption:   Внутр.тел.
+      Type:      IntPhone
+    Work:
+      Caption:   Раб.тел.
+      Type:      Phones
+    Mobile:
+      Caption:   Моб.тел.
+      Type:      Phones
+      Bold:      Yes
+    Notes:
+      Caption:   Примечание
+      Type:      AutoStr
+

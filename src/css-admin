@@ -1,0 +1,130 @@
+#!/bin/sh -efu
+
+# css-admin on the server-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+. /etc/css/csi-server.conf
+
+script_fullname="$(realpath -- "$0")"
+progname="${script_fullname##*/}"
+
+fatal() {
+	local fmt="$1"; shift
+
+	printf "%s fatal: $fmt\n" "$progname" "$@" >&2
+	exit 1
+}
+
+
+# Entry point
+if [ $# -gt 0 ]; then
+	action="$1"
+	shift
+fi
+
+case "${action-}" in
+help)	# args: -
+	cat <<-EOF
+	Usage: $progname <action> [<argument>...]
+
+	Actions:
+	  uadd [-P] <name> <email> <nick>
+	  udel <nick>
+	  help
+	EOF
+	;;
+
+uadd)	# args: [-P] <name> <email> <nick>
+	[ "$#" = 3 ] || [ "$#" = 4 ] ||
+		fatal "invalid command line usage, try 'help'!"
+	if [ "$1" != "-P" ]; then
+		optarg=
+	else
+		optarg="$1"
+		shift
+	fi
+	name="$1"
+	email="$2"
+	nick="$3"
+	[ ! -d "/home/$nick" ] ||
+		fatal "user '%s' already exists!" "$nick"
+	[ "${EUID-}" = 0 ] ||
+		exec sudo "$script_fullname" $action \
+			$optarg "$name" "$email" "$nick"
+	useradd -m -c "$name" -d "/home/$nick" \
+		-G users -s /usr/bin/css-sh "css_$nick"
+	if [ -n "$optarg" ]; then
+		mkdir -p -m0775 /var/www/html/static
+		printf "%s\t%s <%s>\n" "$nick" "$name" "$email" \
+					>>/etc/css/share.users
+		chown "css_$nick:css_$nick" /var/www/html/static
+	fi
+	cat >"/home/$nick"/.gitconfig <<-EOF
+	[user]
+	    name = $name
+	    email = $email
+	[core]
+	    quotepath = off
+	EOF
+	chmod 0644 "/home/$nick"/.gitconfig
+	chown "css_$nick:css_$nick" "/home/$nick"/.gitconfig
+	mkdir -m0755 -- "$overlay/$nick"
+	chown "css_$nick:css_$nick" "$overlay/$nick"
+	mkdir -p -m0700 -- "/home/$nick"/.ssh
+	cat >>"/home/$nick"/.ssh/authorized_keys
+	chmod 0600 "/home/$nick"/.ssh/authorized_keys
+	chown "css_$nick:css_$nick" "/home/$nick"/.ssh/authorized_keys
+	;;
+
+udel)	# args: <nick>
+	[ "$#" = 1 ] ||
+		fatal "invalid command line usage, try 'help'!"
+	nick="$1"
+	[ -d "/home/$nick" ] ||
+		fatal "user '%s' not found!" "$nick"
+	[ "${EUID-}" = 0 ] ||
+		exec sudo "$script_fullname" $action "$nick"
+	rm -rf --one-file-system -- "$overlay/$nick"
+	userdel -r -f "css_$nick"
+	;;
+
+upgr)	# args: -
+	[ "${EUID-}" = 0 ] ||
+		exec sudo "$script_fullname" $action
+	remove-old-kernels -f ||:
+	apt-get update
+	f="apt-get dist-upgrade -f --force-yes && update-kernel -f"
+	exec ${SHELL:-/bin/sh} -c "$f"
+	;;
+
+init)	# args: <nick>
+	[ "$#" = 1 ] ||
+		fatal "invalid command line usage, try 'help'!"
+	[ -s "$exchange"/init.tgz ] ||
+		fatal "initial data archive not found!"
+	nick="$1"
+	[ -d "/home/$nick" ] ||
+		fatal "user '%s' not found!" "$nick"
+	[ "${EUID-}" = 0 ] ||
+		exec sudo "$script_fullname" $action "$nick"
+	( set +f
+	  cd "$upstream"/
+	  rm -rf --one-file-system ./*
+	  tar -xpf "$exchange"/init.tgz
+	  chown -R "css_$nick:css_$nick" .
+	  touch CSI-data/Certs/*.jpg ||:
+	  touch CSI-data/Install/* ||:
+	)
+	;;
+
+*)	# unexpected action
+	fatal "invalid action name: '%s', try 'help'!" "${action-}"
+	;;
+esac
+

@@ -1,0 +1,23 @@
+#!/bin/sh -efu
+
+# reset on the server-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+. "$CSS_LIBDIR"/csi-server-common
+
+oldtag="$(last_upload_tag)"
+[ "$oldtag" = "${1-}" ] ||
+	fatal "Tags on the client and the server mismatch."
+message "Resetting 'draft' CSI repository..."
+
+run cd "$HOME"/CSI-data/
+run git reset --hard $quiet "$oldtag"
+
+debug "script finished, old tag is '$oldtag'"
+

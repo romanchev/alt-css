@@ -1,0 +1,56 @@
+#!/bin/sh -efu
+
+# pull on the server-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+. "$CSS_LIBDIR"/csi-server-common
+
+chk_repo_msg 'draft'
+run cd "$HOME"/CSI-data/
+
+chk_repo_msg 'overlay'
+run cd "$overlay"/CSI-data/
+oldtag="$(last_upload_tag)"
+
+check_upstream
+[ -n "$oldtag" ] && [ -n "$newtag" ] ||
+	fatal "can't update 'overlay' and 'draft' repositories."
+
+upd_repo_msg 'overlay' 'upstream'
+run rm -f -- "$overlay"/TAG
+run cd "$overlay"/CSI-data/
+run git remote remove origin 2>/dev/null ||:
+
+if [ "$oldtag" = "$newtag" ]; then
+	run git reset --hard $quiet "$oldtag" ||:
+else
+	run git remote add origin file://"$upstream"/CSI-data
+	if ! run git pull $quiet --tags origin master; then
+		run git reset --hard $quiet "$oldtag"
+		run git pull -f $quiet --tags origin master
+	fi
+	run git remote remove origin
+fi
+
+run rsync -aH --del -- "$upstream"/CSI-cache/ "$overlay"/CSI-cache/
+printf "%s\n" "$newtag" >"$overlay"/TAG
+
+upd_repo_msg 'draft' 'overlay'
+run cd "$HOME"/CSI-data/
+if ! run git pull $quiet --tags origin master; then
+	run git reset --hard $quiet "$oldtag"
+	run git pull -f $quiet --tags origin master
+fi
+
+message "Finishing on the server-side..."
+
+run sync
+
+debug "script finished, new tag is '$newtag'"
+

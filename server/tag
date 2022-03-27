@@ -1,0 +1,37 @@
+#!/bin/sh -efu
+
+# tag on the server-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+. "$CSS_LIBDIR"/csi-server-common
+
+newtag="$1"
+
+# Entry point
+chk_repo_msg 'draft'
+run cd "$HOME"/CSI-data/
+
+chk_repo_msg 'overlay'
+run cd "$overlay"/CSI-data/
+oldtag="$(last_upload_tag)"
+run rm -f -- "$overlay"/TAG
+
+# Clone draft to overlay
+upd_repo_msg 'overlay' 'draft'
+run git reset --hard "$oldtag"
+run cd "$HOME"/CSI-data/
+run git push -f $quiet origin master "$newtag"
+
+message "Finishing on the server-side..."
+
+printf "%s\n" "$oldtag" >"$overlay"/TAG
+run sync
+
+debug "script finished, new tag is '$newtag'"
+

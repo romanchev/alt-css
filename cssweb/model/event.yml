@@ -1,0 +1,50 @@
+Model:    event
+Handler:  VendorEdit
+Caption:  СОБЫТИЕ ОБЩЕНИЯ С ПАРТНЁРОМ
+
+Fields:
+  Date:
+    Caption:   Дата
+    Type:      Date
+    Required:  Yes
+  Event:
+    Caption:   Событие
+    Type:      AutoStr
+    Required:  Yes
+
+Change:
+  Title:    Изменение события общения с партнёром
+  Success:  Информация о событии сохранена
+  Button:   Сохранить
+
+  Additional:
+    vID:
+      Type:      Hidden
+      Required:  Yes
+    Index:
+      Type:      Hidden
+      Required:  Yes
+
+Create:
+  Title:    Создание события общения с партнёром
+  Success:  Событие общения с партнёром создано
+  Button:   Создать
+
+  Additional:
+    vID:
+      Type:      Hidden
+      Required:  Yes
+
+Delete:
+  Title:    Удаление события общения с партнёром
+  Success:  Событие общения с партнёром удалено
+  Button:   Удалить
+
+  Additional:
+    vID:
+      Type:      Hidden
+      Required:  Yes
+    Index:
+      Type:      Hidden
+      Required:  Yes
+

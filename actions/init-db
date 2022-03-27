@@ -1,0 +1,73 @@
+#!/bin/sh -efu
+
+# init-db on client-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+action_summary() {
+	echo "  init-db   Creates and initializes an empty 'local' repository."
+}
+
+examples=
+
+action_parse_args() {
+	if [ "${1-}" = help ]; then
+		echo "Usage: $progname $action [-e]"
+		exit 0
+	fi
+	if [ "${1-}" = '-e' ]; then
+		examples="$($progname -V |awk '{print $2;}')"
+		examples="/usr/share/doc/css-examples-$examples/CSI"
+		[ -d "$examples" ] ||
+			fatal "Directory not found: $examples"
+	fi
+}
+
+do_init_db() {
+	chk_repo_msg 'local'
+	[ -z "$examples" ] ||
+		client_repo="$client_repo.example"
+	[ ! -d "$client_repo" ] ||
+		fatal "local CSI repository already exists, try 'pull' instead."
+	run rm -f -- "$cfgdir"/TAG
+	run mkdir -- "$client_repo"
+
+	for entity in		\
+		Categories	\
+		Certs		\
+		Distros		\
+		Documents	\
+		History		\
+		Install		\
+		Legal		\
+		Platforms	\
+		Sources		\
+		Templates	\
+		Vendors		\
+		#
+	do
+		run mkdir -- "$client_repo/$entity"
+		run touch -- "$client_repo/$entity"/.placeholder
+		run chmod -- 0644 "$client_repo/$entity"/.placeholder
+	done
+
+	run cp -LRf -- "$tplsrcdir" "$client_repo/$templatesdir"
+
+	run cd "$client_repo"/
+	run git init-db
+	run git config --add core.quotepath off
+	run git config --add pull.rebase false
+	run git add .
+	run git commit -a -m "$(_ initial)"
+	printf "\n" >"$cfgdir"/TAG
+
+	[ -n "$examples" ] ||
+		return 0
+	( set +f; run git am $quiet "$examples"/*.patch )
+}
+

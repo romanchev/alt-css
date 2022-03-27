@@ -1,0 +1,51 @@
+#!/bin/sh -efu
+
+# nxfil on client-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021, Leonid Krivoshein <klark@altlinux.org>
+#
+
+action_summary() {
+	echo "  nxfil     Shows the next filing number on the specified date."
+}
+
+for_date=
+
+action_parse_args() {
+	if [ -z "${1-}" ] || [ "${1-}" = help ]; then
+		echo "Usage: $progname $action <DD.MM.YYYY>"
+		exit 0
+	fi
+	echo "$1" |grep -qsE -- '^[0-9][0-9]\.[0-9][0-9].[0-9][0-9][0-9][0-9]$' ||
+		fatal "invalid date, <DD.MM.YYYY> expected."
+	for_date="$1"
+}
+
+do_nxfil() {
+	local DD MM YYYY NN
+
+	check_local_repo
+
+	# dd.mm.yyyy
+	DD="${for_date:0:2}"
+	MM="${for_date:3:2}"
+	YYYY="${for_date:6:4}"
+
+	if [ ! -d "Legal/$YYYY/$MM/$DD-01" ]; then
+		NN=1
+	else
+		NN="$(ls -1 "Legal/$YYYY/$MM/" |tail -n1 |cut -f2 -d-)"
+		[ "${NN:0:1}" != 0 ] ||
+			NN="${NN:1}"
+		[ "$NN" -le 98 ] ||
+			fatal "filing number for specified date not found."
+		NN=$((1 + $NN))
+	fi
+
+	printf "%02d\n" "$NN"
+}
+

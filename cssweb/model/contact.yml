@@ -1,0 +1,72 @@
+Model:    contact
+Handler:  VendorEdit
+Caption:  КОНТАКТНОЕ ЛИЦО
+
+Fields:
+  Name:
+    Caption:   ФИО
+    Type:      OneLine
+    Required:  Yes
+    Bold:      Yes
+  Pos:
+    OldName:   Должн
+    Caption:   Должность
+    Type:      OneLine
+    Required:  Yes
+  Email:
+    Caption:   Почта
+    Type:      Email
+  Intern:
+    OldName:   Внутр
+    Caption:   Внутр.тел.
+    Type:      IntPhone
+  Work:
+    OldName:   Раб
+    Caption:   Раб.тел.
+    Type:      Phones
+  Mobile:
+    OldName:   Моб
+    Caption:   Моб.тел.
+    Type:      Phones
+    Bold:      Yes
+  Notes:
+    OldName:   Прим
+    Caption:   Примечание
+    Type:      AutoStr
+
+Change:
+  Title:    Изменение данных контакта
+  Success:  Контакт сохранён
+  Button:   Сохранить
+
+  Additional:
+    vID:
+      Type:      Hidden
+      Required:  Yes
+    Index:
+      Type:      Hidden
+      Required:  Yes
+
+Create:
+  Title:    Создание нового контакта
+  Success:  Контакт создан
+  Button:   Создать
+
+  Additional:
+    vID:
+      Type:      Hidden
+      Required:  Yes
+
+Delete:
+  Title:    Удаление контакта
+  Success:  Контакт удалён
+  Button:   Удалить
+
+  Additional:
+    vID:
+      Type:      Hidden
+      Required:  Yes
+    Index:
+      Type:      Hidden
+      Required:  Yes
+

@@ -1,0 +1,126 @@
+ArchList:
+  View:   
+  Save:   ShortList
+  Check:  
+AutoStr:
+  View:   
+  Check:  
+Category:
+  View:   
+  Save:   OneLine
+  Check:  
+CertLink:
+  View:   
+  Save:   OneLine
+  Check:  
+Date:
+  View:   
+  Save:   OneLine
+  Check:  
+DatesList:
+  View:   
+  Save:   ShortList
+  Check:  
+DistList:
+  View:   
+  Save:   LongList
+  Check:  
+Email:
+  View:   
+  Save:   OneLine
+  Check:  
+Float:
+  View:   
+  Save:   OneLine
+  Check:  
+FltList:
+  View:   
+  Save:   AutoList
+  Check:  
+Hidden:
+  View:   
+  Save:   Separator
+  Check:  
+Integer:
+  View:   
+  Save:   OneLine
+  Check:  
+IntList:
+  View:   
+  Save:   AutoList
+  Check:  
+IntPhone:
+  View:   
+  Save:   OneLine
+  Check:  
+Issues:
+  View:   
+  Load:   IntList
+  Save:   ShortList
+  Check:  
+LongList:
+  View:   
+  Check:  
+NameId:
+  View:   
+  Save:   OneLine
+  Check:  
+NewsLinks:
+  View:   
+  Save:   LongList
+  Check:  
+Object:
+  View:   
+  Check:  
+ObjList:
+  View:   
+  Check:  
+OneLine:
+  View:   
+  Check:  
+Phones:
+  View:   
+  Save:   OneLine
+  Check:  
+Select:
+  View:   
+  Save:   OneLine
+  Check:  
+Separator:
+  View:   
+  Check:  
+ShortList:
+  View:   
+  Check:  
+Table:
+  View:   
+  Check:  
+Tags:
+  View:   
+  Save:   AutoStr
+  Check:  
+Text:
+  View:   
+  Save:   AutoStr
+  Check:  
+Uri:
+  View:   
+  Save:   OneLine
+  Check:  
+UriList:
+  View:   
+  Save:   LongList
+  Check:  
+VerId:
+  View:   
+  Save:   OneLine
+  Check:  
+VerLink:
+  View:   
+  Save:   OneLine
+  Check:  
+VersList:
+  View:   
+  Save:   ShortList
+  Check:  
+

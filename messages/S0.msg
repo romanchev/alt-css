@@ -1,0 +1,16 @@
+initial=Создано хранилище Службы обеспечения совместимости
+category=Новая категория продуктов: @CATEGORY@
+certlink=Новая ссылка на сертификат с @pID@ от @DATE@
+certword=Сертификат
+compinfo=@SUBJECT@ @pID@ от @DATE@
+compinfo:incompat=Новая несовместимость c
+compinfo:compat=Новая совместимость c
+compinfo:testing=Новое тестирование
+delcirec=Удалена CI-запись c @vID@
+distro=Новый дистрибутив: @dID@
+events=Новая история общения с @vID@
+platform=Новая аппаратная платформа: @ARCH@
+product=Новый продукт @vID@: @pID@
+vendor=Новый партнёр: @vID@
+version=Новая версия продукта @vID@: @pID@ @MAJOR@
+upload=Выгрузка

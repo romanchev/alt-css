@@ -1,0 +1,53 @@
+#!/bin/sh -efu
+
+# clone on the server-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+. "$CSS_LIBDIR"/csi-server-common
+
+oldtag=
+
+check_upstream
+chk_repo_msg 'overlay'
+if [ -d "$overlay"/CSI-data ]; then
+	run cd "$overlay"/CSI-data/
+	oldtag="$(run git describe)"
+	run cd -
+fi
+
+message "Removing 'draft' CSI repository..."
+run rm -rf --one-file-system -- "$HOME"/CSI-data
+
+if [ ! -d "$overlay"/CSI-cache ] ||
+	[ ! -d "$overlay"/CSI-data ] ||
+	[ "$oldtag" != "$newtag" ]
+then
+	copy_repo_msg 'upstream' 'overlay'
+	run rm -f -- "$overlay"/TAG
+	run rm -rf --one-file-system -- "$overlay"/CSI-cache
+	run rm -rf --one-file-system -- "$overlay"/CSI-data
+	run cp -aRf -- "$upstream"/CSI-cache "$overlay"/
+	run cp -aRf -- "$upstream"/CSI-data "$overlay"/
+	run cd "$overlay"/CSI-data/
+	run git remote remove origin 2>/dev/null ||:
+	printf "%s\n" "$newtag" >"$overlay"/TAG
+fi
+
+copy_repo_msg 'overlay' 'draft'
+run git clone file://"$overlay"/CSI-data "$HOME"/CSI-data
+run cd "$HOME"/CSI-data/
+run git config --add receive.denyNonFastforwards false
+run git config --add receive.denyCurrentBranch updateInstead
+
+message "Finishing on the server-side..."
+
+run sync
+
+debug "script finished, new tag is '$newtag'"
+

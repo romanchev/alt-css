@@ -1,0 +1,102 @@
+#!/bin/sh -efu
+
+# share on the server-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+. "$CSS_LIBDIR"/csi-server-common
+
+patches="$*"
+docroot=/var/www/html
+
+# Entry point
+run rm -f -- "$HOME"/SUCCESS
+
+chk_repo_msg 'overlay'
+run cd "$overlay"/CSI-data/
+oldtag="$(last_upload_tag)"
+newtag="$(run git describe)"
+[ "$newtag" != "$oldtag" ] &&
+[ "$(run git tag -l 'v*' |tail -n2 |wc -l)" = 2 ] &&
+[ "$newtag" = "$(run git tag -l 'v*' |tail -n1)" ] &&
+[ "$oldtag" = "$(run git tag -l 'v*' |tail -n2 |head -n1)" ] ||
+	fatal "nothing to upstream"
+expected=
+
+# Check to upstream permissions
+[ -s /etc/css/share.users ] &&
+	expected="$(grep -sE "^$CSS_USER""[[:space:]]" /etc/css/share.users |cut -f2-)"
+current="$(git show "$oldtag" |sed -ne 's/^Tagger: //p' |head -n1)"
+[ -n "$expected" ] && [ "$expected" = "$current" ] ||
+	fatal "access denied for $CSS_USER"
+debug "New upload signed-off by '$current'"
+
+# Check specified patches
+if [ -n "$patches" ]; then
+	workdir="$exchange/CSI-$oldtag"
+	for pname in $patches; do
+		[ -s "$workdir/$pname.tgz" ] ||
+			fatal "specified patch set not found: $pname"
+	done
+fi
+
+# Prepare static HTML content
+message "Update from '$oldtag' to '$newtag' started..."
+run rm -rf --one-file-system -- "$upstream"/static.next
+run "$publish_cmd" "$upstream"/static.next && [ -f "$HOME"/SUCCESS ]
+run rm -f -- "$HOME"/SUCCESS
+
+# Clone overlay to upstream
+upd_repo_msg 'upstream' 'overlay'
+run rm -rf --one-file-system -- "$upstream"/static.prev
+run rm -rf --one-file-system -- "$upstream"/CSI-data.next
+run rm -rf --one-file-system -- "$upstream"/CSI-cache.prev
+#
+if [ ! -d "$upstream"/CSI-data.prev ]; then
+	run cp -aRf -- "$overlay"/CSI-data "$upstream"/CSI-data.next
+	run cd "$upstream"/CSI-data.next/
+else
+	run cd "$overlay"/CSI-data/
+	run git remote remove origin 2>/dev/null ||:
+	run mv -f -- "$upstream"/CSI-data.prev "$upstream"/CSI-data.next
+	run git remote add origin file://"$upstream"/CSI-data.next
+	run git push $quiet --tags origin master
+fi
+#
+run git remote remove origin 2>/dev/null ||:
+run cd "$upstream"/
+#
+run rsync -aH --del -- "$docroot"/static/ "$upstream"/static.prev/
+run rsync -aH --del -- "$upstream"/static.next/ "$docroot"/static/ ||:
+run rsync -aH --del -- "$overlay"/CSI-cache/ "$upstream"/CSI-cache.next/
+#
+run mv -f -- "$upstream"/CSI-data "$upstream"/CSI-data.prev
+run mv -f -- "$upstream"/CSI-data.next "$upstream"/CSI-data
+run mv -f -- "$upstream"/CSI-cache "$upstream"/CSI-cache.prev
+run mv -f -- "$upstream"/CSI-cache.next "$upstream"/CSI-cache
+#
+run rm -rf -- "$upstream"/static.next
+printf "%s\n" "$newtag" >"$overlay"/TAG
+
+# Save the patch sets
+if [ -n "$patches" ]; then
+	destdir="$exchange/CSI-$newtag"
+	mkdir -p -m0777 -- "$destdir"
+	for pname in $patches; do
+		message "Moving patch set: '$pname' to the next exchange..."
+		run mv -f -- "$workdir/$pname.tgz" "$destdir"/
+	done
+	unset pname destdir workdir
+fi
+
+message "Finishing on the server-side..."
+
+run sync
+
+debug "script finished, new tag is '$newtag'"
+
