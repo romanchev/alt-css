@@ -7,7 +7,7 @@ function check_instref_dir($dir, $ver) {
 	E_dir("/$dir");
 	return 0;
     }
-    $docs = array("inst.odt", "inst.tex");
+    $docs = array("inst.odt", "inst.tex", "inst.src");
     $objs = $pdfs = $refs = $logo = $sources = 0;
 
     while (($entry = readdir($dh)) !== false) {

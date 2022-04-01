@@ -26,7 +26,7 @@ function check_common_inst_dir($dir) {
 	return 0;
     }
     $objs = $pdfs = 0;
-    $docs = array(".odt", ".tex");
+    $docs = array(".odt", ".tex", ".src");
 
     while (($entry = readdir($dh)) !== false) {
 	if (check_symlink("$dir/$entry"))
