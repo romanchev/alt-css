@@ -13,7 +13,7 @@ $hw_platforms = array (
     "armh"    => "ARM32, ARMv7",
     "e2k"     => "Эльбрус, v3",
     "e2kv4"   => "Эльбрус, v4",
-//  "e2kv5"   => "Эльбрус, v5",
+    "e2kv5"   => "Эльбрус, v5",
     "mipsel"  => "MIPS32/LE",
     "ppc64le" => "Power 8/9, OpenPower",
 );
@@ -52,9 +52,9 @@ $avail_platforms = array (
 	"p9srv"  => "x86_64,aarch64,e2k,e2kv4,ppc64le",
     ),
     "P10" => array (
-	"p10ws"  => "x86_64,i586,aarch64,e2k,e2kv4",
-	"p10edu" => "x86_64,i586,aarch64,e2k,e2kv4",
-	"p10srv" => "x86_64,aarch64,e2k,e2kv4",
+	"p10ws"  => "x86_64,i586,aarch64,e2k,e2kv4,e2kv5",
+	"p10edu" => "x86_64,i586,aarch64,e2k,e2kv4,e2kv5",
+	"p10srv" => "x86_64,aarch64,e2k,e2kv4,e2kv5,ppc64le",
     ),
 );
 
