@@ -29,10 +29,10 @@ table.arch { width:99%; margin:0 10px; border:black; border-collapse:collapse; b
 .arch a:link, .arch a:visited { color:#33e; }
 .arch a:hover { color:#00f; text-decoration:underline; }
 .arch th { padding:10px 5px; font-size:110%; background:#ccc; border: 1px solid black; }
-th.product { text-align:left; vertical-align:middle; }
-th.help { text-align:center; vertical-align:middle; }
-th.cell { width:14%; text-align:center; vertical-align:middle; }
-th.small { width:14%; text-align:center; vertical-align:middle; font-style:normal; font-weight:normal; }
+th.product { width:30%; text-align:left; vertical-align:middle; }
+th.help { width:1%; text-align:center; vertical-align:middle; }
+th.cell { width:15%; text-align:center; vertical-align:middle; }
+th.small { width:15%; text-align:center; vertical-align:middle; font-style:normal; font-weight:normal; }
 .arch td { border: 1px solid black; }
 td.product { padding: 5px; text-align:left; }
 td.category { padding: 5px; text-align:left; }
@@ -40,6 +40,7 @@ td.help { padding: 5px; text-align:center; }
 td.compat { padding: 15px 5px 15px; text-align:center; background:#90ff90; vertical-align:middle; }
 td.compat:hover { background-color: #3f3; }
 td.group { padding:5px; color:brown; font-weight:900; font-size:110%; text-align:left; background-color:#e0e0f7; }
+.sup { font-weight:900; color:#f00; }
 .notes { margin:20px; padding:20px 60px; font-size:120%; font-style:italic; background:#eee; color:#000; border:1px solid #000; border-radius:5px; box-shadow:3px 3px 6px rgba(0,0,0,0.2); }
 .warn  { margin:20px; padding:20px 60px; font-size:120%; font-style:italic; background:#fcc; color:#000; border:1px solid #000; border-radius:5px; box-shadow:3px 3px 6px rgba(0,0,0,0.2); }
 
@@ -73,10 +74,10 @@ h2>Совместимость с ПО на следующих дистрибут
 
 <div>
 <p class="notes">Совместимость с пока ещё актуальными дистрибутивами Альт на <b>девятой платформе</b>
-   и последней версией «Альт 8 СП» после инспекционного контроля в декабре 2020 представлена в
-   <a href="P9-view2.html">другой таблице</a>. По вопросам совместимости, найденных опечаток, обращайтесь
-   в <a href="mailto:gost@basealt.ru" title="Отправить запрос">службу обеспечения совместимости</a>.
-   Для получения доступа к демонстрационному стенду с интересующим вас ПО обращайтесь в
-   <a href="mailto:sales@basealt.ru" title="Отправить запрос">отдел продаж</a>.</p>
+   и последней версией «Альт 8 СП» после инспекционного контроля в декабре 2020 представлена в другой
+   <a href="P9-view2.html">таблице совместимости</a>. По вопросам совместимости, найденных опечаток,
+   обращайтесь в <a href="mailto:gost@basealt.ru" title="Отправить запрос">службу обеспечения
+   совместимости</a>. Для получения доступа к демонстрационному стенду с интересующим вас ПО
+   обращайтесь в <a href="mailto:sales@basealt.ru" title="Отправить запрос">отдел продаж</a>.</p>
 </div>
 
