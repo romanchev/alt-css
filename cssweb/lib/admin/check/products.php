@@ -2,12 +2,24 @@
 
 function check_instref_dir($dir, $ver) {
     global $FORCE_MODE, $statinfo, $install, $revinst;
+    global $check_table_regex, $comp_ext_rules;
 
     if (($dh = opendir($dir)) === false) {
 	E_dir("/$dir");
 	return 0;
     }
-    $docs = array("inst.odt", "inst.tex", "inst.src");
+    if (isset($check_table_regex))
+	$tabrg =& $check_table_regex;
+    else {
+	$tabrg = "";
+	$t_ids = array_keys($comp_ext_rules);
+	foreach ($t_ids as $tableId)
+	    $tabrg .= ($tabrg ? "|": "") . "\\." . $tableId;
+	$tabrg = "inst(" . $tabrg . ")?";
+	$check_table_regex =& $tabrg;
+	unset($t_ids, $tableId);
+    }
+    $docs = "\\.(odt|tex|src)";
     $objs = $pdfs = $refs = $logo = $sources = 0;
 
     while (($entry = readdir($dh)) !== false) {
@@ -16,12 +28,14 @@ function check_instref_dir($dir, $ver) {
 	elseif (is_dir("$dir/$entry")) {
 	    if (($entry == ".") || ($entry == ".."))
 		continue;
-	    elseif (($entry != "inst.adoc") && ($entry != "inst.book"))
+	    elseif (!preg_match("/^".$tabrg."\\.(adoc|book)$/", $entry))
 		U_dir("/$dir/$entry");
 	    else {
-		if (!file_exists("$dir/inst.pdf"))
-		    A_nopdf("/$dir/inst.pdf");
+		$dest = preg_replace("/\\.(adoc|book)$/", ".pdf", $entry);
+		if (!file_exists("$dir/$dest"))
+		    A_nopdf("/$dir/$dest");
 		check_asciidoc_dir("$dir/$entry");
+		unset($dest);
 		$sources ++;
 	    }
 	}
@@ -37,7 +51,7 @@ function check_instref_dir($dir, $ver) {
 		S_img("/$dir/$entry");
 	    $logo ++;
 	}
-	elseif ($entry == "inst.pdf") {
+	elseif (preg_match("/^".$tabrg."\\.pdf$/", $entry)) {
 	    if (!isset( $install["$dir/$entry"] )) {
 		if (!$FORCE_MODE || $statinfo["errors"])
 		    errx("Link to PDF not found in /Install: /$dir/$entry");
@@ -60,7 +74,7 @@ function check_instref_dir($dir, $ver) {
 	    }
 	    $pdfs ++;
 	}
-	elseif ($entry == "inst.ref") {
+	elseif (preg_match("/^".$tabrg."\\.ref$/", $entry)) {
 	    $dlist = explode('/', $dir);
 	    $vID = $dlist[1]; $pID = $dlist[2];
 	    $rID = trim(file_get_contents("$dir/$entry"));
@@ -77,21 +91,25 @@ function check_instref_dir($dir, $ver) {
 	    $refs ++;
 	    unset($dlist, $vID, $pID);
 	}
-	elseif ($entry == "inst.txt") {
-	    if (!file_exists("$dir/inst.pdf"))
-		A_nopdf("/$dir/inst.pdf");
+	elseif (preg_match("/^".$tabrg."\\.txt$/", $entry)) {
+	    $dest = preg_replace("/\\.txt$/", ".pdf", $entry);
+	    if (!file_exists("$dir/$dest"))
+		A_nopdf("/$dir/$dest");
 	    if (!filesize("$dir/$entry"))
 		S_file("/$dir/$entry");
 	    check_asciidoc("$dir/$entry");
+	    unset($dest);
 	    $sources ++;
 	}
-	elseif (!in_array($entry, $docs, true))
+	elseif (!preg_match("/^".$tabrg.$docs."$/", $entry))
 	    U_file("/$dir/$entry");
 	else {
-	    if (!file_exists("$dir/inst.pdf"))
+	    $dest = preg_replace("/".$docs."$/", ".pdf", $entry);
+	    if (!file_exists("$dir/$dest"))
 		warnx("Source not exported to PDF: /$dir/$entry");
 	    if (!filesize("$dir/$entry"))
 		S_file("/$dir/$entry");
+	    unset($dest);
 	    $sources ++;
 	}
 	$objs ++;
@@ -99,16 +117,12 @@ function check_instref_dir($dir, $ver) {
 
     if (!$objs)
 	E_dir("/$dir");
-    if ($pdfs) {
-	if (!$sources)
-	    warnx("PDF has no source: /$dir/inst.pdf");
-	elseif ($sources > 1)
-	    warnx("PDF has one more sources: /$dir/inst.pdf");
-	if ($refs)
-	    errx("Both link to the manual (.ref) and PDF found in /$dir");
-    }
+    if ($pdfs - $sources == 1)
+	warnx("PDF has no source in /$dir/");
+    elseif ($pdfs > $sources)
+	warnx("PDF's have no sources in /$dir/");
     if ($logo > 1)
-	errx("One more logo files found in /$dir");
+	errx("One more logo files found in /$dir/");
     if ($ver && !file_exists("$dir/version.yml"))
 	E_yaml("$dir/version.yml");
     closedir($dh);
