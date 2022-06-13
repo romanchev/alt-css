@@ -1,14 +1,14 @@
 <?php
 
 function update_version_cache($VendorID, $ProductID, $version, $index=false, $archive=false) {
-    global $install;
+    global $install, $comp_ext_rules;
 
     // Auto-detect index
     if ($index === false)
 	$index = letter2idx(first_letter($VendorID));
     if (!isset($install))
 	check_install();
-    $srch = $major = array();
+    $srch = $major = $pdfs = array();
     $stop = array("List", "Tags", "Hidden");
 
     // Extract primary info and index data for FTS
@@ -42,16 +42,34 @@ function update_version_cache($VendorID, $ProductID, $version, $index=false, $ar
     }
     unset($data, $stop, $key, $value);
 
-    // Check installation guide PDF
+    // Check installation guide PDF's
     if (file_exists("$dir/inst.pdf")) {
 	if (isset($install["$dir/inst.pdf"]))
-	    $major["InstPDF"] = "6:".$install["$dir/inst.pdf"];
+	    $pdfs[] = "8:".$install["$dir/inst.pdf"];
     }
     elseif (file_exists("$dir/inst.ref")) {
 	$rpath = ref2pdf($VendorID, $ProductID, "VERS/$version");
 	if ($rpath)
-	    $major["InstPDF"] = "6:".$install[$rpath];
+	    $pdfs[] = "8:".$install[$rpath];
 	unset($rpath);
+    }
+    foreach ($comp_ext_rules as $tableId => $P) {
+	$P = "$dir/inst.{$tableId}.pdf";
+	if (file_exists($P)) {
+	    if (isset($install[$P]))
+		$pdfs[] = "9:{$tableId}@".$install[$P];
+	}
+	elseif (file_exists("$dir/inst.{$tableId}.ref")) {
+	    $rpath = ref2pdf($VendorID, $ProductID, "VERS/$version", ".".$tableId);
+	    if ($rpath)
+		$pdfs[] = "9:{$tableId}@".$install[$rpath];
+	    unset($rpath);
+	}
+	unset($P);
+    }
+    if (count($pdfs)) {
+	sort($pdfs);
+	$major["InstPDF"] = $pdfs;
     }
 
     // Update data in the cache

@@ -123,8 +123,12 @@ function reindex_compatibility($tableId) {
 		    continue;
 		}
 		$found = -1;
-		$stext = "4:$arch=";
+		$sdown = "4:{$tableId}@";
+		$ndown = strlen($sdown);
+		$stext = "5:{$arch}=";
 		$ntext = strlen($stext);
+		$spref = "6:{$tableId}@{$arch}=";
+		$npref = strlen($spref);
 		$label = $columns[$label];
 		$arch  = $platforms[$arch];
 		for ($i=0; $i < count($distimg); $i++)
@@ -136,15 +140,20 @@ function reindex_compatibility($tableId) {
 		    $manual = false;
 		    if (isset($prod["InstPDF"])) {
 			foreach ($prod["InstPDF"] as $pdf) {
-			    if (substr($pdf, 0, $ntext) == $stext)
-				$manual = "4:".substr($pdf, $ntext);
+			    if (substr($pdf, 0, $npref) == $spref)
+				$manual = "6:".substr($pdf, $npref);
+			    elseif (substr($pdf, 0, $ntext) == $stext)
+				$manual = "5:".substr($pdf, $ntext);
+			    elseif (substr($pdf, 0, $ndown) == $sdown)
+				$manual = "4:".substr($pdf, $ndown);
 			}
 			unset($pdf);
 		    }
 		    $distimg[] = array($label, $arch, $manual);
 		    unset($manual);
 		}
-		unset($dIndex, $arch, $label, $i, $found, $stext, $ntext);
+		unset($dIndex, $arch, $label, $i, $stext, $ntext);
+		unset($sdown, $ndown, $spref, $npref, $found);
 	    }
 	    unset($id);
 
@@ -183,12 +192,31 @@ function reindex_compatibility($tableId) {
 		    if ($ver != "") {
 			$id = "$tID:$ver";
 			if (isset( $civer[$id] )) {
-			    if (isset( $civer[$id]["InstPDF"] ))
-				$manual = $civer[$id]["InstPDF"];
-			    elseif (isset( $civer[$id]["Install"] ))
-				$manual = "5:".$civer[$id]["Install"];
 			    if (isset( $civer[$id]["Footnote"] ))
 				$notes = $civer[$id]["Footnote"];
+			    if (isset( $civer[$id]["Install"] ))
+				$manual = "7:".$civer[$id]["Install"];
+			    if (isset( $civer[$id]["InstPDF"] )) {
+				$left = $manual ? @intval(substr($manual, 0, 1)): 0;
+				$pdfs = $civer[$id]["InstPDF"];
+				foreach ($pdfs as $cpdf) {
+				    $right = @intval(substr($cpdf, 0, 1));
+				    if ($right == 9) {
+					$stext = "9:{$tableId}@";
+					$ntext = strlen($stext);
+					if (substr($cpdf, 0, $ntext) != $stext) {
+					    unset($stext, $ntext);
+					    continue;
+					}
+					$cpdf = "9:".substr($cpdf, $ntext);
+					unset($stext, $ntext);
+				    }
+				    if ($left < $right)
+					$manual = $cpdf;
+				    unset($cpdf);
+				}
+				unset($left, $right, $pdfs);
+			    }
 			}
 			unset($id);
 		    }

@@ -1,7 +1,7 @@
 <?php
 
 function update_product_cache($VendorID, $ProductID, $index=false) {
-    global $statinfo, $catids, $catfull, $install, $SUITES;
+    global $statinfo, $catids, $catfull, $install, $SUITES, $comp_ext_rules;
 
     // Auto-detect index
     if ($index === false)
@@ -100,24 +100,51 @@ function update_product_cache($VendorID, $ProductID, $index=false) {
 		continue;
 	    elseif (($entry == ".") || ($entry == ".."))
 		continue;
-	    if (file_exists("$dir/$entry/inst.pdf")) {
-		if (isset($install["$dir/$entry/inst.pdf"])) {
+
+	    foreach ($comp_ext_rules as $tableId => $P) {
+		$P = "$dir/$entry/inst.$tableId";
+		if (file_exists("$P.pdf")) {
+		    if (isset($install["$P.pdf"])) {
+			if ($entry == "ALL")
+			    $pdfs[] = "4:{$tabelId}@".$install["$P.pdf"];
+			else
+			    $pdfs[] = "6:{$tabelId}@$entry=".$install["$P.pdf"];
+		    }
+		}
+		elseif (file_exists("$P.ref")) {
+		    $rpath = ref2pdf($VendorID, $ProductID,
+					"ARCH/$entry", ".".$tableId);
+		    if ($rpath) {
+			if ($entry == "ALL")
+			    $pdfs[] = "4:{$tabelId}@".$install[$rpath];
+			else
+			    $pdfs[] = "6:{$tabelId}@$entry=".$install[$rpath];
+		    }
+		    unset($rpath);
+		}
+		unset($tableId);
+	    }
+
+	    $P = "$dir/$entry/inst";
+	    if (file_exists("$P.pdf")) {
+		if (isset($install["$P.pdf"])) {
 		    if ($entry == "ALL")
-			$pdfs[] = "3:".$install["$dir/$entry/inst.pdf"];
+			$pdfs[] = "3:".$install["$P.pdf"];
 		    else
-			$pdfs[] = "4:$entry=".$install["$dir/$entry/inst.pdf"];
+			$pdfs[] = "5:$entry=".$install["$P.pdf"];
 		}
 	    }
-	    elseif (file_exists("$dir/$entry/inst.ref")) {
+	    elseif (file_exists("$P.ref")) {
 		$rpath = ref2pdf($VendorID, $ProductID, "ARCH/$entry");
 		if ($rpath) {
 		    if ($entry == "ALL")
 			$pdfs[] = "3:".$install[$rpath];
 		    else
-			$pdfs[] = "4:$entry=".$install[$rpath];
+			$pdfs[] = "5:$entry=".$install[$rpath];
 		}
 		unset($rpath);
 	    }
+	    unset($P);
 	}
 	closedir($dh);
 	unset($dh, $entry);

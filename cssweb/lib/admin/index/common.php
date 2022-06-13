@@ -92,10 +92,10 @@ function check_object_field($field, &$value, $path) {
     return $err;
 }
 
-function ref2pdf($vID, $pID, $rpath) {
+function ref2pdf($vID, $pID, $rpath, $suffix="") {
     global $install;
 
-    if (!file_exists($ref = "Vendors/$vID/$pID/$rpath/inst.ref")) {
+    if (!file_exists($ref = "Vendors/$vID/$pID/$rpath/inst".$suffix.".ref")) {
 	errx("Reference not found: /$ref");
 	return false;
     }

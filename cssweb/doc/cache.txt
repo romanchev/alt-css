@@ -1,7 +1,7 @@
 Format of the PHP cache
 =======================
 Leonid Krivoshein <klark@altlinux.org>
-v1.7.2, 2022-02-27: draft
+v1.7.3, 2022-06-12: draft
 
 == L2-cache ==
 
@@ -35,7 +35,7 @@ Ready to quick use tables and dictionaries.
 
 == L0-cache ==
 
-- *comptab.php* -- Compatibility Table Cells
+- *comptab-<TABID>.php* -- Compatibility Table Cells
 
 == Categories ==
 
@@ -114,7 +114,7 @@ Products info: set of the parsed /Vendors/$vID/$pID/product.yml.
 - *Versions* -- Rebuilded versions & releases arrays
 - *Footnote* -- Footnote for the Pivot Compatibility Table (optional)
 - *Hidden*   -- Do not show in the pivot table (optional, true only)
-- *InstPDF*  -- Installation guides (PDF's, optional array, wg type 3 & 4)
+- *InstPDF*  -- Installation guides (PDF's, optional array, wg type 3-6)
 
 .Versions example:
 ------------------------------------------------------
@@ -133,7 +133,9 @@ Products info: set of the parsed /Vendors/$vID/$pID/product.yml.
 ------------------------------------------------------
 'InstPDF' => array (
     0 => '3:8fc4c7ad1f3281a5653ba56e45410c2f',
-    1 => '4:x86_64=60fb303e5b604733409c697c2e343158',
+    1 => '4:P10@60fb303e5b604733409c697c2e343158',
+    2 => '5:x86_64=8fc4c7ad1f3281a5653ba56e45410c2f',
+    4 => '6:P10@aarch64=60fb303e5b604733409c697c2e343158',
 ),
 ------------------------------------------------------
 
@@ -154,7 +156,15 @@ fields is optional.
 - *Install*  -- Installation manual URL (wg type 5 only)
 - *Tags*     -- Tags list (array)
 - *Footnote* -- Footnote for the Pivot Compatibility Table (optional)
-- *InstPDF*  -- Installation guide (wg type 6 only)
+- *InstPDF*  -- Installation guides (PDF's, optional array, wg type 8 & 9)
+
+.InstPDF example:
+------------------------------------------------------
+'InstPDF' => array (
+    0 => '8:8fc4c7ad1f3281a5653ba56e45410c2f',
+    1 => '9:P10@60fb303e5b604733409c697c2e343158',
+),
+------------------------------------------------------
 
 See also:
 
@@ -297,9 +307,12 @@ can be used instead inst.pdf and points to the common manuals directories.
 - *1* -- Category default URL (/Categories/.../category.yml:Install)
 - *2* -- Product default URL (/Vendors/$vID/$pID/product.yml:Install)
 - *3* -- Product default PDF (/Vendors/$vID/$pID/ARCH/ALL/inst.pdf)
-- *4* -- Platform-specific PDF (/Vendors/$vID/$pID/ARCH/$ARCH/inst.pdf)
-- *5* -- Product version URL (/Vendors/$vID/$pID/VERS/$MAJOR/version.yml:Install)
-- *6* -- Product version PDF (/Vendors/$vID/$pID/VERS/$MAJOR/inst.pdf)
+- *4* -- Product PDF for table (/Vendors/$vID/$pID/ARCH/ALL/inst.<TABID>.pdf)
+- *5* -- Platform-specific PDF (/Vendors/$vID/$pID/ARCH/$ARCH/inst.pdf)
+- *6* -- Platform-specific PDF for table (/Vendors/$vID/$pID/ARCH/$ARCH/inst.<TABID>.pdf)
+- *7* -- Product version URL (/Vendors/$vID/$pID/VERS/$MAJOR/version.yml:Install)
+- *8* -- Product version PDF (/Vendors/$vID/$pID/VERS/$MAJOR/inst.pdf)
+- *9* -- Product version PDF for table (/Vendors/$vID/$pID/VERS/$MAJOR/inst.<TABID>.pdf)
 
 See also:
 

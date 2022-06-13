@@ -30,6 +30,10 @@ function reindex_products_table() {
 		foreach ($prod["InstPDF"] as $pdfentry) {
 		    if (substr($pdfentry, 0, 2) == "3:")
 			$manual = $pdfentry;
+		    elseif (substr($pdfentry, 0, 2) == "4:") {
+			$manual = $pdfentry;
+			break;
+		    }
 		}
 		unset($pdfentry);
 	    }
