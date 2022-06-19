@@ -6,7 +6,7 @@
 %endif
 
 Name: css
-Version: 1.7.2.20220328
+Version: 1.7.3.20220619
 Release: alt1
 
 Summary: Compatibility Service Suite
@@ -104,6 +104,12 @@ sed -i -e "/\/usr\/bin\/css\-sh/d" /etc/shells
 	%buildroot/var/www/html/bin
 
 %changelog
-* Sun Mar 06 2022 Leonid Krivoshein <klark@altlinux.org> 1.7.2.20220328-alt1
-- Initial build for Sisyphus.
+* Sun Jun 19 2022 Leonid Krivoshein <klark@altlinux.org> 1.7.3.20220619-alt1
+- Added ability to inject date when no source.
+- Added support of the e2kv5 platform.
+- Updated HTML template for P10 table.
+- Updated HTML template of the MainView.
+- Allow differ manuals in one more tables.
+- Format of the PHP cache updated to v1.7.3.
+- Client-side templates updated to v1.7.3.
 
