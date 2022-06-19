@@ -1,7 +1,7 @@
 <?php
 
 function reindex_categories() {
-    global $SUITES, $hw_platforms, $statinfo, $catids, $catfull;
+    global $SUITES, $hw_platforms, $statinfo, $catids, $catfull, $comp_ext_rules;
 
     $dir = "Categories";
     if (!isset($catids))
@@ -36,12 +36,30 @@ function reindex_categories() {
 	    else {
 		$flag = false;
 		foreach ($record["ArchDefs"] as $arch => &$data) {
-		    if (($arch != "ALL") && !isset($hw_platforms[$arch])) {
+		    if (!isset($hw_platforms[$arch])) {
 			errx("Unknown platform name: '$arch' in /$yaml");
 			$flag = true;
 		    }
 		    foreach ($data as $key => $val) {
-			if (($key != "URI") && ($key != "Install")) {
+			if ($key == "Manuals") {
+			    if (!is_array($val)) {
+				errx("Invalid 'Manuals' field format in /$yaml");
+				$flag = true;
+				break;
+			    }
+			    foreach ($val as $tabID => $docref) {
+				if (!isset($comp_ext_rules[$tabID])) {
+				    errx("Unknown table ID: '$tabID' in /$yaml");
+				    $flag = true;
+				}
+				if (!isUrl($docref)) {
+				    errx("Bad value: $tabID='$docref' in /$yaml");
+				    $flag = true;
+				}
+			    }
+			    unset($tabID, $docref);
+			}
+			elseif (($key != "URI") && ($key != "Install")) {
 			    errx("Unexpected field: '$key' in /$yaml");
 			    $flag = true;
 			}

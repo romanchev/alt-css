@@ -32,6 +32,7 @@ function update_product_cache($VendorID, $ProductID, $index=false) {
     $tags = isset($data["Tags"]) ? explode(", ", $data["Tags"]): null;
     $stop = array("Name", "List", "Suitable", "Category", "Hidden", "Tags");
     $versions = rebuildVersions($data, "$VendorID/$ProductID/VERS");
+    $tablinks = isset($data["Manuals"]) ? $data["Manuals"]: null;
     $instlink = isset($data["Install"]) ? $data["Install"]: "";
     $hidden   = isset($data["Hidden"]);
     $category = $data["Category"];
@@ -90,6 +91,27 @@ function update_product_cache($VendorID, $ProductID, $index=false) {
 	}
     unset($majvers, $i, $rel, $ver);
 
+    // Check table's links
+    if (($tablinks !== null) && !is_array($tablinks)) {
+	errx("Invalid 'Manuals' field format in /$yaml");
+	$tablinks = null;
+    }
+    elseif (is_array($tablinks)) {
+	foreach ($tablinks as $tableId => $docref) {
+	    if (!isset($comp_ext_rules[$tableId])) {
+		errx("Unknown table ID: '$tableId' in /$yaml");
+		$tablinks = null;
+		break;
+	    }
+	    if (!isUrl($docref)) {
+		errx("Bad value: $tableId='$docref' in /$yaml");
+		$tablinks = null;
+		break;
+	    }
+	}
+	unset($tableId, $docref);
+    }
+
     // Build installation guides array
     $dir = "Vendors/$VendorID/$ProductID/ARCH";
     if (!is_link($dir) && is_dir($dir) && (($dh = opendir($dir)) !== false)) {
@@ -106,9 +128,9 @@ function update_product_cache($VendorID, $ProductID, $index=false) {
 		if (file_exists("$P.pdf")) {
 		    if (isset($install["$P.pdf"])) {
 			if ($entry == "ALL")
-			    $pdfs[] = "4:{$tabelId}@".$install["$P.pdf"];
+			    $pdfs[] = "6:{$tabelId}@".$install["$P.pdf"];
 			else
-			    $pdfs[] = "6:{$tabelId}@$entry=".$install["$P.pdf"];
+			    $pdfs[] = "8:{$tabelId}@$entry=".$install["$P.pdf"];
 		    }
 		}
 		elseif (file_exists("$P.ref")) {
@@ -116,9 +138,9 @@ function update_product_cache($VendorID, $ProductID, $index=false) {
 					"ARCH/$entry", ".".$tableId);
 		    if ($rpath) {
 			if ($entry == "ALL")
-			    $pdfs[] = "4:{$tabelId}@".$install[$rpath];
+			    $pdfs[] = "6:{$tabelId}@".$install[$rpath];
 			else
-			    $pdfs[] = "6:{$tabelId}@$entry=".$install[$rpath];
+			    $pdfs[] = "8:{$tabelId}@$entry=".$install[$rpath];
 		    }
 		    unset($rpath);
 		}
@@ -129,18 +151,18 @@ function update_product_cache($VendorID, $ProductID, $index=false) {
 	    if (file_exists("$P.pdf")) {
 		if (isset($install["$P.pdf"])) {
 		    if ($entry == "ALL")
-			$pdfs[] = "3:".$install["$P.pdf"];
+			$pdfs[] = "5:".$install["$P.pdf"];
 		    else
-			$pdfs[] = "5:$entry=".$install["$P.pdf"];
+			$pdfs[] = "7:$entry=".$install["$P.pdf"];
 		}
 	    }
 	    elseif (file_exists("$P.ref")) {
 		$rpath = ref2pdf($VendorID, $ProductID, "ARCH/$entry");
 		if ($rpath) {
 		    if ($entry == "ALL")
-			$pdfs[] = "3:".$install[$rpath];
+			$pdfs[] = "5:".$install[$rpath];
 		    else
-			$pdfs[] = "5:$entry=".$install[$rpath];
+			$pdfs[] = "7:$entry=".$install[$rpath];
 		}
 		unset($rpath);
 	    }
@@ -163,6 +185,8 @@ function update_product_cache($VendorID, $ProductID, $index=false) {
 	"Install"  => $instlink,
 	"Versions" => $versions
     );
+    if ($tablinks !== null)
+	$p_idx[$tID]["Manuals"] = $tablinks;
     if ($note)
 	$p_idx[$tID]["Footnote"] = $note;
     if ($hidden)

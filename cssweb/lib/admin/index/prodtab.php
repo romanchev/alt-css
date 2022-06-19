@@ -25,16 +25,13 @@ function reindex_products_table() {
 		$catId = $catids[ $prod["Category"] ];
 	    else
 		$catId = $catids[ $prod["Category"]."/" ];
-	    $manual = $prod["Install"] ? "2:".$prod["Install"]: "";
+	    $manual = $prod["Install"] ? "3:".$prod["Install"]: "";
 	    if (isset($prod["InstPDF"])) {
-		foreach ($prod["InstPDF"] as $pdfentry) {
-		    if (substr($pdfentry, 0, 2) == "3:")
-			$manual = $pdfentry;
-		    elseif (substr($pdfentry, 0, 2) == "4:") {
+		foreach ($prod["InstPDF"] as $pdfentry)
+		    if (substr($pdfentry, 0, 2) == "5:") {
 			$manual = $pdfentry;
 			break;
 		    }
-		}
 		unset($pdfentry);
 	    }
 	    $name = $prod["Name"];

@@ -1,7 +1,7 @@
 <?php
 
 function reindex_compatibility($tableId) {
-    global $SUITES, $comp_ext_rules, $q_index;
+    global $SUITES, $comp_ext_rules, $q_index, $catids, $catfull;
     global $hw_platforms, $distids, $vendids, $prodids;
 
     if (!isset($q_index))
@@ -15,6 +15,10 @@ function reindex_compatibility($tableId) {
     $columns = array_flip(array_keys( $comp_ext_rules[$tableId] ));
 
     // Load other data
+    if (!isset($catids))
+	$catids = cache2arr("catids");
+    if (!isset($catfull))
+	$catfull = cache2arr("catfull");
     if (!isset($distids))
 	$distids = cache2arr("distids");
     elseif (isset($distids[0]))
@@ -79,6 +83,35 @@ function reindex_compatibility($tableId) {
 		continue;
 	    }
 
+	    // Locate the preferred product installation guide
+	    $p_guide = $prod["Install"] ? "3:".$prod["Install"]: false;
+	    if (isset($prod["Manuals"]) && isset($prod["Manuals"][$tableId]))
+		$p_guide = "4:".$prod["Manuals"][$tableId];
+	    $ArchDefs = array();
+	    if (!$p_guide) {
+		$ctree = explode("/", $prod["Category"]);
+		do {
+		    $ccurr = implode("/", $ctree);
+		    if (isset( $catids[$ccurr] ))
+			$catId = $catids[$ccurr];
+		    elseif (isset( $catids[$ccurr."/"] ))
+			$catId = $catids[$ccurr."/"];
+		    else {
+			array_pop($ctree);
+			unset($ccurr);
+			continue;
+		    }
+		    if (isset( $catfull[$catId][FCAT_DefsIDX] )) {
+			$ArchDefs = $catfull[$catId][FCAT_DefsIDX];
+			unset($catId, $ccurr);
+			break;
+		    }
+		    array_pop($ctree);
+		    unset($catId, $ccurr);
+		} while(count($ctree));
+		unset($ctree);
+	    }
+
 	    // Make major versions list
 	    $distimg = $majv = array();
 	    foreach ($ci["vers"][0] as $rel => $ver)
@@ -122,38 +155,51 @@ function reindex_compatibility($tableId) {
 		    unset($dIndex, $arch, $label);
 		    continue;
 		}
+
+		$manual = $p_guide;
+		if (!$manual && isset($ArchDefs[$arch])) {
+		    if (isset($ArchDefs[$arch]["Manuals"]) &&
+			isset($ArchDefs[$arch]["Manuals"][$tableId]))
+		    {
+			$manual = "2:".$ArchDefs[$arch]["Manuals"][$tableId];
+		    }
+		    elseif (isset($ArchDefs[$arch]["Install"]))
+		    {
+			$manual = "1:".$ArchDefs[$arch]["Install"];
+		    }
+		}
+
 		$found = -1;
-		$sdown = "4:{$tableId}@";
+		$sdown = "6:{$tableId}@";
 		$ndown = strlen($sdown);
-		$stext = "5:{$arch}=";
+		$stext = "7:{$arch}=";
 		$ntext = strlen($stext);
-		$spref = "6:{$tableId}@{$arch}=";
+		$spref = "8:{$tableId}@{$arch}=";
 		$npref = strlen($spref);
 		$label = $columns[$label];
-		$arch  = $platforms[$arch];
 		for ($i=0; $i < count($distimg); $i++)
-		    if (($distimg[$i][0] == $label) && ($distimg[$i][1] == $arch)) {
+		    if (($distimg[$i][0] == $label) && ($distimg[$i][1] == $platforms[$arch])) {
 			$found = $i;
 			break;
 		    }
 		if ($found == -1) {
-		    $manual = false;
 		    if (isset($prod["InstPDF"])) {
-			foreach ($prod["InstPDF"] as $pdf) {
-			    if (substr($pdf, 0, $npref) == $spref)
-				$manual = "6:".substr($pdf, $npref);
-			    elseif (substr($pdf, 0, $ntext) == $stext)
-				$manual = "5:".substr($pdf, $ntext);
-			    elseif (substr($pdf, 0, $ndown) == $sdown)
-				$manual = "4:".substr($pdf, $ndown);
+			foreach ($prod["InstPDF"] as $cpdf) {
+			    if (substr($cpdf, 0, $npref) == $spref)
+				$manual = "8:".substr($cpdf, $npref);
+			    elseif (substr($cpdf, 0, $ntext) == $stext)
+				$manual = "7:".substr($cpdf, $ntext);
+			    elseif (substr($cpdf, 0, $ndown) == $sdown)
+				$manual = "6:".substr($cpdf, $ndown);
+			    elseif (substr($cpdf, 0, 2) == "5:")
+				$manual = $cpdf;
+			    unset($cpdf);
 			}
-			unset($pdf);
 		    }
-		    $distimg[] = array($label, $arch, $manual);
-		    unset($manual);
+		    $distimg[] = array($label, $platforms[$arch], $manual);
 		}
 		unset($dIndex, $arch, $label, $i, $stext, $ntext);
-		unset($sdown, $ndown, $spref, $npref, $found);
+		unset($sdown, $ndown, $spref, $npref, $found, $manual);
 	    }
 	    unset($id);
 
@@ -194,28 +240,27 @@ function reindex_compatibility($tableId) {
 			if (isset( $civer[$id] )) {
 			    if (isset( $civer[$id]["Footnote"] ))
 				$notes = $civer[$id]["Footnote"];
-			    if (isset( $civer[$id]["Install"] ))
-				$manual = "7:".$civer[$id]["Install"];
+			    if (isset( $civer[$id]["Manuals"] ) &&
+				isset( $civer[$id]["Manuals"][$tableId] ))
+			    {
+				$manual = "A:".$civer[$id]["Manuals"][$tableId];
+			    }
+			    elseif (isset( $civer[$id]["Install"] ))
+			    {
+				$manual = "9:".$civer[$id]["Install"];
+			    }
 			    if (isset( $civer[$id]["InstPDF"] )) {
-				$left = $manual ? @intval(substr($manual, 0, 1)): 0;
-				$pdfs = $civer[$id]["InstPDF"];
+				$pdfs  = $civer[$id]["InstPDF"];
+				$stext = "C:{$tableId}@";
+				$ntext = strlen($stext);
 				foreach ($pdfs as $cpdf) {
-				    $right = @intval(substr($cpdf, 0, 1));
-				    if ($right == 9) {
-					$stext = "9:{$tableId}@";
-					$ntext = strlen($stext);
-					if (substr($cpdf, 0, $ntext) != $stext) {
-					    unset($stext, $ntext);
-					    continue;
-					}
-					$cpdf = "9:".substr($cpdf, $ntext);
-					unset($stext, $ntext);
-				    }
-				    if ($left < $right)
+				    if (substr($cpdf, 0, $ntext) == $stext)
+					$manual = "C:".substr($cpdf, $ntext);
+				    elseif (substr($cpdf, 0, 2) == "B:")
 					$manual = $cpdf;
 				    unset($cpdf);
 				}
-				unset($left, $right, $pdfs);
+				unset($pdfs, $stext, $ntext);
 			    }
 			}
 			unset($id);

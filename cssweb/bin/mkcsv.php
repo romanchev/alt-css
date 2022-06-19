@@ -169,12 +169,8 @@ foreach ($compinfo as &$ci) {
     }
     unset($prod_idx);
 
-    if ($ci[CTAB_InstIDX] &&
-	(@intval(substr($docref, 0, 1)) <
-	 @intval(substr($ci[CTAB_InstIDX], 0, 1))))
-	{
-	    $docref = $ci[CTAB_InstIDX];
-	}
+    if ($ci[CTAB_InstIDX] && (ord($docref) < ord( $ci[CTAB_InstIDX] )))
+	$docref = $ci[CTAB_InstIDX];
     if (isset( $ci[CTAB_NoteIDX] ))
 	$notes[ $ci[CTAB_DcolIDX] ] = $ci[CTAB_NoteIDX];
     $expand[ $ci[CTAB_DcolIDX] ] = $ci[CTAB_SuitIDX];

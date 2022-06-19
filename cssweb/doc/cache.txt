@@ -1,7 +1,7 @@
 Format of the PHP cache
 =======================
 Leonid Krivoshein <klark@altlinux.org>
-v1.7.3, 2022-06-12: draft
+v1.7.3, 2022-06-19: draft
 
 == L2-cache ==
 
@@ -110,11 +110,12 @@ Products info: set of the parsed /Vendors/$vID/$pID/product.yml.
 - *Tags*     -- Tags list (array or NULL)
 - *Category* -- Product category name
 - *Suitable* -- Suitable: "NoExpand", "Desktop", "Server" or "Universal"
-- *Install*  -- Installation manual URL (wg type 2 only) or ""
+- *Install*  -- Installation manual URL (wg type 3 only) or ""
+- *Manuals*  -- Product default URL's for tables (optional array)
 - *Versions* -- Rebuilded versions & releases arrays
 - *Footnote* -- Footnote for the Pivot Compatibility Table (optional)
 - *Hidden*   -- Do not show in the pivot table (optional, true only)
-- *InstPDF*  -- Installation guides (PDF's, optional array, wg type 3-6)
+- *InstPDF*  -- Installation guides (PDF's, optional array, wg types 5-8)
 
 .Versions example:
 ------------------------------------------------------
@@ -132,10 +133,10 @@ Products info: set of the parsed /Vendors/$vID/$pID/product.yml.
 .InstPDF example:
 ------------------------------------------------------
 'InstPDF' => array (
-    0 => '3:8fc4c7ad1f3281a5653ba56e45410c2f',
-    1 => '4:P10@60fb303e5b604733409c697c2e343158',
-    2 => '5:x86_64=8fc4c7ad1f3281a5653ba56e45410c2f',
-    4 => '6:P10@aarch64=60fb303e5b604733409c697c2e343158',
+    0 => '5:8fc4c7ad1f3281a5653ba56e45410c2f',
+    1 => '6:P10@60fb303e5b604733409c697c2e343158',
+    2 => '7:x86_64=8fc4c7ad1f3281a5653ba56e45410c2f',
+    3 => '8:P10@aarch64=60fb303e5b604733409c697c2e343158',
 ),
 ------------------------------------------------------
 
@@ -153,16 +154,17 @@ fields is optional.
 - *URI*      -- Major version description WEB-page
 - *Hidden*   -- Do not show in the pivot table (true only)
 - *List*     -- Integer List number (0, 1 or 2)
-- *Install*  -- Installation manual URL (wg type 5 only)
+- *Install*  -- Installation manual URL (wg type 9 only)
+- *Manuals*  -- Product version URL's for tables (optional array)
 - *Tags*     -- Tags list (array)
 - *Footnote* -- Footnote for the Pivot Compatibility Table (optional)
-- *InstPDF*  -- Installation guides (PDF's, optional array, wg type 8 & 9)
+- *InstPDF*  -- Installation guides (PDF's, optional array, wg type "B" & "C")
 
 .InstPDF example:
 ------------------------------------------------------
 'InstPDF' => array (
-    0 => '8:8fc4c7ad1f3281a5653ba56e45410c2f',
-    1 => '9:P10@60fb303e5b604733409c697c2e343158',
+    0 => 'B:8fc4c7ad1f3281a5653ba56e45410c2f',
+    1 => 'C:P10@60fb303e5b604733409c697c2e343158',
 ),
 ------------------------------------------------------
 
@@ -270,7 +272,7 @@ All Products, sorted by InQuotes-name.
 - *2* -- Displayed name
 - *3* -- Product WEB-page URL or ""
 - *4* -- Suitable property [1...4]
-- *5* -- Manual in form wg:URL or ""
+- *5* -- Manual in form 3:URL or 5:MD5 or ""
 - *6* -- Footnote for the Pivot Compatibility Table (optional)
 
 See also:
@@ -304,15 +306,18 @@ This is a wg code's (priorities), bigger value is preferred. inst.ref
 can be used instead inst.pdf and points to the common manuals directories.
 
 - *0* -- No manual
-- *1* -- Category default URL (/Categories/.../category.yml:Install)
-- *2* -- Product default URL (/Vendors/$vID/$pID/product.yml:Install)
-- *3* -- Product default PDF (/Vendors/$vID/$pID/ARCH/ALL/inst.pdf)
-- *4* -- Product PDF for table (/Vendors/$vID/$pID/ARCH/ALL/inst.<TABID>.pdf)
-- *5* -- Platform-specific PDF (/Vendors/$vID/$pID/ARCH/$ARCH/inst.pdf)
-- *6* -- Platform-specific PDF for table (/Vendors/$vID/$pID/ARCH/$ARCH/inst.<TABID>.pdf)
-- *7* -- Product version URL (/Vendors/$vID/$pID/VERS/$MAJOR/version.yml:Install)
-- *8* -- Product version PDF (/Vendors/$vID/$pID/VERS/$MAJOR/inst.pdf)
-- *9* -- Product version PDF for table (/Vendors/$vID/$pID/VERS/$MAJOR/inst.<TABID>.pdf)
+- *1* -- Category default URL (/Categories/.../category.yml:ArchDefs:$ARCH:Install)
+- *2* -- Category defualt URL for table (/Categories/.../category.yml:ArchDefs:$ARCH:Manuals:$TABID)
+- *3* -- Product default URL (/Vendors/$vID/$pID/product.yml:Install)
+- *4* -- Product default URL for table (/Vendors/$vID/$pID/product.yml:Manuals:$TABID)
+- *5* -- Product default PDF (/Vendors/$vID/$pID/ARCH/ALL/inst.pdf)
+- *6* -- Product PDF for table (/Vendors/$vID/$pID/ARCH/ALL/inst.$TABID.pdf)
+- *7* -- Platform-specific PDF (/Vendors/$vID/$pID/ARCH/$ARCH/inst.pdf)
+- *8* -- Platform-specific PDF for table (/Vendors/$vID/$pID/ARCH/$ARCH/inst.$TABID.pdf)
+- *9* -- Product version URL (/Vendors/$vID/$pID/VERS/$MAJOR/version.yml:Install)
+- *A* -- Product version URL for table (/Vendors/$vID/$pID/VERS/$MAJOR/version.yml:Manuals:$TABID)
+- *B* -- Product version PDF (/Vendors/$vID/$pID/VERS/$MAJOR/inst.pdf)
+- *C* -- Product version PDF for table (/Vendors/$vID/$pID/VERS/$MAJOR/inst.$TABID.pdf)
 
 See also:
 

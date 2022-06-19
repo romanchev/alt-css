@@ -58,6 +58,9 @@ Fields:
     OldName:   Установка
     Caption:   Инструкция
     Type:      Uri
+  Manuals:
+    Caption:   Инструкции
+    Type:      Object
   Tags:
     Caption:   Тэги
     Type:      Tags

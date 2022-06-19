@@ -29,6 +29,7 @@ function update_version_cache($VendorID, $ProductID, $version, $index=false, $ar
 	$major["Tags"] = explode(", ", $data["Tags"]);
     if (isset($data["Footnote"]))
 	$major["Footnote"] = $data["Footnote"];
+    $tablinks = isset($data["Manuals"]) ? $data["Manuals"]: null;
     //
     foreach ($data as $key => &$value) {
 	if (in_array($key, $stop, true))
@@ -42,27 +43,50 @@ function update_version_cache($VendorID, $ProductID, $version, $index=false, $ar
     }
     unset($data, $stop, $key, $value);
 
+    // Check table's links
+    if (($tablinks !== null) && !is_array($tablinks)) {
+	errx("Invalid 'Manuals' field format in /$yaml");
+	$tablinks = null;
+    }
+    elseif (is_array($tablinks)) {
+	foreach ($tablinks as $tableId => $docref) {
+	    if (!isset($comp_ext_rules[$tableId])) {
+		errx("Unknown table ID: '$tableId' in /$yaml");
+		$tablinks = null;
+		break;
+	    }
+	    if (!isUrl($docref)) {
+		errx("Bad value: $tableId='$docref' in /$yaml");
+		$tablinks = null;
+		break;
+	    }
+	}
+	if (($tablinks !== null) && count($tablinks))
+	    $major["Manuals"] = $tablinks;
+	unset($tableId, $docref);
+    }
+
     // Check installation guide PDF's
     if (file_exists("$dir/inst.pdf")) {
 	if (isset($install["$dir/inst.pdf"]))
-	    $pdfs[] = "8:".$install["$dir/inst.pdf"];
+	    $pdfs[] = "B:".$install["$dir/inst.pdf"];
     }
     elseif (file_exists("$dir/inst.ref")) {
 	$rpath = ref2pdf($VendorID, $ProductID, "VERS/$version");
 	if ($rpath)
-	    $pdfs[] = "8:".$install[$rpath];
+	    $pdfs[] = "B:".$install[$rpath];
 	unset($rpath);
     }
     foreach ($comp_ext_rules as $tableId => $P) {
 	$P = "$dir/inst.{$tableId}.pdf";
 	if (file_exists($P)) {
 	    if (isset($install[$P]))
-		$pdfs[] = "9:{$tableId}@".$install[$P];
+		$pdfs[] = "C:{$tableId}@".$install[$P];
 	}
 	elseif (file_exists("$dir/inst.{$tableId}.ref")) {
 	    $rpath = ref2pdf($VendorID, $ProductID, "VERS/$version", ".".$tableId);
 	    if ($rpath)
-		$pdfs[] = "9:{$tableId}@".$install[$rpath];
+		$pdfs[] = "C:{$tableId}@".$install[$rpath];
 	    unset($rpath);
 	}
 	unset($P);

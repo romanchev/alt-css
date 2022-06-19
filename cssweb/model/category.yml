@@ -16,5 +16,5 @@ Fields:
     Variants:  [Universal, Desktop, Server, NoExpand]
   ArchDefs:
     Caption:   Архитектурные определения
-    Type:      ObjList
+    Type:      Object
 
