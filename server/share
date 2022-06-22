@@ -51,6 +51,11 @@ run rm -rf --one-file-system -- "$upstream"/static.next
 run "$publish_cmd" "$upstream"/static.next && [ -f "$HOME"/SUCCESS ]
 run rm -f -- "$HOME"/SUCCESS
 
+# Optimize overlay
+message "Optimizing overlay..."
+run cd "$overlay"/CSI-data/
+run git gc --aggressive
+
 # Clone overlay to upstream
 upd_repo_msg 'upstream' 'overlay'
 run rm -rf --one-file-system -- "$upstream"/static.prev
