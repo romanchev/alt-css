@@ -71,6 +71,8 @@ uadd)	# args: [-P] <name> <email> <nick>
 	    email = $email
 	[core]
 	    quotepath = off
+	[safe]
+	    directory = $upstream/CSI-data
 	EOF
 	chmod 0644 "/home/$nick"/.gitconfig
 	chown "css_$nick:css_$nick" "/home/$nick"/.gitconfig
