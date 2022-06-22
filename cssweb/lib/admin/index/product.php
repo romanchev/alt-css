@@ -128,9 +128,9 @@ function update_product_cache($VendorID, $ProductID, $index=false) {
 		if (file_exists("$P.pdf")) {
 		    if (isset($install["$P.pdf"])) {
 			if ($entry == "ALL")
-			    $pdfs[] = "6:{$tabelId}@".$install["$P.pdf"];
+			    $pdfs[] = "6:{$tableId}@".$install["$P.pdf"];
 			else
-			    $pdfs[] = "8:{$tabelId}@$entry=".$install["$P.pdf"];
+			    $pdfs[] = "8:{$tableId}@$entry=".$install["$P.pdf"];
 		    }
 		}
 		elseif (file_exists("$P.ref")) {
@@ -138,9 +138,9 @@ function update_product_cache($VendorID, $ProductID, $index=false) {
 					"ARCH/$entry", ".".$tableId);
 		    if ($rpath) {
 			if ($entry == "ALL")
-			    $pdfs[] = "6:{$tabelId}@".$install[$rpath];
+			    $pdfs[] = "6:{$tableId}@".$install[$rpath];
 			else
-			    $pdfs[] = "8:{$tabelId}@$entry=".$install[$rpath];
+			    $pdfs[] = "8:{$tableId}@$entry=".$install[$rpath];
 		    }
 		    unset($rpath);
 		}
