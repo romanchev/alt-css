@@ -51,31 +51,28 @@ run rm -rf --one-file-system -- "$upstream"/static.next
 run "$publish_cmd" "$upstream"/static.next && [ -f "$HOME"/SUCCESS ]
 run rm -f -- "$HOME"/SUCCESS
 
-# Optimize overlay
-message "Optimizing overlay..."
-run cd "$overlay"/CSI-data/
-run git gc --aggressive
-
 # Clone overlay to upstream
 upd_repo_msg 'upstream' 'overlay'
 run rm -rf --one-file-system -- "$upstream"/static.prev
 run rm -rf --one-file-system -- "$upstream"/CSI-data.next
 run rm -rf --one-file-system -- "$upstream"/CSI-cache.prev
+run git remote remove origin 2>/dev/null ||:
 #
 if [ ! -d "$upstream"/CSI-data.prev ]; then
+	message "Optimizing 'overlay' before clone..."
+	run git gc $quiet --force
 	run cp -aRf -- "$overlay"/CSI-data "$upstream"/CSI-data.next
-	run cd "$upstream"/CSI-data.next/
 else
-	run cd "$overlay"/CSI-data/
-	run git remote remove origin 2>/dev/null ||:
 	run mv -f -- "$upstream"/CSI-data.prev "$upstream"/CSI-data.next
 	run git remote add origin file://"$upstream"/CSI-data.next
 	run git push $quiet --tags origin master
+	run git remote remove origin 2>/dev/null ||:
+	run cd "$upstream"/CSI-data.next/
+	message "Optimizing 'upstream' after clone..."
+	run git gc $quiet --force
 fi
 #
-run git remote remove origin 2>/dev/null ||:
 run cd "$upstream"/
-#
 run rsync -aH --del -- "$docroot"/static/ "$upstream"/static.prev/
 run rsync -aH --del -- "$upstream"/static.next/ "$docroot"/static/ ||:
 run rsync -aH --del -- "$overlay"/CSI-cache/ "$upstream"/CSI-cache.next/
