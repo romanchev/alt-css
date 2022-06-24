@@ -48,10 +48,6 @@ if ! run git pull $quiet --tags origin master; then
 	run git pull -f $quiet --tags origin master
 fi
 
-# Optimize draft
-message "Optimizing draft..."
-run git gc --aggressive
-
 message "Finishing on the server-side..."
 
 run sync
