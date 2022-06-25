@@ -6,7 +6,7 @@
 %endif
 
 Name: css
-Version: 1.7.3.20220623
+Version: 1.7.4.20220625
 Release: alt1
 
 Summary: Compatibility Service Suite
@@ -104,7 +104,8 @@ sed -i -e "/\/usr\/bin\/css\-sh/d" /etc/shells
 	%buildroot/var/www/html/bin
 
 %changelog
-* Thu Jun 23 2022 Leonid Krivoshein <klark@altlinux.org> 1.7.3.20220623-alt1
-- css-admin: allow upstream tree for all other.
-- fixed typos, git gc on pull and share added.
+* Sat Jun 25 2022 Leonid Krivoshein <klark@altlinux.org> 1.7.4.20220625-alt1
+- server/share: git gc on share rewrited.
+- server/pull: git gc on pull removed back.
+- URL removed from the category.yml template.
 
