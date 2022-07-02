@@ -45,17 +45,18 @@ define("ONLY_DESKTOP",	1);
 define("ONLY_SERVER",	2);
 define("ONLY_WS8SP",	3);
 define("ONLY_SR8SP",	4);
-define("ONLY_WS10",	5);
-define("ONLY_WK10",	6);
-define("ONLY_ED10",	7);
-define("ONLY_SR10",	8);
-define("ONLY_SV10",	9);
-define("ONLY_WS9",	10);
-define("ONLY_WK9",	11);
-define("ONLY_ED9",	12);
-define("ONLY_SR9",	13);
-define("ONLY_SV9",	14);
-define("ONLY_DISTRO",	15);
+define("ONLY_SM10",	5);
+define("ONLY_WS10",	6);
+define("ONLY_WK10",	7);
+define("ONLY_ED10",	8);
+define("ONLY_SR10",	9);
+define("ONLY_SV10",	10);
+define("ONLY_WS9",	11);
+define("ONLY_WK9",	12);
+define("ONLY_ED9",	13);
+define("ONLY_SR9",	14);
+define("ONLY_SV9",	15);
+define("ONLY_DISTRO",	16);
 //
 define("ONLY_SOFTWARE",	1);
 define("ONLY_HARDWARE",	2);
@@ -450,10 +451,11 @@ foreach ($q_index as $index) {
 	    $found = $regex = false;
 
 	    switch ($selectDistro) {
-		case ONLY_DESKTOP: $regex = "/^(ws|wk|ed)/";	break;
+		case ONLY_DESKTOP: $regex = "/^(ws|wk|ed|sm)/";	break;
 		case ONLY_SERVER:  $regex = "/^(sr|sv|ed)/";	break;
 		case ONLY_WS8SP:   $regex = "/^ws8[1-9]?sp/";	break;
 		case ONLY_SR8SP:   $regex = "/^sr8[1-9]?sp/";	break;
+		case ONLY_SM10:	   $regex = "/^sm10/";		break;
 		case ONLY_WS10:	   $regex = "/^ws10/";		break;
 		case ONLY_WK10:	   $regex = "/^wk10/";		break;
 		case ONLY_ED10:	   $regex = "/^ed10/";		break;

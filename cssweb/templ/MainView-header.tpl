@@ -65,16 +65,17 @@ a:link, a:visited { color:#00f; text-decoration:none; }
  <option value="2">Любые серверные решения</option>
  <option value="3">Альт 8 СП Рабочая станция</option>
  <option value="4">Альт 8 СП Сервер</option>
- <option value="5">Альт Рабочая станция 10</option>
- <option value="6">Альт Рабочая станция К 10</option>
- <option value="7">Альт Образование 10</option>
- <option value="8">Альт Сервер 10</option>
- <option value="9">Альт Сервер виртуализации 10</option>
- <option value="10">Альт Рабочая станция 9</option>
- <option value="11">Альт Рабочая станция К 9</option>
- <option value="12">Альт Образование 9</option>
- <option value="13">Альт Сервер 9</option>
- <option value="14">Альт Сервер виртуализации 9</option>
+ <option value="5">Simply Linux 10</option>
+ <option value="6">Альт Рабочая станция 10</option>
+ <option value="7">Альт Рабочая станция К 10</option>
+ <option value="8">Альт Образование 10</option>
+ <option value="9">Альт Сервер 10</option>
+ <option value="10">Альт Сервер виртуализации 10</option>
+ <option value="11">Альт Рабочая станция 9</option>
+ <option value="12">Альт Рабочая станция К 9</option>
+ <option value="13">Альт Образование 9</option>
+ <option value="14">Альт Сервер 9</option>
+ <option value="15">Альт Сервер виртуализации 9</option>
 </select>
 </td></tr>
 <tr><td><label for="g">Категория:</label></td><td>
@@ -129,6 +130,7 @@ a:link, a:visited { color:#00f; text-decoration:none; }
 </tr>
 <tr><td colspan="2">&nbsp;</td></tr>
 <tr><td colspan="2" class="group">ДРУГИЕ ПОЛЕЗНЫЕ ССЫЛКИ</td></tr>
+<tr><td class="left">Совместимость&nbsp;S10:</td><td class="right">[<a href="TabDiffView.php?t=S10&amp;e=on" target="_blank" title="Открыть в новом окне">Разница</a>] [<a href="CompTableView.php?t=S10&amp;v=2&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;категориям</a>] [<a href="CompTableView.php?t=S10&amp;v=1&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;вендорам</a>] [<a href="CompTableView.php?t=S10&amp;v=0&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;продуктам</a>]</td></tr>
 <tr><td class="left">Совместимость&nbsp;P10:</td><td class="right">[<a href="TabDiffView.php?t=P10&amp;e=on" target="_blank" title="Открыть в новом окне">Разница</a>] [<a href="CompTableView.php?t=P10&amp;v=2&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;категориям</a>] [<a href="CompTableView.php?t=P10&amp;v=1&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;вендорам</a>] [<a href="CompTableView.php?t=P10&amp;v=0&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;продуктам</a>]</td></tr>
 <tr><td class="left">Совместимость&nbsp;P9:</td><td class="right">[<a href="TabDiffView.php?t=P9&amp;e=on" target="_blank" title="Открыть в новом окне">Разница</a>] [<a href="CompTableView.php?t=P9&amp;v=2&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;категориям</a>] [<a href="CompTableView.php?t=P9&amp;v=1&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;вендорам</a>] [<a href="CompTableView.php?t=P9&amp;v=0&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;продуктам</a>]</td></tr>
 <tr><td class="left">Совместимость&nbsp;8SP:</td><td class="right">[<a href="TabDiffView.php?t=8SP&amp;e=on" target="_blank" title="Открыть в новом окне">Разница</a>] [<a href="CompTableView.php?t=8SP&amp;v=2&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;категориям</a>] [<a href="CompTableView.php?t=8SP&amp;v=1&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;вендорам</a>] [<a href="CompTableView.php?t=8SP&amp;v=0&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;продуктам</a>]</td></tr>
