@@ -1,18 +1,19 @@
 <?php
 
-function reindex_compatibility($tableId) {
+function reindex_compatibility($tabId) {
     global $SUITES, $comp_ext_rules, $q_index, $catids, $catfull;
     global $hw_platforms, $distids, $vendids, $prodids;
 
     if (!isset($q_index))
 	$q_index = cache2arr("abc");
     $citab = $saved_notes = array();
+    $tableId = ($tabId == "S10") ? "P10": $tabId;
 
     // Hardware platforms order
     $platforms = array_flip(array_keys( $hw_platforms ));
 
     // Pivot table column labels
-    $columns = array_flip(array_keys( $comp_ext_rules[$tableId] ));
+    $columns = array_flip(array_keys( $comp_ext_rules[$tabId] ));
 
     // Load other data
     if (!isset($catids))
@@ -325,7 +326,7 @@ function reindex_compatibility($tableId) {
     }
 
     usort($citab, "compare_compinfo");
-    arr2cache("comptab-".$tableId, $citab);
+    arr2cache("comptab-".$tabId, $citab);
     unset($citab, $saved_notes, $columns, $platforms);
 }
 

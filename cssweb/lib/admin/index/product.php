@@ -124,6 +124,10 @@ function update_product_cache($VendorID, $ProductID, $index=false) {
 		continue;
 
 	    foreach ($comp_ext_rules as $tableId => $P) {
+		if ($tableId == "S10") {
+		    unset($tableId);
+		    continue;
+		}
 		$P = "$dir/$entry/inst.$tableId";
 		if (file_exists("$P.pdf")) {
 		    if (isset($install["$P.pdf"])) {

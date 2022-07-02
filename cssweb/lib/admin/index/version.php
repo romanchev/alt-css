@@ -78,13 +78,18 @@ function update_version_cache($VendorID, $ProductID, $version, $index=false, $ar
 	unset($rpath);
     }
     foreach ($comp_ext_rules as $tableId => $P) {
+	if ($tableId == "S10") {
+	    unset($P);
+	    continue;
+	}
 	$P = "$dir/inst.{$tableId}.pdf";
 	if (file_exists($P)) {
 	    if (isset($install[$P]))
 		$pdfs[] = "C:{$tableId}@".$install[$P];
 	}
 	elseif (file_exists("$dir/inst.{$tableId}.ref")) {
-	    $rpath = ref2pdf($VendorID, $ProductID, "VERS/$version", ".".$tableId);
+	    $rpath = ref2pdf($VendorID, $ProductID,
+				"VERS/$version", ".".$tableId);
 	    if ($rpath)
 		$pdfs[] = "C:{$tableId}@".$install[$rpath];
 	    unset($rpath);
