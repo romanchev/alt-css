@@ -36,6 +36,9 @@ $comp_ext_rules = array (
 	"p10edu" => "p10ws:p10srv",
 	"p10srv" => "p10ws,p10edu:p10edu",
     ),
+    "S10" => array (
+	"p10smp" => ":",
+    ),
 );
 
 // Available platforms for the table columns
@@ -55,6 +58,9 @@ $avail_platforms = array (
 	"p10ws"  => "x86_64,i586,aarch64,e2k,e2kv4,e2kv5",
 	"p10edu" => "x86_64,i586,aarch64,e2k,e2kv4,e2kv5",
 	"p10srv" => "x86_64,aarch64,e2k,e2kv4,e2kv5,ppc64le",
+    ),
+    "S10" => array (
+	"p10smp" => "x86_64,i586,aarch64",
     ),
 );
 
