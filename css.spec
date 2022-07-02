@@ -6,7 +6,7 @@
 %endif
 
 Name: css
-Version: 1.7.4.20220625
+Version: 1.7.4.20220703
 Release: alt1
 
 Summary: Compatibility Service Suite
@@ -104,8 +104,5 @@ sed -i -e "/\/usr\/bin\/css\-sh/d" /etc/shells
 	%buildroot/var/www/html/bin
 
 %changelog
-* Sat Jun 25 2022 Leonid Krivoshein <klark@altlinux.org> 1.7.4.20220625-alt1
-- server/share: git gc on share rewrited.
-- server/pull: git gc on pull removed back.
-- URL removed from the category.yml template.
-
+* Sun Jul 03 2022 Leonid Krivoshein <klark@altlinux.org> 1.7.4.20220703-alt1
+- Added support for Simply Linux.
