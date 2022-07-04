@@ -6,7 +6,7 @@
 %endif
 
 Name: css
-Version: 1.7.4.20220703
+Version: 1.7.4.20220704
 Release: alt1
 
 Summary: Compatibility Service Suite
@@ -104,5 +104,7 @@ sed -i -e "/\/usr\/bin\/css\-sh/d" /etc/shells
 	%buildroot/var/www/html/bin
 
 %changelog
-* Sun Jul 03 2022 Leonid Krivoshein <klark@altlinux.org> 1.7.4.20220703-alt1
-- Added support for Simply Linux.
+* Mon Jul 04 2022 Leonid Krivoshein <klark@altlinux.org> 1.7.4.20220704-alt1
+- Added S10-view to static HTML-content.
+- Don't ignore guide and certno changes.
+
