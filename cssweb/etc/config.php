@@ -114,7 +114,7 @@ define("CTAB_SuitIDX", 7);
 define("CTAB_InstIDX", 8);
 define("CTAB_NoteIDX", 9); /* optional */
 //
-define("IGNORE_PRODINST", true);
-define("IGNORE_CERTNUMB", true);
+define("IGNORE_PRODINST", false);
+define("IGNORE_CERTNUMB", false);
 
 ?>
