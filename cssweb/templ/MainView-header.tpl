@@ -96,10 +96,11 @@ a:link, a:visited { color:#00f; text-decoration:none; }
 <tr><td><label for="s">Сгруппировать:</label></td><td>
 <select name="s">
  <option value="0" selected="selected">По умолчанию</option>
- <option value="1">По партнёрам</option>
- <option value="2">По категориям</option>
- <option value="3">По платформам</option>
- <option value="4">По дистрибутивам</option>
+ <option value="1">По совместимости</option>
+ <option value="2">По партнёрам</option>
+ <option value="3">По категориям</option>
+ <option value="4">По платформам</option>
+ <option value="5">По дистрибутивам</option>
 </select>
 </td></tr>
 <tr><td>Сводить релизы:</td><td>

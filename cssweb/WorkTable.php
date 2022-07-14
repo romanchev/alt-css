@@ -77,10 +77,11 @@ define("DistrosIDX",   11);
 define("ArchesIDX",    12);
 //
 define("GROUP_BY_DEFAULT", 0);
-define("GROUP_BY_VENDORS", 1);
-define("GROUP_BY_GROUPS",  2);
-define("GROUP_BY_ARCHES",  3);
-define("GROUP_BY_DISTROS", 4);
+define("GROUP_BY_COMPAT",  1);
+define("GROUP_BY_VENDORS", 2);
+define("GROUP_BY_GROUPS",  3);
+define("GROUP_BY_ARCHES",  4);
+define("GROUP_BY_DISTROS", 5);
 
 
 function listVersions($sep, &$act, &$old) {
@@ -181,6 +182,14 @@ function compare_compat(&$a, &$b) {
     if ($a[ListIDX] != $b[ListIDX])
 	return ($a[ListIDX] < $b[ListIDX]) ? -1: 1;
     return compare_products($a, $b);
+}
+
+function compare_dates(&$a, &$b) {
+    $l = ($a[FinishIDX] === null) ? $a[StartIDX]: $a[FinishIDX];
+    $r = ($b[FinishIDX] === null) ? $b[StartIDX]: $b[FinishIDX];
+    if ($l != $r)
+	return ($l > $r) ? -1: 1;
+    return compare_compat($a, $b);
 }
 
 
@@ -566,7 +575,7 @@ foreach ($q_index as $index) {
 $vendids = array_flip($vendids);
 $prodids = array_flip($prodids);
 
-$showListColumn = ($selectView != GROUP_BY_DEFAULT);
+$showListColumn = ($selectView != GROUP_BY_COMPAT);
 $showArchColumn = ($selectView != GROUP_BY_ARCHES);
 $showDistColumn = ($selectView != GROUP_BY_DISTROS);
 
@@ -584,6 +593,10 @@ unset($q_index, $index);
 
 // Sort results
 switch ($selectView) {
+    case GROUP_BY_COMPAT:
+	usort($citable, "compare_compat");
+	break;
+
     case GROUP_BY_VENDORS:
 	usort($citable, "compare_vendors");
 	break;
@@ -644,7 +657,7 @@ switch ($selectView) {
 
     default:
 	$selectView = GROUP_BY_DEFAULT;
-	usort($citable, "compare_compat");
+	usort($citable, "compare_dates");
 	break;
 }
 
@@ -662,14 +675,14 @@ $counter = 0;
 // Start output data
 echo makeHeader("WorkTable");
 $no   = "<a href=\"EntryFrame.php\" title=\"Вернуться в начало\">№</a>";
-$prod = "<a href=\"WorkTable.php?s=1\" target=\"_self\" ".
+$comp = "<a href=\"WorkTable.php?s=1\" target=\"_self\" ".
+	"title=\"Сгруппировать по совместимости\">СОВМ?</a>";
+$prod = "<a href=\"WorkTable.php?s=2\" target=\"_self\" ".
 	"title=\"Сгрупировать по партнёрам и продуктам\">ПРОДУКТ</a>";
-$arch = "<a href=\"WorkTable.php?s=3\" target=\"_self\" ".
+$arch = "<a href=\"WorkTable.php?s=4\" target=\"_self\" ".
 	"title=\"Сгруппировать по платформам\">ПЛАТФОРМЫ</a>";
-$dist = "<a href=\"WorkTable.php?s=4\" target=\"_self\" ".
+$dist = "<a href=\"WorkTable.php?s=5\" target=\"_self\" ".
 	"title=\"Сгруппировать по дистрибутивам\">ДИСТРИБУТИВЫ</a>";
-$comp = "<a href=\"WorkTable.php\" target=\"_self\" ".
-	"title=\"Сгруппировать по умолчанию\">СОВМ?</a>";
 $output = "<thead>\n<tr>\n".
 	"<th class=\"no\">{$no}</th>\n".
 	"<th class=\"prod\">{$prod}</th>\n".
@@ -707,7 +720,7 @@ foreach ($citable as &$ci) {
 	    $old_group = $output;
 	}
     }
-    elseif ($selectView == GROUP_BY_DEFAULT) {
+    elseif ($selectView == GROUP_BY_COMPAT) {
 	$output = strval($ci[ListIDX]).", ";
 	if ($ci[ResultIDX] == "NO")
 	    $output .= "несовместимы";
@@ -760,7 +773,7 @@ foreach ($citable as &$ci) {
 		"VendorID=".urlencode($vID).
 		"&ProductID=".urlencode($pID));
     $pname = htmlspecialchars($products[$ci[ProductIDX]]);
-    if ($selectView == GROUP_BY_VENDORS) {
+    if (($selectView == GROUP_BY_VENDORS) || ($selectView == GROUP_BY_DEFAULT)) {
 	if ($old_group !== $ci[VendorIDX]) {
 	    $old_group = $ci[VendorIDX];
 	    echo newgrp(htmlspecialchars($vendors[$old_group]));
