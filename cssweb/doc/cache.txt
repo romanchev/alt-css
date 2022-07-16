@@ -1,7 +1,7 @@
 Format of the PHP cache
 =======================
 Leonid Krivoshein <klark@altlinux.org>
-v1.7.3, 2022-06-19: draft
+v1.7.5, 2022-07-17: draft
 
 == L2-cache ==
 
@@ -30,7 +30,8 @@ Ready to quick use tables and dictionaries.
 - *prodids.php*  -- vID:pID to Product Index Dictionary
 - *products.php* -- Sorted Products Names and other info
 - *manuals.php*  -- PDF's CSI-path to MD5 Dictionary
-- *csigit.php*   -- Top-10 CSI git log records
+- *csigit.php*   -- Top-20 CSI git log records
+- *recent.php*   -- Key CSS documents index
 - *statinfo.php* -- Common statistic counters
 
 == L0-cache ==
