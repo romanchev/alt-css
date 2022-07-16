@@ -8,6 +8,7 @@ require_once("$LIBDIR/web.php");
 $platforms = array_keys($hw_platforms);
 $statinfo  = cache2arr("statinfo");
 $catids    = cache2arr("catids");
+$recent    = cache2arr("recent");
 $git       = cache2arr("csigit");
 
 // Dictionary
@@ -87,6 +88,35 @@ if ($editor) {
 }
 unset($p, $s, $h);
 $alt = false;
+
+// Form body: recent documents
+if (count($recent)) {
+    echo grpRow("КЛЮЧЕВЫЕ ДОКУМЕНТЫ");
+    foreach ($recent as &$entry) {
+	$date = htmlspecialchars($entry["date"]);
+	$nick = htmlspecialchars($entry["nick"]);
+	$name = htmlspecialchars($entry["name"]);
+	$nwin = $entry["w"];
+	$text = htmlspecialchars($entry["text"]);
+	$link = htmlspecialchars($entry["link"]);
+	$title = htmlspecialchars($entry["title"]);
+	if (!$title && $nwin)
+	    $title = "Открыть в отдельной вкладке...";
+	$href1 = "<a href=\"mailto:{$nick}@basealt.ru\" ".
+		    "title=\"$name\"><b>$nick</b>@</a>";
+	$href2 = "<a href=\"" . (isUrl($link) ? $link:
+		    "GetFile.php?fpath=" . $link) . "\"";
+	if ($nwin)
+	    $href2 .= " target=\"_blank\"";
+	$href2 .= " title=\"$title\">$text</a>";
+	echo infoRow($alt, "{$date}{$empty}{$href1}", $href2);
+	unset($date, $nick, $name, $nwin, $text, $link);
+	unset($title, $href1, $href2);
+	$alt = !$alt;
+    }
+    unset($recent, $entry);
+    $alt = false;
+}
 
 // Form body: last updates
 echo grpRow(htmlspecialchars("ПОСЛЕДНИЕ ИЗМЕНЕНИЯ (на ".

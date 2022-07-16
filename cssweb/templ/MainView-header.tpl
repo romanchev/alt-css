@@ -114,23 +114,8 @@ a:link, a:visited { color:#00f; text-decoration:none; }
 <tr><td>&nbsp;</td><td>
 <input type="Submit" value="Найти" />&nbsp;<input type="Reset" value="Сбросить" />
 </td></tr>
-<tr>
-<td colspan="2">&nbsp;</td></tr><tr><td colspan="2" class="group">КЛЮЧЕВЫЕ ДОКУМЕНТЫ СЛУЖБЫ</td>
-</tr><tr>
-<td class="left">Июн&nbsp;2022&nbsp;<a href="mailto:klark@basealt.ru" title="Леонид Кривошеин"><b>klark</b>@</a></td>
-<td class="right"><a href="GetFile.php?fpath=Documents/storage.pdf" title="Compatibility Service Suite: STORAGE">Описание хранилища данных Службы</a></td>
-</tr><tr>
-<td class="left">Фев&nbsp;2022&nbsp;<a href="mailto:klark@basealt.ru" title="Леонид Кривошеин"><b>klark</b>@</a></td>
-<td class="right"><a href="GetFile.php?fpath=Documents/client.pdf" title="Compatibility Service Suite: CLIENT">Система публикации и клиент CSS</a></td>
-</tr><tr>
-<td class="left">Май&nbsp;2022&nbsp;<a href="mailto:snowmix@basealt.ru" title="Михаил Черноног"><b>snowmix</b>@</a></td>
-<td class="right"><a href="https://intranet.altlinux.ru/Testing/iso" target="_blank" title="Открыть в отдельном окне...">ISO-образы и контрольные суммы дистрибутивов</a></td>
-</tr><tr>
-<td class="left">Окт&nbsp;2021&nbsp;<a href="mailto:snowmix@basealt.ru" title="Михаил Черноног"><b>snowmix</b>@</a></td>
-<td class="right"><a href="https://redmine.basealt.space/projects/test/wiki/%D0%A2%D1%80%D0%B5%D0%B1%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F_%D0%BA_%D0%BF%D0%BE%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B5_%D0%B7%D0%B0%D0%B4%D0%B0%D1%87_%D0%BD%D0%B0_%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5" target="_blank" title="Открыть в отдельном окне...">Требования к постановке задач на тестирование</a></td>
-</tr>
 <tr><td colspan="2">&nbsp;</td></tr>
-<tr><td colspan="2" class="group">ДРУГИЕ ПОЛЕЗНЫЕ ССЫЛКИ</td></tr>
+<tr><td colspan="2" class="group">ПОЛЕЗНЫЕ ССЫЛКИ</td></tr>
 <tr><td class="left">Совместимость&nbsp;S10:</td><td class="right">[<a href="TabDiffView.php?t=S10&amp;e=on" target="_blank" title="Открыть в новом окне">Разница</a>] [<a href="CompTableView.php?t=S10&amp;v=2&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;категориям</a>] [<a href="CompTableView.php?t=S10&amp;v=1&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;вендорам</a>] [<a href="CompTableView.php?t=S10&amp;v=0&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;продуктам</a>]</td></tr>
 <tr><td class="left">Совместимость&nbsp;P10:</td><td class="right">[<a href="TabDiffView.php?t=P10&amp;e=on" target="_blank" title="Открыть в новом окне">Разница</a>] [<a href="CompTableView.php?t=P10&amp;v=2&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;категориям</a>] [<a href="CompTableView.php?t=P10&amp;v=1&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;вендорам</a>] [<a href="CompTableView.php?t=P10&amp;v=0&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;продуктам</a>]</td></tr>
 <tr><td class="left">Совместимость&nbsp;P9:</td><td class="right">[<a href="TabDiffView.php?t=P9&amp;e=on" target="_blank" title="Открыть в новом окне">Разница</a>] [<a href="CompTableView.php?t=P9&amp;v=2&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;категориям</a>] [<a href="CompTableView.php?t=P9&amp;v=1&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;вендорам</a>] [<a href="CompTableView.php?t=P9&amp;v=0&amp;e=on" target="_blank" title="Открыть в новом окне">По&nbsp;продуктам</a>]</td></tr>

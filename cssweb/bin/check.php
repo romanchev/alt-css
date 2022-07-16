@@ -28,6 +28,7 @@ require_once("$INDEX/categories.php");
 require_once("$INDEX/platforms.php");
 require_once("$INDEX/distros.php");
 require_once("$INDEX/gitlog.php");
+require_once("$INDEX/recent.php");
 require_once("$INDEX/vendor.php");
 require_once("$INDEX/product.php");
 require_once("$INDEX/version.php");
@@ -90,6 +91,7 @@ reindex_categories();
 reindex_platforms();
 reindex_distros();
 reindex_gitlog();
+reindex_recent();
 foreach ($vendids as $dummy)
     update_vendor_cache_r($dummy);
 $statinfo["vendors"] = reindex_vendors_table();
