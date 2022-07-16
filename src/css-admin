@@ -13,6 +13,7 @@
 
 script_fullname="$(realpath -- "$0")"
 progname="${script_fullname##*/}"
+webdir="/var/www/html"
 
 fatal() {
 	local fmt="$1"; shift
@@ -36,6 +37,9 @@ help)	# args: -
 	Actions:
 	  uadd [-P] <name> <email> <nick>
 	  udel <nick>
+	  upgr
+	  init <nick>
+	  backup
 	  help
 	EOF
 	;;
@@ -122,7 +126,24 @@ init)	# args: <nick>
 	  chown -R "css_$nick:css_$nick" .
 	  touch CSI-data/Certs/*.jpg ||:
 	  touch CSI-data/Install/* ||:
+	  if [ -s "$exchange"/static.tgz ]
+	  then
+		cd "$webdir"/
+		rm -rf --one-file-system static
+		tar -xpf "$exchange"/static.tgz
+		mkdir -p -m755 static
+		chown -R "css_$nick:css_$nick" static
+	  fi
 	)
+	;;
+
+backup)	# args: -
+	cd "$webdir"/
+	tar -cpzf "$exchange"/static.tgz static
+	cd "$upstream"/
+	tar -cpzf "$exchange"/init.tgz CSI-data CSI-cache
+	cd "$exchange"/
+	du -csh init.tgz static.tgz
 	;;
 
 *)	# unexpected action
