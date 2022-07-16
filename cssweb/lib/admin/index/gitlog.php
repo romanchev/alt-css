@@ -8,7 +8,7 @@ function reindex_gitlog() {
     if (!$csv)
 	fatal("Couldn't create temporary file");
     @unlink($csv); $csv .= ".csv";
-    $output = `(git log -n10 --no-merges --ignore-missing \
+    $output = `(git log -n20 --no-merges --ignore-missing \
 		--pretty=format:"%at|%an|%ae|%s"; echo) >"$csv"`;
     $fp = fopen($csv, "r");
     if (!$fp) {
