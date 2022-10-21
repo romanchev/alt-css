@@ -74,8 +74,8 @@ function mincomreg_field_renderer($data, $model, $alt) {
     $caption = str_replace(" ", $empty,
 		htmlspecialchars($model["Caption"]));
     $output = (!$data ? $empty:
-		"<a href=\"https://reestr.digital.gov.ru/reestr/transducer/".
-		htmlspecialchars($data)."\" target=\"_blank\" ".
+		"<a href=\"https://reestr.digital.gov.ru/reestr/".
+		htmlspecialchars($data)."/\" target=\"_blank\" ".
 		"title=\"Открыть запись в реестре Минсвязи...\">#".
 		htmlspecialchars($data)."</a>");
     return infoRow($alt, $caption.":", $output);
