@@ -6,7 +6,7 @@
 %endif
 
 Name: css
-Version: 1.7.5.20220717
+Version: 1.7.6.20221022
 Release: alt1
 
 Summary: Compatibility Service Suite
@@ -104,11 +104,7 @@ sed -i -e "/\/usr\/bin\/css\-sh/d" /etc/shells
 	%buildroot/var/www/html/bin
 
 %changelog
-* Sun Jul 17 2022 Leonid Krivoshein <klark@altlinux.org> 1.7.5.20220717-alt1
-- Backup and restore with the static contents.
-- Sort by dates added, at now it use by default.
-- Document links widget now created on the fly.
-- Last changes widget incrased to 20 items.
-- Temporary fix for reestr.gov.ru URL's.
-- Cache description updated.
+* Sat Oct 22 2022 Leonid Krivoshein <klark@altlinux.org> 1.7.6.20221022-alt1
+- Removed temporary fix for reestr.gov.ru URL's.
+- Added 2FA manual links to P10 table template.
 
