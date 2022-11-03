@@ -78,10 +78,6 @@ function update_version_cache($VendorID, $ProductID, $version, $index=false, $ar
 	unset($rpath);
     }
     foreach ($comp_ext_rules as $tableId => $P) {
-	if ($tableId == "S10") {
-	    unset($P);
-	    continue;
-	}
 	$P = "$dir/inst.{$tableId}.pdf";
 	if (file_exists($P)) {
 	    if (isset($install[$P]))

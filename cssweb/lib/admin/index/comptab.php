@@ -86,7 +86,9 @@ function reindex_compatibility($tabId) {
 
 	    // Locate the preferred product installation guide
 	    $p_guide = $prod["Install"] ? "3:".$prod["Install"]: false;
-	    if (isset($prod["Manuals"]) && isset($prod["Manuals"][$tableId]))
+	    if (isset($prod["Manuals"]) && isset($prod["Manuals"][$tabId]))
+		$p_guide = "4:".$prod["Manuals"][$tabId];
+	    elseif (isset($prod["Manuals"]) && isset($prod["Manuals"][$tableId]))
 		$p_guide = "4:".$prod["Manuals"][$tableId];
 	    $ArchDefs = array();
 	    if (!$p_guide) {
@@ -160,6 +162,11 @@ function reindex_compatibility($tabId) {
 		$manual = $p_guide;
 		if (!$manual && isset($ArchDefs[$arch])) {
 		    if (isset($ArchDefs[$arch]["Manuals"]) &&
+			isset($ArchDefs[$arch]["Manuals"][$tabId]))
+		    {
+			$manual = "2:".$ArchDefs[$arch]["Manuals"][$tabId];
+		    }
+		    elseif (isset($ArchDefs[$arch]["Manuals"]) &&
 			isset($ArchDefs[$arch]["Manuals"][$tableId]))
 		    {
 			$manual = "2:".$ArchDefs[$arch]["Manuals"][$tableId];
@@ -171,6 +178,8 @@ function reindex_compatibility($tabId) {
 		}
 
 		$found = -1;
+		$sdprf = "6:{$tabId}@";
+		$ndprf = strlen($sdprf);
 		$sdown = "6:{$tableId}@";
 		$ndown = strlen($sdown);
 		$stext = "7:{$arch}=";
@@ -190,6 +199,8 @@ function reindex_compatibility($tabId) {
 				$manual = "8:".substr($cpdf, $npref);
 			    elseif (substr($cpdf, 0, $ntext) == $stext)
 				$manual = "7:".substr($cpdf, $ntext);
+			    elseif (substr($cpdf, 0, $ndprf) == $sdprf)
+				$manual = "6:".substr($cpdf, $ndprf);
 			    elseif (substr($cpdf, 0, $ndown) == $sdown)
 				$manual = "6:".substr($cpdf, $ndown);
 			    elseif (substr($cpdf, 0, 2) == "5:")
@@ -199,8 +210,8 @@ function reindex_compatibility($tabId) {
 		    }
 		    $distimg[] = array($label, $platforms[$arch], $manual);
 		}
-		unset($dIndex, $arch, $label, $i, $stext, $ntext);
-		unset($sdown, $ndown, $spref, $npref, $found, $manual);
+		unset($dIndex, $arch, $label, $i, $sdprf, $ndprf, $stext);
+		unset($ntext, $sdown, $ndown, $spref, $npref, $found, $manual);
 	    }
 	    unset($id);
 
@@ -242,6 +253,11 @@ function reindex_compatibility($tabId) {
 			    if (isset( $civer[$id]["Footnote"] ))
 				$notes = $civer[$id]["Footnote"];
 			    if (isset( $civer[$id]["Manuals"] ) &&
+				isset( $civer[$id]["Manuals"][$tabId] ))
+			    {
+				$manual = "A:".$civer[$id]["Manuals"][$tabId];
+			    }
+			    elseif (isset( $civer[$id]["Manuals"] ) &&
 				isset( $civer[$id]["Manuals"][$tableId] ))
 			    {
 				$manual = "A:".$civer[$id]["Manuals"][$tableId];
@@ -252,16 +268,20 @@ function reindex_compatibility($tabId) {
 			    }
 			    if (isset( $civer[$id]["InstPDF"] )) {
 				$pdfs  = $civer[$id]["InstPDF"];
+				$stprf = "C:{$tabId}@";
+				$ntprf = strlen($stprf);
 				$stext = "C:{$tableId}@";
 				$ntext = strlen($stext);
 				foreach ($pdfs as $cpdf) {
-				    if (substr($cpdf, 0, $ntext) == $stext)
+				    if (substr($cpdf, 0, $ntprf) == $stprf)
+					$manual = "C:".substr($cpdf, $ntprf);
+				    elseif (substr($cpdf, 0, $ntext) == $stext)
 					$manual = "C:".substr($cpdf, $ntext);
 				    elseif (substr($cpdf, 0, 2) == "B:")
 					$manual = $cpdf;
 				    unset($cpdf);
 				}
-				unset($pdfs, $stext, $ntext);
+				unset($pdfs, $stprf, $ntprf, $stext, $ntext);
 			    }
 			}
 			unset($id);
