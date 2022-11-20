@@ -63,3 +63,11 @@ td.group { padding:5px; color:brown; font-weight:900; font-size:110%; text-align
 <td>&nbsp;</td>
 </tr></tbody>
 </table>
+
+<div>
+<p class="notes">Мы считаем, что совместимость ПО с <b>Simply Linux 10</b> и другими
+   дистрибутивами на десятой платформе, скорее всего, <a href="P10-view2.html">идентична</a>.
+   Здесь дополнительно публикуются результаты проверки ПО и оборудования непосредственно с
+   дистрибутивом <b>Simply Linux 10</b>.</p>
+</div>
+
