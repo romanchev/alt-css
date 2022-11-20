@@ -25,8 +25,8 @@ This package contains common CSS build parts.
 %package server
 Summary: CSS server-side scripts and restricted shell
 Group: System/Servers
-Requires: /usr/bin/gs
-Requires: /usr/bin/convert
+Requires: ghostscript-classic
+Requires: ImageMagick-tools
 Requires: bash-builtin-lockf >= 0:0.2
 Requires: git-core
 Requires: nginx
