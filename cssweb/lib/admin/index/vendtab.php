@@ -46,7 +46,7 @@ function reindex_vendors_table() {
     return $n;
 }
 
-function compare_vendors(&$a, &$b) {
+function compare_vendors($a, $b) {
     return mb_strcasecmp($a[2], $b[2]);
 }
 

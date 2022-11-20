@@ -146,7 +146,7 @@ function reindex_categories() {
     return $statinfo["categories"];
 }
 
-function compare_groups(&$a, &$b) {
+function compare_groups($a, $b) {
     return mb_strcasecmp($a[FCAT_FullIDX], $b[FCAT_FullIDX]);
 }
 

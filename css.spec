@@ -31,12 +31,12 @@ Requires: bash-builtin-lockf >= 0:0.2
 Requires: git-core
 Requires: nginx
 Requires: openssh-server
-Requires: php7
-Requires: php7-fpm-fcgi
-Requires: php7-gd
-Requires: php7-libs
-Requires: php7-mbstring
-Requires: php7-yaml
+Requires: php8.1
+Requires: php8.1-fpm-fcgi
+Requires: php8.1-gd
+Requires: php8.1-libs
+Requires: php8.1-mbstring
+Requires: php8.1-yaml
 Requires: rsync
 Requires: sudo
 

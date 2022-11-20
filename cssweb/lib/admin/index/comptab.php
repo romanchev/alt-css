@@ -350,7 +350,7 @@ function reindex_compatibility($tabId) {
     unset($citab, $saved_notes, $columns, $platforms);
 }
 
-function compare_compinfo(&$a, &$b) {
+function compare_compinfo($a, $b) {
     if ($a[CTAB_ArchIDX] != $b[CTAB_ArchIDX])
 	return ($a[CTAB_ArchIDX] < $b[CTAB_ArchIDX]) ? -1: 1;
     if ($a[CTAB_ProdIDX] != $b[CTAB_ProdIDX])

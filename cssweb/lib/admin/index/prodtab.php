@@ -73,7 +73,7 @@ function reindex_products_table() {
     return $n;
 }
 
-function compare_products(&$a, &$b) {
+function compare_products($a, $b) {
     return mb_strcasecmp($a[0], $b[0]);
 }
 
