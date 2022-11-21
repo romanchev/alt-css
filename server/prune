@@ -1,0 +1,35 @@
+#!/bin/sh -efu
+
+# prune on the server-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+. "$CSS_LIBDIR"/csi-server-common
+
+# Check draft
+chk_repo_msg 'draft'
+run cd "$HOME"/CSI-data/
+message "Optimizing 'draft'..."
+run git gc $quiet --force
+run git prune --progress
+
+# Check overlay
+chk_repo_msg 'overlay'
+if [ -d "$overlay"/CSI-data/.git ]; then
+	message "Optimizing 'overlay'..."
+	run cd "$overlay"/CSI-data/
+	run git gc $quiet --force
+	run git prune --progress
+fi
+
+message "Finishing on the server-side..."
+
+run sync
+
+debug "script finished, git tree was optimized"
+

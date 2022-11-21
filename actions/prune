@@ -1,0 +1,20 @@
+#!/bin/sh -efu
+
+# prune on client-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2022, Leonid Krivoshein <klark@altlinux.org>
+#
+
+action_summary() {
+	echo "  prune     Prune all unreachable objects from the object database."
+}
+
+do_prune() {
+	auto_update --push
+	server_side prune $quiet
+}
+
