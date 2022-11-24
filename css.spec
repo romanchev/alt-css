@@ -6,8 +6,8 @@
 %endif
 
 Name: css
-Version: 1.7.7.20221121
-Release: alt2
+Version: 1.7.7.20221124
+Release: alt1
 
 Summary: Compatibility Service Suite
 License: GPLv3+
@@ -104,10 +104,6 @@ sed -i -e "/\/usr\/bin\/css\-sh/d" /etc/shells
 	%buildroot/var/www/html/bin
 
 %changelog
-* Mon Nov 21 2022 Leonid Krivoshein <klark@altlinux.org> 1.7.7.20221121-alt2
-- cssweb sources was adapted for use with PHP8.
-- csi prune: added ability to remotely git gc.
-- Simply Linux now can use S10 separate guide.
-- cssweb: P10/S10 table templates were updated.
-- gs+convert: replaced to explicit dependencies.
+* Thu Nov 24 2022 Leonid Krivoshein <klark@altlinux.org> 1.7.7.20221124-alt1
+- fix warnings which came after switch to PHP8.
 
