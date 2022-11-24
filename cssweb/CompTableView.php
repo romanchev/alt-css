@@ -44,7 +44,7 @@ define("GROUP_BY_GROUPS",   2);
 
 
 // Compare two rows
-function compare_rows(&$a, &$b) {
+function compare_rows($a, $b) {
     global $group_by, $platforms;
 
     if ($a[PLATFORM_IDX] != $b[PLATFORM_IDX]) {

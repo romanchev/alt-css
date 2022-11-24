@@ -143,25 +143,25 @@ function newgrp($content) {
     return "<tr><td colspan=\"$colspan\" class=\"group\">{$content}</td></tr>\n";
 }
 
-function compare_products(&$a, &$b) {
+function compare_products($a, $b) {
     if ($a[ProductIDX] != $b[ProductIDX])
 	return ($a[ProductIDX] < $b[ProductIDX]) ? -1: 1;
     return strcmp($a[CompInfoIDX], $b[CompInfoIDX]);
 }
 
-function compare_vendors(&$a, &$b) {
+function compare_vendors($a, $b) {
     if ($a[VendorIDX] != $b[VendorIDX])
 	return ($a[VendorIDX] < $b[VendorIDX]) ? -1: 1;
     return compare_products($a, $b);
 }
 
-function compare_groups(&$a, &$b) {
+function compare_groups($a, $b) {
     if ($a[GroupIDX] != $b[GroupIDX])
 	return ($a[GroupIDX] < $b[GroupIDX]) ? -1: 1;
     return compare_products($a, $b);
 }
 
-function compare_compat(&$a, &$b) {
+function compare_compat($a, $b) {
     if ($a[ResultIDX] != $b[ResultIDX]) {
 	if ($a[ResultIDX] == "NO")
 	    $l = 2;
@@ -184,7 +184,7 @@ function compare_compat(&$a, &$b) {
     return compare_products($a, $b);
 }
 
-function compare_dates(&$a, &$b) {
+function compare_dates($a, $b) {
     $l = ($a[FinishIDX] === null) ? $a[StartIDX]: $a[FinishIDX];
     $r = ($b[FinishIDX] === null) ? $b[StartIDX]: $b[FinishIDX];
     if ($l != $r)
