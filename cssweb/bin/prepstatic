@@ -6,7 +6,7 @@
 # version 3, or (at your option) any later version, which
 # should be included with sources as the file COPYING.
 #
-# Copyright (C) 2020-2022, Leonid Krivoshein <klark@altlinux.org>
+# Copyright (C) 2020-2023, Leonid Krivoshein <klark@altlinux.org>
 #
 
 . /etc/css/csi-server.conf
@@ -16,10 +16,15 @@ overlay="$overlay/$CSS_USER"
 webdir="$(realpath -- "$0")"
 webdir="${webdir%/bin/prepstatic}"
 
+echo "Initializing static directory..."
+rm -f -- "$HOME"/SUCCESS
 mkdir -p -- "$destdir"
 cd "$destdir"/
 mkdir certs instr
 ln -snf ../icons ./
+cp -Lrf -- "$webdir"/ntmps/static/i ./
+cp -Lrf -- "$webdir"/ntmps/static/js ./
+cp -Lf  -- "$webdir"/ntmps/static/style1.css ./
 cd "$overlay"/CSI-data/
 
 echo "Copying certificates..."
@@ -35,6 +40,11 @@ while read -r filename; do
 	cp -Lpf -- "$pdf" "$destdir/instr/${filename##*/}.pdf"
 done
 
+echo "Downloading BaseALT main page..."
+[ -s "$overlay"/CSI-cache/design.html ] ||
+	curl -s -o "$overlay"/CSI-cache/design.html "https://www.basealt.ru/"
+:> "$HOME"/SUCCESS
+
 echo "Creating static HTML content..."
 rm -rf --one-file-system -- "$overlay"/CSI-cache.next
 ln -snf -- "$overlay"/CSI-cache "$overlay"/CSI-cache.next
@@ -42,16 +52,30 @@ cd "$overlay"/CSI-cache/
 for t in P9 P10 S10 8SP; do
 	[ -s "$t.csv" ] ||
 		continue
+	cat >query.yml <<-EOF
+	t: $t
+	v: 1000
+	EOF
+	php -f "$webdir"/CompTabView2.php >"$destdir/P-data-$t.js"
+	[ -f "$HOME"/SUCCESS ]
+
 	for v in 0 1 2; do
 		cat >query.yml <<-EOF
 		t: $t
 		v: $v
-		e: on
 		EOF
-		php -f "$webdir"/CompTableView.php >"$destdir/$t-view$v.html"
+		php -f "$webdir"/CompTabView2.php >"$destdir/$t-view$v.html"
+		[ -f "$HOME"/SUCCESS ]
+		echo "e: on" >>query.yml
+		php -f "$webdir"/CompTableView.php >"$destdir/$t-oldv$v.html"
+		[ -f "$HOME"/SUCCESS ]
 	done
-	[ ! -s "$t-diff.csv" ] ||
+
+	if [ -s "$t-diff.csv" ]; then
 		php -f "$webdir"/TabDiffView.php >"$destdir/$t-diff.html"
+		[ -f "$HOME"/SUCCESS ]
+	fi
+
 	sed -i 's,content="noindex,content="index,' "$destdir/$t-view2.html"
 	cp -Lpf -- "$t.csv" "$destdir/"
 	rm -f query.yml
@@ -60,5 +84,4 @@ rm -f -- "$overlay"/CSI-cache.next
 
 chmod -R -- 0775 "$destdir"
 find "$destdir" -type f -exec chmod 664 {} \;
-:> "$HOME"/SUCCESS
 
