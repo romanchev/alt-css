@@ -73,7 +73,6 @@ $(document).ready(function ($) {
 
 
 
-
     let isInfoVisible = localStorage.getItem('isInfoVisible-'+$(".more-info-link").data('platform'));
     if (isInfoVisible !== '0') {
         $(".more-info-link").text("скрыть ↑");
@@ -108,7 +107,9 @@ $(document).ready(function ($) {
         let searchText = $('#search_text').val().toLowerCase();
         let platfSelected = $('#platf').val();
         let catIds = categoriesTree.getSelectedIds();
-
+        if (catIds) {
+            catIds = catIds.map(String);
+        }
         $('.platf').show();
         $('.cat-rows').show();
         $('#no_results').hide();
@@ -178,12 +179,12 @@ $(document).ready(function ($) {
         let searchText = $('#search_text').val().toLowerCase();
         let platfSelected = $('#platf').val();
         let catIds = categoriesTree.getSelectedIds();
-
+        if (catIds) {
+            catIds = catIds.map(String);
+        }
         $('.platf').show();
         $('.cat-rows').show();
         $('#no_results').hide();
-
-
         let noResults = true;
         for (platf in productsDataVends) {
             let platfWillBeHidden = true;
@@ -250,10 +251,12 @@ $(document).ready(function ($) {
         let searchText = $('#search_text').val().toLowerCase();
         let platfSelected = $('#platf').val();
         let catIds = categoriesTree.getSelectedIds();
+        if (catIds) {
+            catIds = catIds.map(String);
+        }
         $('.platf').show();
         $('.cat-rows').show();
         $('#no_results').hide();
-
         let noResults = true;
         for (platf in productsDataVendProds) {
             let platfWillBeHidden = true;
@@ -340,6 +343,14 @@ $(document).ready(function ($) {
         $('.platf').show();
         $('.cat-rows').show();
         updateNotes();
+
+// убираем все GET параметры в URL
+        const urlObj = new URL(window.location.href);
+        if (urlObj.search) {
+            urlObj.search = '';
+            //urlObj.hash = '';
+            window.history.pushState({}, document.title, urlObj.toString());
+        }
     });
 
     function updateNotes(){
@@ -369,4 +380,61 @@ $(document).ready(function ($) {
         }
     }
 
+
+//  пример параметров: ?s=Гарант&platform=x86_64&c=200,201,202
+    const params = new Proxy(new URLSearchParams(window.location.search), {
+        get: (searchParams, prop) => searchParams.get(prop),
+    });
+    if (params.s || params.platform || params.c) {
+        if (params.s) {
+            $('#search_text').val(params.s);
+        }
+        if (params.platform) {
+            $('#platf').val(params.platform);
+            $(".items-platf a").removeClass('active');
+            $('.items-platf a').each(function() {
+                if (params.platform === $(this).text()) {
+                    $(this).addClass('active');
+                }
+            });
+        }
+        if (params.c) {
+            categoriesTree.setSelection(params.c.split(','))
+        }
+        $("#filter_form").submit();
+    }
+
+// копирование URL с GET параметрами текущего фильтра
+    $('#filter-copy').on('click', function (event) {
+        event.preventDefault();
+        let url = window.location.origin + window.location.pathname;
+        let params = [];
+        if ($('#search_text').val()) {
+            params.push('s=' + $('#search_text').val());
+        }
+        if ($('#platf').val() && $('#platf').val() !== 'Все') {
+            params.push('platform=' + $('#platf').val());
+        }
+        let catIds = categoriesTree.getSelectedIds();
+        if (catIds) {
+            params.push('c=' + catIds.join(','));
+        }
+        if (params.length !== 0) {
+            url = url + '?' + params.join('&');
+        }
+        const copyContent = async () => {
+            try {
+                await navigator.clipboard.writeText(url);
+                $('.tooltip').text('Cсылка скопирована в буфер обмена');
+                $('.tooltip').show();
+                $('.tooltip').delay(3200).fadeOut(300);
+            } catch (err) {
+//                console.error('Failed to copy: ', err);
+                $('.tooltip').text('Ошибка: cсылка не скопирована в буфер');
+                $('.tooltip').show();
+                $('.tooltip').delay(3200).fadeOut(300);
+            }
+        }
+        copyContent();
+    });
 });

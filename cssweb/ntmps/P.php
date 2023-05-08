@@ -71,6 +71,7 @@
                     <input name="categories" id="categories" type="text" placeholder="Все категории" autocomplete="off">
                     <input type="submit" value="Найти">
                     <a href="" id="filter-clean" class="filter-clean">Сбросить фильтр</a>
+                    <span><a href="" id="filter-copy" class="filter-copy" title="Скопировать ссылку в буфер обмена"><img src="i/copy.png" alt="Копировать" title="Скопировать ссылку в буфер обмена"></a><span class="tooltip"></span></span>
                 </form>
                 <div class="more-info-block">
                 <p class="more-info-wrapper">Дополнительная информация: &nbsp;  <a href="#" class="more-info-link" data-platform="<?= $platform ?>"></a></p> <!-- ↑ скрыть ↑ показать ↓ 🡣🠓 -->
@@ -78,7 +79,6 @@
                 <?php include("$NTMPSDIR/P-html-text1-" . $platform . ".php"); ?>
                 </div>
                 </div>
-
             </div>
         </div>
 
@@ -102,5 +102,4 @@
 <script src="js/script.js?<?= $upload ?>"></script>
 
 </body>
-
 </html>
