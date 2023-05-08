@@ -6,7 +6,7 @@
 %endif
 
 Name: css
-Version: 1.7.8.20230430
+Version: 1.7.9.20230508
 Release: alt1
 
 Summary: Compatibility Service Suite
@@ -105,7 +105,6 @@ sed -i -e "/\/usr\/bin\/css\-sh/d" /etc/shells
 	%buildroot/var/www/html/bin
 
 %changelog
-* Sun Apr 30 2023 Leonid Krivoshein <klark@altlinux.org> 1.7.8.20230430-alt1
-- New table style generator by Valeriy Romanchev.
-- Engine switched to PHP 8.2.
+* Mon May 08 2023 Leonid Krivoshein <klark@altlinux.org> 1.7.9.20230508-alt1
+- Add ability to saving request results (by Valeriy Romanchev).
 
