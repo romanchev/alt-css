@@ -369,8 +369,8 @@ $(document).ready(function ($) {
                     currentNoteCounter = noteCounter;
                 }
                 $(this).find('span').text(currentNoteCounter);
-                $('#note'+currentNoteCounter).show();
-                $('#note'+currentNoteCounter+' span').text(currentNoteCounter);
+                $('#note'+noteNum).show();
+                $('#note'+noteNum+' span').text(currentNoteCounter);
             }
         });
         if (noteCounter > 0) {
