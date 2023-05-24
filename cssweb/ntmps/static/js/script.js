@@ -410,7 +410,7 @@ $(document).ready(function ($) {
         let url = window.location.origin + window.location.pathname;
         let params = [];
         if ($('#search_text').val()) {
-            params.push('s=' + $('#search_text').val());
+            params.push('s=' + $('#search_text').val().replace(/ /g,'%20'));
         }
         if ($('#platf').val() && $('#platf').val() !== 'Все') {
             params.push('platform=' + $('#platf').val());
