@@ -6,7 +6,7 @@
 %endif
 
 Name: css
-Version: 1.7.9.20230508
+Version: 1.8.0.20230526
 Release: alt1
 
 Summary: Compatibility Service Suite
@@ -105,6 +105,6 @@ sed -i -e "/\/usr\/bin\/css\-sh/d" /etc/shells
 	%buildroot/var/www/html/bin
 
 %changelog
-* Mon May 08 2023 Leonid Krivoshein <klark@altlinux.org> 1.7.9.20230508-alt1
-- Add ability to saving request results (by Valeriy Romanchev).
+* Fri May 26 2023 Leonid Krivoshein <klark@altlinux.org> 1.8.0.20230526-alt1
+- Fix space encoding in URL and notes output (by Valeriy Romanchev).
 
