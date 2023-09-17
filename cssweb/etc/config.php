@@ -32,6 +32,8 @@ $comp_ext_rules = array (
 	"p9srv"  => "p9ws,p9edu:p9edu",
     ),
     "P10" => array (
+	"c10fws" => ":c10fsrv",
+	"c10fsrv"=> "c10fws:",
 	"p10ws"  => "p10edu:p10edu,p10srv",
 	"p10edu" => "p10ws:p10srv",
 	"p10srv" => "p10ws,p10edu:p10edu",
@@ -55,6 +57,8 @@ $avail_platforms = array (
 	"p9srv"  => "x86_64,aarch64,e2k,e2kv4,ppc64le",
     ),
     "P10" => array (
+	"c10fws" => "x86_64,aarch64",
+	"c10fsrv"=> "x86_64,aarch64",
 	"p10ws"  => "x86_64,i586,aarch64,e2k,e2kv4,e2kv5",
 	"p10edu" => "x86_64,i586,aarch64,e2k,e2kv4,e2kv5",
 	"p10srv" => "x86_64,aarch64,e2k,e2kv4,e2kv5,ppc64le",
