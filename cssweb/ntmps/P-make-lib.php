@@ -384,7 +384,7 @@ function makeTabelHeaders($a, $platform, $view): string
                 <th rowspan="2" class="help">
                     <a href="https://www.altlinux.org/" target="_blank" title="Инструкции по установке для дистрибутивов Альт на бранче ' . $platform . ' (в стадии наполнения). Если не указано, поищите на нашей ВиКи или запросите в отделе продаж.">HELP</a>
                 </th>
-                <th colspan="2" class="cell">' . (($a != 'x86_64' && $a != 'aarch64') ? '&nbsp;' : 'Альт&nbsp;СП&nbsp;релиз&nbsp;10') . '</th>                
+                <th colspan="2" class="cell">' . (($a != 'x86_64' && $a != 'aarch64') ? '&nbsp;' : 'Альт&nbsp;СП&nbsp;релиз&nbsp;10') . '</th>
                 <th rowspan="2" class="cell">' . (($a == 'ppc64le') ? '&nbsp;' : 'Альт Рабочая станция 10') . '</th>
                 <th rowspan="2" class="cell">' . (($a == 'ppc64le') ? '&nbsp;' : 'Альт Образование 10') . '</th>
                 <th rowspan="2" class="cell">Альт Сервер 10</th>
