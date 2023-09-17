@@ -6,7 +6,7 @@ $jscond = ($group_by == MAKE_JAVASCRIPT);
 
 switch ($platform) {
     case 'P10':
-	$categoryColumn = 10; // начиная с нуля
+	$categoryColumn = 12; // начиная с нуля
 	$pageTitle  = 'Совместимость с дистрибутивами Альт на десятой платформе';
 	$pageHeader = 'Совместимость с дистрибутивами Альт';
 	break;
@@ -380,12 +380,15 @@ function makeTabelHeaders($a, $platform, $view): string
     if ($platform == 'P10') {
         $result = '
             <tr>
-                <th class="product">' . $fcol . '</th>
-                <th class="help">' . $help . '</th>
-                <th class="cell">' . (($a == 'ppc64le') ? '&nbsp;' : 'Альт Рабочая станция 10') . '</th>
-                <th class="cell">' . (($a == 'ppc64le') ? '&nbsp;' : 'Альт Образование 10') . '</th>
-                <th class="cell">' . (($a == 'i586')    ? '&nbsp;' : 'Альт Сервер 10') . '</th>
-                <th class="empty">&nbsp;</th>
+                <th rowspan="2" class="product">' . (($view == 'category') ? 'Категория, продукт, производитель' : 'Производитель, продукт') . '</th>
+                <th rowspan="2" class="help">
+                    <a href="https://www.altlinux.org/" target="_blank" title="Инструкции по установке для дистрибутивов Альт на бранче ' . $platform . ' (в стадии наполнения). Если не указано, поищите на нашей ВиКи или запросите в отделе продаж.">HELP</a>
+                </th>
+                <th colspan="2" class="cell">' . (($a != 'x86_64' && $a != 'aarch64') ? '&nbsp;' : 'Альт&nbsp;СП&nbsp;релиз&nbsp;10') . '</th>                
+                <th rowspan="2" class="cell">' . (($a == 'ppc64le') ? '&nbsp;' : 'Альт Рабочая станция 10') . '</th>
+                <th rowspan="2" class="cell">' . (($a == 'ppc64le') ? '&nbsp;' : 'Альт Образование 10') . '</th>
+                <th rowspan="2" class="cell">Альт Сервер 10</th>
+            <tr><th class="small">' . (($a != 'x86_64' && $a != 'aarch64') ? '&nbsp;' : '(рабочая&nbsp;станция)') . '</th><th class="small">' . (($a != 'x86_64' && $a != 'aarch64') ? '&nbsp;' : '(сервер)') . '</th></tr>
             </tr>
         ';
     } elseif ($platform == 'P9') {
@@ -434,7 +437,8 @@ function makeTabelCells($product, $platform): string
                 ' . makeSert($product[7]) . '
                 ' . makeSert($product[8]) . '
                 ' . makeSert($product[9]) . '
-                <td class="empty">&nbsp;</td>
+                ' . makeSert($product[10]) . '
+                ' . makeSert($product[11]) . '
         ';
     } elseif ($platform == 'P9') {
         $result = '
@@ -466,7 +470,7 @@ function makeTabelCells($product, $platform): string
 function makeTabelColspan($platform): string
 {
     if ($platform == 'P10') {
-        $result = 6;
+        $result = 7;
     } elseif ($platform == 'P9') {
         $result = 7;
     } elseif ($platform == '8SP') {
