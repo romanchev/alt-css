@@ -63,6 +63,8 @@ a:link, a:visited { color:#00f; text-decoration:none; }
  <option value="0" selected="selected">Не имеет значения</option>
  <option value="1">Любые настольные решения</option>
  <option value="2">Любые серверные решения</option>
+ <option value="16">Альт СП Рабочая станция, релиз 10</option>
+ <option value="17">Альт СП Сервер, релиз 10</option>
  <option value="3">Альт 8 СП Рабочая станция</option>
  <option value="4">Альт 8 СП Сервер</option>
  <option value="5">Simply Linux 10</option>
