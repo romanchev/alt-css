@@ -70,12 +70,12 @@ a:link, a:visited { color:#00f; text-decoration:none; }
  <option value="7">Альт Рабочая станция К 10</option>
  <option value="8">Альт Образование 10</option>
  <option value="9">Альт Сервер 10</option>
- <option value="10">Альт Сервер виртуализации 10</option>
+ <option value="10">Альт Виртуализация 10</option>
  <option value="11">Альт Рабочая станция 9</option>
  <option value="12">Альт Рабочая станция К 9</option>
  <option value="13">Альт Образование 9</option>
  <option value="14">Альт Сервер 9</option>
- <option value="15">Альт Сервер виртуализации 9</option>
+ <option value="15">Альт Виртуализация 9</option>
 </select>
 </td></tr>
 <tr><td><label for="g">Категория:</label></td><td>
