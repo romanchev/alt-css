@@ -6,7 +6,7 @@
 %endif
 
 Name: css
-Version: 1.8.1.20230918
+Version: 1.8.2.20230923
 Release: alt1
 
 Summary: Compatibility Service Suite
@@ -105,6 +105,6 @@ sed -i -e "/\/usr\/bin\/css\-sh/d" /etc/shells
 	%buildroot/var/www/html/bin
 
 %changelog
-* Mon Sep 18 2023 Leonid Krivoshein <klark@altlinux.org> 1.8.1.20230918-alt1
-- Updated HTML templates, added two columns to P10
+* Sat Sep 23 2023 Leonid Krivoshein <klark@altlinux.org> 1.8.2.20230923-alt1
+- HTML templates again, separate filter of ALT SP 10
 
