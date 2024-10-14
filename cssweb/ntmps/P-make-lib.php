@@ -8,21 +8,25 @@ switch ($platform) {
     case 'P10':
 	$categoryColumn = 12; // начиная с нуля
 	$pageTitle  = 'Совместимость с дистрибутивами Альт на десятой платформе';
+	$pageDescription = 'Совместимость с дистрибутивами Альт на десятой платформе для x86_64, i586, aarch64, e2k, e2kv4, e2kv5, ppc64le';
 	$pageHeader = 'Совместимость с дистрибутивами Альт';
 	break;
     case 'P9':
 	$categoryColumn = 12; // начиная с нуля
 	$pageTitle  = 'Совместимость с дистрибутивами Альт на девятой платформе';
+	$pageDescription = 'Совместимость с дистрибутивами Альт на девятой платформе для x86_64, i586, aarch64, armh, e2k, e2kv4, mipsel, ppc64le';
 	$pageHeader = 'Совместимость с дистрибутивами Альт';
 	break;
     case '8SP':
 	$categoryColumn = 9;  // начиная с нуля
 	$pageTitle  = 'Совместимость с устаревшими дистрибутивами Альт 8 СП';
+	$pageDescription = 'Совместимость с устаревшими дистрибутивами Альт 8 СП для x86_64, i586, e2k, e2kv4';
 	$pageHeader = 'Совместимость с устаревшими дистрибутивами Альт 8 СП';
 	break;
     case 'S10':
 	$categoryColumn = 8;  // начиная с нуля
 	$pageTitle  = 'Совместимость с дистрибутивом Simply Linux 10';
+	$pageDescription = 'Совместимость с дистрибутивом Simply Linux 10 для x86_64, i586, aarch64';
 	$pageHeader = 'Совместимость с дистрибутивом Simply Linux 10';
 	break;
 }
@@ -31,14 +35,17 @@ switch ($group_by) {
     case GROUP_BY_PRODUCTS:
 	$productClass = 'active';
 	$view = 'product';
+	$addSeoText = ' - сортировка по продуктам';
 	break;
     case GROUP_BY_VENDORS:
 	$vendorClass = 'active';
 	$view = 'vendor';
+	$addSeoText = ' - сортировка по вендорам';
 	break;
     case GROUP_BY_GROUPS:
 	$categoryClass = 'active';
 	$view = 'category';
+	$addSeoText = ' - сортировка по категориям';
 	break;
 }
 
