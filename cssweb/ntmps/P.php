@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title><?= $pageTitle ?></title>
+    <title><?= $pageTitle ?><?= $addSeoText ?></title>
+    <meta name="description" content="<?= $pageDescription ?><?= $addSeoText ?>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,7 +33,7 @@
 <div class="wrapper">
     <div id="header">
         <div class="container">
-            <h2 class="align-left" style="margin-top: 20px;"><?= $pageHeader ?></h2>
+            <h1 class="align-left" style="margin-top: 20px;"><?= $pageHeader ?></h1>
             <p>Последнее обновление:
                 <a href="<?= $platform ?>.csv" title="Скачать таблицу в формате CSV"><b><?= $pubdate ?></b></a>,
                 служба обеспечения совместимости
