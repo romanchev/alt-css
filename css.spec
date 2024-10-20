@@ -6,7 +6,7 @@
 %endif
 
 Name: css
-Version: 1.8.2.20230923
+Version: 1.8.3.20241020
 Release: alt1
 
 Summary: Compatibility Service Suite
@@ -107,6 +107,7 @@ sed -i -e "/\/usr\/bin\/css\-sh/d" /etc/shells
 	%buildroot/var/www/html/bin
 
 %changelog
-* Sat Sep 23 2023 Leonid Krivoshein <klark@altlinux.org> 1.8.2.20230923-alt1
-- HTML templates again, separate filter of ALT SP 10
+* Sun Oct 20 2024 Leonid Krivoshein <klark@altlinux.org> 1.8.3.20241020-alt1
+- csi client: added action to moderate upload
+- cssweb: updated templates for SEO (by Valery Romanchev)
 
