@@ -50,6 +50,8 @@ Group: Databases
 BuildArch: noarch
 Requires: git-core
 Requires: openssh-clients
+Requires: coreutils
+Requires: xdg-utils
 
 %description client
 Client-side command-line interface for Compatibility Service Suite.

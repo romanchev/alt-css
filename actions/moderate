@@ -1,0 +1,163 @@
+#!/bin/sh -efu
+
+# moderate on client-side
+#
+# This file is covered by the GNU General Public License
+# version 3, or (at your option) any later version, which
+# should be included with sources as the file COPYING.
+#
+# Copyright (C) 2021-2024, Leonid Krivoshein <klark@altlinux.org>
+#
+
+action_summary() {
+	echo "  moderate  Checks for changes before publishing a new upload"
+}
+
+tagname=
+pty_dev=
+
+action_parse_args() {
+	if [ "${1-}" = help ]; then
+		echo "Usage: $progname $action [<tagname>] [<tty>]"
+		exit 0
+	fi
+	tagname="${1-}"
+	pty_dev="${2:-/dev/null}"
+}
+
+errx() {
+    local fmt="$1"; shift
+
+    # shellcheck disable=SC2059
+    printf "\033[01;31mE: $fmt\033[00m\n" "$@" >&2
+}
+
+warnx() {
+    local fmt="$1"; shift
+
+    # shellcheck disable=SC2059
+    printf "\033[01;33mW: $fmt\033[00m\n" "$@" >&2
+}
+
+do_moderate() {
+	local f x YYYY MM DD NN dateNN certNO vendID relpath
+
+	check_local_repo
+	[ -n "$tagname" ] ||
+		tagname="$(git describe |cut -f1 -d-)"
+	[ -c "$pty_dev" ] ||
+		pty_dev="/dev/null"
+	export TMPDIR="${TMPDIR:-/tmp}"
+	f="$(mktemp -t -- "$progname-XXXXXXXX-f.lst")"
+	x="$(mktemp -t -- "$progname-XXXXXXXX-x.lst")"
+	NN="git diff-tree --no-commit-id --name-only"
+	if ! $NN -r "$tagname".. >"$x"; then
+		rm -f -- "$f" "$x"
+		exit 1
+	fi
+
+	grep -E '^Legal/20[0-9][0-9]/certs\.d/' "$x" |
+	while read -r relpath; do
+		YYYY="$(echo "$relpath" |cut -f2 -d/)"
+		dateNN="$(echo "$relpath" |cut -f4 -d/ |sed 's/\.lst$//')"
+		MM="$(echo "$dateNN" |cut -f1 -d-)"
+		DD="$(echo "$dateNN" |cut -f2 -d-)"
+		NN="$(echo "$dateNN" |cut -f3 -d-)"
+		dateNN="$(head -n1 -- "$relpath")"
+		certNO="$(echo "$dateNN" |awk '{print $1;}')"
+		vendID="$(echo "$dateNN" |awk '{print $3;}')"
+		dateNN="$(echo "$dateNN" |awk '{print $2;}')"
+
+		[ "$MM/$DD-$NN" = "$dateNN" ] && [ -n "$vendID" ] ||
+			echo "Invalid ${relpath}:"
+		printf "%s.%s.%s\t" "$DD" "$MM" "$YYYY"
+		cat -- "$relpath"
+
+		relpath="Legal/$YYYY/$MM/$DD-$NN/files.yml"
+		grep -qs -- "$relpath" "$x" ||
+			warnx "YAML file was not modified by last commits: '%s'" "$relpath"
+		if [ ! -s "$relpath" ]; then
+			errx "YAML file not found: '%s'" "$relpath"
+			continue
+		fi
+
+		dateNN="$(cat -- "$relpath" |
+				sed '1,/^Vendors:/d' |
+				sed '/^Files:/,$d' |
+				awk '{print $2;}')"
+		[ "$dateNN" = "$vendID" ] ||
+			errx "VendorID ('%s') mismatch in '%s'" "$vendID" "$relpath"
+		if [ x"$certNO" != "x-" ]; then
+			dateNN="$(cat -- "$relpath" |
+					sed -n -E 's/^\s+Number:\s+(.*)$/\1/p' |
+					head -n1)"
+			[ "$dateNN" = "$certNO" ] ||
+				errx "Certificate number (%s) mismatch in '%s'" "$certNO" "$relpath"
+		fi
+		dateNN="$(cat -- "$relpath" |sed -n -E 's/^\s+\- Type:\s+(.*)$/\1/p')"
+		[ "$dateNN" = "Сертификат" ] ||
+			errx "Invalid document type ('%s') in '%s'" "$dateNN" "$relpath"
+		dateNN="$(cat -- "$relpath" |sed -n -E 's/^\s+File:\s+(.*)$/\1/p' |head -n1)"
+		certNO="$(cat -- "$relpath" |sed -n -E 's/^\s+MD5sum:\s+(.*)$/\1/p' |head -n1)"
+		relpath="Legal/$YYYY/$MM/$DD-$NN/$dateNN"
+		grep -qs -- "$relpath" "$x" ||
+			warnx "Certificate was not modified by last commits: '%s'" "$relpath"
+		if [ ! -s "$relpath" ]; then
+			errx "Certificate not found: '%s'" "$relpath"
+			continue
+		fi
+
+		[ "$(md5sum -- "$relpath" |awk '{print $1;}')" = "$certNO" ] ||
+			errx "Checksum mismatch in '%s'" "$relpath"
+		xdg-open "$relpath"
+	done
+
+	grep -vE '^Legal/20' "$x" |sort -u >"$f"
+	printf "Press ENTER to continue..."
+	read -r relpath
+	rm -f -- "$x"
+
+	export EDITOR="${EDITOR:-/usr/bin/mcedit}"
+
+	echo >>"$pty_dev"
+	while read -r relpath; do
+		if [ ! -r "$relpath" ]; then
+			printf "File not found: %s, skipping...\n" "$relpath" >>"$pty_dev"
+			continue
+		fi
+
+		case "$relpath" in
+		*.yml|*.txt|*.adoc)
+			if [ -s "$relpath" ]; then
+				echo "" >>"$relpath"
+				sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$relpath"
+			fi
+			printf "Editing '%s'...\n" "$relpath" >>"$pty_dev"
+			"$EDITOR" "$relpath"
+			;;
+
+		*.odt|*.doc|*.docx)
+			printf "Editing '%s'...\n" "$relpath" >>"$pty_dev"
+			xdg-open "$relpath"
+			;;
+
+		*)	printf "Opening '%s'...\n" "$relpath" >>"$pty_dev"
+			xdg-open "$relpath"
+			;;
+		esac
+	done <"$f"
+
+	echo
+	grep '/vendor.yml' "$f" |
+		xargs grep -E '^URI:' 2>/dev/null
+	grep '/product.yml' "$f" |
+		xargs grep -E '^URI:' 2>/dev/null
+	rm -f -- "$f"
+
+	if [ "$(git diff 2>&1 |wc -l)" != 0 ]; then
+		printf "Press ENTER to make final commit..."
+		read -r relpath
+		git commit -a -m "Модерация выгрузки"
+	fi
+}
+
