@@ -20,7 +20,7 @@ function writeMenuBlock($resp, $filename, $regexp) {
     preg_match_all($regexp, $resp, $matches);
     $menu = $matches[0][0];
     $s = strlen($menu);
-    if ($s <= 5000)
+    if ($s <= 3000)
 	fatal("Content is too small. It seems page is wrong. Not updated!");
     $s = file_put_contents($filename, $menu);
 }
@@ -64,10 +64,10 @@ if (!file_exists("$CACHEDIR/P-html-menu.php") ||
     $res = file_get_contents($url);
     $url = "$CACHEDIR/P-html-menu.php";
     if (!file_exists($url))
-	writeMenuBlock($res, $url, '/<ul id="main_menu">(.*)<\/ul>/');
+	writeMenuBlock($res, $url, '/<ul id="main_menu">(.*)<\/ul><!-- end of main_menu -->/');
     $url = "$CACHEDIR/P-html-menu-mobile.php";
     if (!file_exists($url))
-	writeMenuBlock($res, $url, '/<div id="mobile_menu">(.*?)\n<\/div>/s');
+	writeMenuBlock($res, $url, '/<div id="mobile_menu">(.*?)\n<\/div><!-- end of mobile_menu -->/s');
     unset($url, $res);
 }
 if (!file_exists("$CACHEDIR/P-html-menu.php"))
