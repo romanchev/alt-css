@@ -20,7 +20,7 @@ $(document).ready(function ($) {
         },
     );
 
-    $('#main_menu > li > a:not(#mm550)').on('click', function (event) {
+    $('#main_menu > li > a:not(#mm550,#mm13)').on('click', function (event) {
         event.preventDefault();
         var ths = $(this).parent('li');
         var sub = ths.children('.sub');
