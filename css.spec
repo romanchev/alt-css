@@ -6,7 +6,7 @@
 %endif
 
 Name: css
-Version: 1.8.3.20241020
+Version: 1.8.4.20241205
 Release: alt1
 
 Summary: Compatibility Service Suite
@@ -107,7 +107,7 @@ sed -i -e "/\/usr\/bin\/css\-sh/d" /etc/shells
 	%buildroot/var/www/html/bin
 
 %changelog
-* Sun Oct 20 2024 Leonid Krivoshein <klark@altlinux.org> 1.8.3.20241020-alt1
-- csi client: added action to moderate upload
-- cssweb: updated templates for SEO (by Valery Romanchev)
+* Thu Dec 05 2024 Leonid Krivoshein <klark@altlinux.org> 1.8.4.20241205-alt1
+- fix main menu block parser
+- fix main menu button bug
 
