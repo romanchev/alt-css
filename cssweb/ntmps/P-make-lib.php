@@ -507,8 +507,8 @@ function makeTabel($archCats): string
     foreach ($archCats as $a => $productsCatArch) {
         $content .= '
         <a id="' . $a . '" ></a>
-        <h2 class="platf platf_' . $a . '">Совместимость с дистрибутивами на архитектуре ' .
-    	    htmlspecialchars($a . ' (' . $hw_platforms[$a] . ')') . '</h2>
+        <h3 class="platf platf_' . $a . '">Совместимость с дистрибутивами на архитектуре ' .
+    	    htmlspecialchars($a . ' (' . $hw_platforms[$a] . ')') . '</h3>
         <table class="arch contenttable platf platf_' . $a . '">
             <thead>
                 ' . makeTabelHeaders($a, $platform, $view) . '
@@ -637,11 +637,11 @@ function makeSert($s): string
 function makeHelpLink($s): string
 {
     if (strpos($s, 'http') !== false) {
-        $result = '<a href="' . $s . '" target="_blank" rel="nofollow" title="Открыть инструкцию в новом окне"><img src="i/w.png" alt="www"></a>';
+        $result = '<a href="' . $s . '" target="_blank" rel="nofollow" title="Открыть инструкцию в новом окне"><img src="https://basealt.ru/fileadmin/user_upload/compab_icon/html_2.svg" alt="www" width="23px"></a>';
     } elseif ($s == '') {
         $result = '<div></div>';
     } else {
-        $result = '<a href="instr/' . $s . '.pdf" class="fancybox"  title="Открыть инструкцию в новом окне"><img src="i/p.png" alt="PDF"></a>';
+        $result = '<a href="instr/' . $s . '.pdf" class="fancybox"  title="Открыть инструкцию в новом окне"><img src="https://basealt.ru/fileadmin/user_upload/compab_icon/pdf_1_1.svg" alt="PDF" width="20px"></a>';
         // target="_blank" rel="nofollow"
     }
     return $result;
