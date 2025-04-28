@@ -21,39 +21,39 @@
 <div id="header_top" class="fixed">
     <div class="container">
         <div class="row between">
-            <a class="logo" href="/"></a>
+             <a class="logo" href="/">
+                <img src="https://www.basealt.ru/typo3conf/ext/ttmpl/Resources/Public/Tmpl2/images/icon01.svg" alt="Базальт СПО">
+                <span>Российский разработчик<br>операционных систем «Альт»</span>
+            </a>
             <div class="col">
                 <?php include("$CACHEDIR/P-html-menu.php"); ?>
-                <a id="btn_mobile" href="#"><span></span><span></span><span></span></a>
+                <a id="btn_mobile" href="#mobile_menu" aria-label="Навигация"><span></span><span></span><span></span></a>
             </div>
         </div>
     </div>
 </div>
 
+<div id="main">    
 <div class="wrapper">
     <div id="header">
         <div class="container">
             <h1 class="align-left" style="margin-top: 20px;"><?= $pageHeader ?></h1>
             <p>Последнее обновление:
-                <a href="<?= $platform ?>.csv" title="Скачать таблицу в формате CSV"><b><?= $pubdate ?></b></a>,
+                <a href="<?= $platform ?>.csv" title="Скачать таблицу в формате CSV"><?= $pubdate ?></a>,
                 служба обеспечения совместимости
-                <a href="mailto:gost@basealt.ru" title="Отправить письмо..."><b>&lt;gost@basealt.ru&gt;</b></a></p>
+                <a href="mailto:gost@basealt.ru" title="Отправить письмо...">&lt;gost@basealt.ru&gt;</a></p>
         </div>
     </div>
-    <div id="main">
         <div id="section1">
             <div class="container">
 
                 <div class="filter_holder">
                     <div class="view">
-                        <div class="head">Сортировать:</div>
+                        <div class="head">Сортировать по:</div>
                         <div class="items">
-                            <div class="item"><a class="<?= $categoryClass ?>" href="<?= $platform ?>-view2.html">по
-                                    категориям</a></div>
-                            <div class="item"><a class="<?= $vendorClass ?>" href="<?= $platform ?>-view1.html">по
-                                    вендорам</a></div>
-                            <div class="item"><a class="<?= $productClass ?>" href="<?= $platform ?>-view0.html">по
-                                    продуктам</a></div>
+                            <div class="item"><a class="<?= $categoryClass ?>" href="<?= $platform ?>-view2.html">категориям</a></div>
+                            <div class="item"><a class="<?= $vendorClass ?>" href="<?= $platform ?>-view1.html">вендорам</a></div>
+                            <div class="item"><a class="<?= $productClass ?>" href="<?= $platform ?>-view0.html">продуктам</a></div>
                         </div>
                     </div>
                     <div class="buttons">
@@ -72,13 +72,13 @@
                     <input name="categories" id="categories" type="text" placeholder="Все категории" autocomplete="off">
                     <input type="submit" value="Найти">
                     <a href="" id="filter-clean" class="filter-clean">Сбросить фильтр</a>
-                    <span><a href="" id="filter-copy" class="filter-copy" title="Скопировать ссылку в буфер обмена"><img src="i/copy.png" alt="Копировать" title="Скопировать ссылку в буфер обмена"></a><span class="tooltip"></span></span>
+                    <span><a href="" id="filter-copy" class="filter-copy" title="Скопировать ссылку в буфер обмена"><img src="https://www.basealt.ru/fileadmin/user_upload/compab_icon/bx_copy.svg" alt="Копировать" title="Скопировать ссылку в буфер обмена"></a><span class="tooltip"></span></span>
                 </form>
-                <div class="more-info-block">
-                <p class="more-info-wrapper">Дополнительная информация: &nbsp;  <a href="#" class="more-info-link" data-platform="<?= $platform ?>"></a></p> <!-- ↑ скрыть ↑ показать ↓ 🡣🠓 -->
-                <div class="more-info">
+                <div class="item_add" style="margin-top: 40px;">
+                    <details>
+                            <summary>Дополнительная информация:</summary>
                 <?php include("$NTMPSDIR/P-html-text1-" . $platform . ".php"); ?>
-                </div>
+                    </details>
                 </div>
             </div>
         </div>
