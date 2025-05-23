@@ -6,7 +6,7 @@
 %endif
 
 Name: css
-Version: 1.8.4.20241205
+Version: 1.8.5.20250523
 Release: alt1
 
 Summary: Compatibility Service Suite
@@ -107,7 +107,6 @@ sed -i -e "/\/usr\/bin\/css\-sh/d" /etc/shells
 	%buildroot/var/www/html/bin
 
 %changelog
-* Thu Dec 05 2024 Leonid Krivoshein <klark@altlinux.org> 1.8.4.20241205-alt1
-- fix main menu block parser
-- fix main menu button bug
+* Fri May 23 2025 Leonid Krivoshein <klark@altlinux.org> 1.8.5.20250523-alt1
+- cssweb: new design of compatibility tables by V.Romanchev
 
