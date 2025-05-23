@@ -637,11 +637,11 @@ function makeSert($s): string
 function makeHelpLink($s): string
 {
     if (strpos($s, 'http') !== false) {
-        $result = '<a href="' . $s . '" target="_blank" rel="nofollow" title="Открыть инструкцию в новом окне"><img src="https://basealt.ru/fileadmin/user_upload/compab_icon/html_2.svg" alt="www" width="23px"></a>';
+        $result = '<a href="' . $s . '" target="_blank" rel="nofollow" title="Открыть инструкцию в новом окне"><img src="i/w.svg" alt="www" width="23px"></a>';
     } elseif ($s == '') {
         $result = '<div></div>';
     } else {
-        $result = '<a href="instr/' . $s . '.pdf" class="fancybox"  title="Открыть инструкцию в новом окне"><img src="https://basealt.ru/fileadmin/user_upload/compab_icon/pdf_1_1.svg" alt="PDF" width="20px"></a>';
+        $result = '<a href="instr/' . $s . '.pdf" class="fancybox"  title="Открыть инструкцию в новом окне"><img src="i/p.svg" alt="PDF" width="20px"></a>';
         // target="_blank" rel="nofollow"
     }
     return $result;

@@ -22,7 +22,7 @@
     <div class="container">
         <div class="row between">
              <a class="logo" href="/">
-                <img src="https://www.basealt.ru/typo3conf/ext/ttmpl/Resources/Public/Tmpl2/images/icon01.svg" alt="Базальт СПО">
+                <img src="i/logo.svg" alt="Базальт СПО">
                 <span>Российский разработчик<br>операционных систем «Альт»</span>
             </a>
             <div class="col">
@@ -33,7 +33,7 @@
     </div>
 </div>
 
-<div id="main">    
+<div id="main">
 <div class="wrapper">
     <div id="header">
         <div class="container">
@@ -72,7 +72,7 @@
                     <input name="categories" id="categories" type="text" placeholder="Все категории" autocomplete="off">
                     <input type="submit" value="Найти">
                     <a href="" id="filter-clean" class="filter-clean">Сбросить фильтр</a>
-                    <span><a href="" id="filter-copy" class="filter-copy" title="Скопировать ссылку в буфер обмена"><img src="https://www.basealt.ru/fileadmin/user_upload/compab_icon/bx_copy.svg" alt="Копировать" title="Скопировать ссылку в буфер обмена"></a><span class="tooltip"></span></span>
+                    <span><a href="" id="filter-copy" class="filter-copy" title="Скопировать ссылку в буфер обмена"><img src="i/copy.svg" alt="Копировать" title="Скопировать ссылку в буфер обмена"></a><span class="tooltip"></span></span>
                 </form>
                 <div class="item_add" style="margin-top: 40px;">
                     <details>
