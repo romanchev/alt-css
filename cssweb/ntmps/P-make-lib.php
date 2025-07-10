@@ -29,6 +29,12 @@ switch ($platform) {
 	$pageDescription = 'Совместимость с устаревшими дистрибутивами Альт 8 СП для x86_64, i586, e2k, e2kv4';
 	$pageHeader = 'Совместимость с устаревшими дистрибутивами Альт 8 СП';
 	break;
+    case 'S11':
+    $categoryColumn = 8;  // начиная с нуля
+    $pageTitle  = 'Совместимость с дистрибутивом Simply Linux 11';
+    $pageDescription = 'Совместимость с дистрибутивом Simply Linux 11 для x86_64, aarch64';
+    $pageHeader = 'Совместимость с дистрибутивом Simply Linux 11';
+    break;
     case 'S10':
 	$categoryColumn = 8;  // начиная с нуля
 	$pageTitle  = 'Совместимость с дистрибутивом Simply Linux 10';
@@ -436,7 +442,15 @@ function makeTabelHeaders($a, $platform, $view): string
             </tr>
             <tr><th class="small">(рабочая&nbsp;станция)</th><th class="small">(сервер)</th></tr>
         ';
-
+    } elseif ($platform == 'S11') {
+        $result = '
+            <tr>
+                <th class="product">' . $fcol . '</th>
+                <th class="help">' . $help . '</th>
+                <th class="cell">Simply Linux 11</th>
+                <th class="empty">&nbsp;</th>
+            </tr>
+        ';
     } elseif ($platform == 'S10') {
         $result = '
             <tr>
@@ -485,7 +499,11 @@ function makeTabelCells($product, $platform): string
                 ' . makeSert($product[8]) . '
                 <td class="empty">&nbsp;</td>
         ';
-
+    } elseif ($platform == 'S11') {
+        $result = '
+                ' . makeSert($product[7]) . '
+                <td class="empty">&nbsp;</td>
+        ';
     } elseif ($platform == 'S10') {
         $result = '
                 ' . makeSert($product[7]) . '
@@ -508,6 +526,8 @@ function makeTabelColspan($platform): string
         $result = 7;
     } elseif ($platform == '8SP') {
         $result = 5;
+    } elseif ($platform == 'S11') {
+        $result = 4;
     } elseif ($platform == 'S10') {
         $result = 4;
     } else {
