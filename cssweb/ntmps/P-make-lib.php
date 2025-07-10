@@ -5,6 +5,12 @@ if (!defined('MAKE_JAVASCRIPT'))
 $jscond = ($group_by == MAKE_JAVASCRIPT);
 
 switch ($platform) {
+    case 'P11':
+	$categoryColumn = 12; // начиная с нуля
+    $pageTitle = 'Совместимость с дистрибутивами Альт на одиннадцатой платформе';
+    $pageDescription = 'Совместимость с дистрибутивами Альт на одиннадцатой платформе для x86_64, aarch64, e2kv4, e2kv5, e2kv6'; // e2kv4,e2kv5,e2kv6
+	$pageHeader = 'Совместимость с дистрибутивами Альт';
+	break;
     case 'P10':
 	$categoryColumn = 12; // начиная с нуля
 	$pageTitle  = 'Совместимость с дистрибутивами Альт на десятой платформе';
@@ -384,13 +390,23 @@ function makeTabelHeaders($a, $platform, $view): string
 	    htmlspecialchars($platform) .
 	    ' (в стадии наполнения). Если не указано, поищите на нашей ВиКи или запросите в отделе продаж.">HELP</a>';
 
-    if ($platform == 'P10') {
+    if ($platform == 'P11') {
         $result = '
             <tr>
                 <th rowspan="2" class="product">' . (($view == 'category') ? 'Категория, продукт, производитель' : 'Производитель, продукт') . '</th>
-                <th rowspan="2" class="help">
-                    <a href="https://www.altlinux.org/" target="_blank" title="Инструкции по установке для дистрибутивов Альт на бранче ' . $platform . ' (в стадии наполнения). Если не указано, поищите на нашей ВиКи или запросите в отделе продаж.">HELP</a>
-                </th>
+                <th rowspan="2" class="help">' . $help . '</th>
+                <th colspan="2" class="cell">' . (($a != 'x86_64' && $a != 'aarch64') ? '&nbsp;' : 'Альт&nbsp;СП&nbsp;релиз&nbsp;11') . '</th>
+                <th rowspan="2" class="cell">' . (($a == 'ppc64le') ? '&nbsp;' : 'Альт Рабочая станция 11') . '</th>
+                <th rowspan="2" class="cell">' . (($a == 'ppc64le') ? '&nbsp;' : 'Альт Образование 11') . '</th>
+                <th rowspan="2" class="cell">Альт Сервер 10</th>
+            <tr><th class="small">' . (($a != 'x86_64' && $a != 'aarch64') ? '&nbsp;' : '(рабочая&nbsp;станция)') . '</th><th class="small">' . (($a != 'x86_64' && $a != 'aarch64') ? '&nbsp;' : '(сервер)') . '</th></tr>
+            </tr>
+        ';
+    } elseif ($platform == 'P10') {
+        $result = '
+            <tr>
+                <th rowspan="2" class="product">' . (($view == 'category') ? 'Категория, продукт, производитель' : 'Производитель, продукт') . '</th>
+                <th rowspan="2" class="help">' . $help . '</th>
                 <th colspan="2" class="cell">' . (($a != 'x86_64' && $a != 'aarch64') ? '&nbsp;' : 'Альт&nbsp;СП&nbsp;релиз&nbsp;10') . '</th>
                 <th rowspan="2" class="cell">' . (($a == 'ppc64le') ? '&nbsp;' : 'Альт Рабочая станция 10') . '</th>
                 <th rowspan="2" class="cell">' . (($a == 'ppc64le') ? '&nbsp;' : 'Альт Образование 10') . '</th>
@@ -439,7 +455,15 @@ function makeTabelHeaders($a, $platform, $view): string
 
 function makeTabelCells($product, $platform): string
 {
-    if ($platform == 'P10') {
+    if ($platform == 'P11') {
+        $result = '
+                ' . makeSert($product[7]) . '
+                ' . makeSert($product[8]) . '
+                ' . makeSert($product[9]) . '
+                ' . makeSert($product[10]) . '
+                ' . makeSert($product[11]) . '
+        ';
+    } elseif ($platform == 'P10') {
         $result = '
                 ' . makeSert($product[7]) . '
                 ' . makeSert($product[8]) . '
@@ -476,7 +500,9 @@ function makeTabelCells($product, $platform): string
 
 function makeTabelColspan($platform): string
 {
-    if ($platform == 'P10') {
+    if ($platform == 'P11') {
+        $result = 7;
+    } elseif ($platform == 'P10') {
         $result = 7;
     } elseif ($platform == 'P9') {
         $result = 7;
